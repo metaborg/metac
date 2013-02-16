@@ -5,7 +5,7 @@ struct Foo {
 };
  
 void main() {
+  statemachine bar
   print("hello world");
+  statemachine foo
 }
-
- 

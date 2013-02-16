@@ -18,9 +18,12 @@
         <property name="dist" location="bin/dist"/>
 	
 	      <property name="basec" location="BaseC" />
+        <property name="statemachine" location="Statemachine" />
         
         <!-- Imports -->
-        <property name="build.sdf.imports" value="-I &quot;${basec}&quot;/syntax"/>
+        <property name="build.sdf.imports" value="
+        	-I &quot;${basec}&quot;/syntax 
+        	-I &quot;${statemachine}&quot;/syntax"/>
         <property name="build.stratego.args" value="
                         --library
                         -I &quot;${trans}&quot;
