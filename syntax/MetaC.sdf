@@ -2,17 +2,12 @@
 %% By default, based on an example "entities" syntax
 module MetaC
 
-imports Common
+%%imports Common 
+imports BaseC
 
 exports
-
-  context-free start-symbols
+  context-free start-symbols Start
   
-    Start
-
   context-free syntax
-  
-    "module" ID Definition*       -> Start {"Module"}
-    "entity" ID "{" Property* "}" -> Definition {"Entity"}
-    ID ":" Type                   -> Property {"Property"}
-    ID                            -> Type {"Type"}
+    TranslationUnit -> Start  
+

@@ -1,19 +1,11 @@
-/**
-* Example MetaC program.
-*/  
-module example
 
-entity User {
-  name     : String
-  password : String
-  homepage : URL
+struct Foo {
+  int bar;
+  char c;
+};
+ 
+void main() {
+  print("hello world");
 }
 
-entity BlogPosting {
-  poster : User
-  body   : String
-}
-
-entity URL {
-  location : String
-}
+ 

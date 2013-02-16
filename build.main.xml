@@ -16,9 +16,11 @@
         <property name="lib" location="lib"/>
         <property name="build" location="bin"/>
         <property name="dist" location="bin/dist"/>
+	
+	      <property name="basec" location="BaseC" />
         
         <!-- Imports -->
-        <property name="build.sdf.imports" value=""/>
+        <property name="build.sdf.imports" value="-I &quot;${basec}&quot;/syntax"/>
         <property name="build.stratego.args" value="
                         --library
                         -I &quot;${trans}&quot;
