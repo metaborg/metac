@@ -1,0 +1,16 @@
+module MetaC.main
+
+imports MetaC-Builders MetaC-Refactorings MetaC-Colorer MetaC-Completions MetaC-Folding MetaC-Outliner MetaC-References MetaC-Syntax
+
+language General properties
+                  
+  name          : MetaC
+  id            : metac
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the MetaC language"
+  url           : http://strategoxt.org
+                  
+  extensions    : mc
+  table         : include/MetaC.tbl
+  start symbols : Start
