@@ -13,6 +13,7 @@ include/metac.rtree
 include/metac.ctree
 include/metac.ctree.dep
 include/metac.jar
+include/metac-java.jar
 editor/java/trans
 editor/MetaC-*.generated.esv
 syntax/MetaC*.generated.esv
@@ -20,3 +21,8 @@ syntax/MetaC*.generated.esv
 utils
 lib/*.generated.str
 lib-refactoring/*.generated.str
+trans/names.str
+
+Statemachine/syntax/Statemachine.generated.esv
+Statemachine/syntax/Statemachine.generated.str
+Statemachine/syntax/Statemachinegenerated.sdf

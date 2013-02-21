@@ -1,14 +1,16 @@
-%% Grammar for the MetaC language
-%% By default, based on an example "entities" syntax
 module MetaC
 
 imports BaseC
 imports Statemachinegenerated
-imports Statemachine-in-Basegenerated
+%%imports Statemachine-in-Basegenerated
 
 exports
-  context-free start-symbols Start
+  
+  context-free start-symbols 
+  
+    Start
   
   context-free syntax
+    
     TranslationUnit -> Start  
 
