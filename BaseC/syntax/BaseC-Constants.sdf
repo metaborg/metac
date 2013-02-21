@@ -13,7 +13,7 @@ exports
 
   sorts StringLiteral CharLiteral IntLiteral HexLiteral OctLiteral FloatLiteral
         Char StringChar OctalEsc IntFlags FloatFlags
-  lexical syntax
+  lexical syntax 
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [L]? "'" Char "'"          -> CharLiteral    
     
