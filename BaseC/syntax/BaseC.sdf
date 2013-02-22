@@ -1,8 +1,9 @@
-%% Grammar for the MiniJava language
+%% SDF file for BaseC, which includes all generated source files
 module BaseC
 
 imports BaseCgenerated
-
+BaseC-Keywordsgenerated
+BaseC-Identifiersgenerated
 
 	
 	
