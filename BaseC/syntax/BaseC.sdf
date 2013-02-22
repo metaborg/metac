@@ -1,0 +1,8 @@
+%% Grammar for the MiniJava language
+module BaseC
+
+imports BaseCgenerated
+
+
+	
+	

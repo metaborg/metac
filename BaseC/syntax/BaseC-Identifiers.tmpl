@@ -1,0 +1,9 @@
+
+
+lexical syntax
+	ID = [a-zA-Z\_][0-9a-zA-Z\_]*
+	//ID = Keywords {reject} //FIXME: import BaseC-Keywords so we can reject them here
+	
+	
+lexical restrictions
+	ID -/- [a-zA-Z0-9\_]
