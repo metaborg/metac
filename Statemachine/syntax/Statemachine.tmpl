@@ -1,10 +1,36 @@
 templates
 
   Statemachine.Statemachine = <
-    statemachine <ID> 
+    statemachine <ID> initial <ID> = {
+    	<StateMachineComponent*; separator="\n">
+    }
   >
   
+  StateMachineComponent.StateMachineState = <
+  	state <ID> {
+  		<StateComponent>
+  	}
+  >
+  
+  StateMachineComponent.StateMachineInEvent = <>
+  
+  StateMachineComponent.StateMachineOutEvent = <>
+  
+  StateMachineComponent.StateMachineVariable = <>
+  
+  
+  
+  BasicTypeName.Int = <int>
+  BasicTypeName.Char = <char>
+  BasicTypeName.Short = <short>
+  BasicTypeName.Long = <long>
+  BasicTypeName.Float = <float>
+  BasicTypeName.Double = <double>
+  BasicTypeName.Signed = <signed>
+  BasicTypeName.Unsigned = <unsigned>
+  	
+ 
 context-free syntax
 
   "statemachine" -> ID {reject}
-  
+   
