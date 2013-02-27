@@ -1,0 +1,10 @@
+module MetaC-Expressions
+language MetaC
+
+start symbol Exp
+
+test Exp var [[THIS_IS_A_VALID_ID123]] parse succeeds
+test Exp addition vars [[a + a]] parse succeeds
+test Exp addition constants [[1 + 2]] parse succeeds
+test Exp increment postfix [[a++]] parse succeeds
+test Exp increment prefix [[++a]] parse succeeds

@@ -1,0 +1,9 @@
+module MetaC-ID
+language MetaC
+
+start symbol Constant
+
+test CONS 1 [[1]] parse succeeds
+test CONS 12 [[12]] parse succeeds
+test CONS a [[a]] parse fails
+

@@ -1,12 +1,9 @@
 module MetaC-ID
 language MetaC
 
-start symbol Start
+start symbol Identifier
 
 test ID a [[a]] parse succeeds
-
 test ID 1 [[1]] parse fails
-
 test ID THIS_IS_A_VALID_ID123 [[THIS_IS_A_VALID_ID123]] parse succeeds
-
 test ID struct [[struct]] parse fails

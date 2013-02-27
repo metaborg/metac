@@ -1,0 +1,12 @@
+
+//TODO: more than just accepting digits
+// @see C-Constants
+
+lexical syntax
+	CONS = [0-9]+
+		
+lexical restrictions
+	CONS -/- [0-9]
+	
+templates
+	Constant = <<CONS>>
