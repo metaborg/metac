@@ -1,0 +1,138 @@
+
+//TODO: find a complete list of C operators and their precedence.
+
+templates
+
+// ====================================================================
+// Variables
+// ====================================================================
+Exp.Var = <<ID>>
+
+
+// ====================================================================
+// Operators
+// @see http://www.difranco.net/compsci/C_Operator_Precedence_Table.htm
+// The operators are ordered in preceding order, one empty line between
+// precedence groups.
+// ====================================================================
+Exp = 					<(<Exp>)> {bracket}
+//TODO: function calls
+Exp.ArrayField = 		<<Exp> [ <Exp> ]>
+Exp.Field = 			<<Exp> . <Exp> >
+Exp.FieldViaPointer =	<<Exp> -\> <Exp> >
+Exp.IncrementPostfix =	<<Exp> ++> {left}
+Exp.DecrementPostfix =	<<Exp> --> {left}
+
+Exp.IncrementPrefix =	<++ <Exp>> {right}
+Exp.DecrementPrefix =	<-- <Exp>> {right}
+Exp.Positive =			<+ <Exp>> {right}
+Exp.Negative =			<- <Exp>> {right}
+Exp.Not =				<! <Exp>> {right}
+Exp.BitwiseComplement =	<~ <Exp>> {right}
+//TODO: (type) typeconversion
+Exp.Dereference = 		<* <Exp>> {right}
+Exp.Address = 			<& <Exp>> {right}
+Exp.SizeOf = 			<sizeof <Exp>> {right}
+
+Exp.Multiplication =	<<Exp> * <Exp>> {left}
+Exp.Division =			<<Exp> \ <Exp>> {left}
+Exp.Modulo =			<<Exp> % <Exp>> {left}
+
+Exp.Addition =			<<Exp> + <Exp>> {left}
+Exp.Subtraction =		<<Exp> - <Exp>> {left}
+
+Exp.BitshiftLeft =		<<Exp> \<\< <Exp>> {left}
+Exp.BitshiftRight =		<<Exp> \>\> <Exp>> {left}
+
+Exp.LessThan = 			<<Exp> \< <Exp>> {left}
+Exp.LessThanEqual =		<<Exp> \<= <Exp>> {left}
+Exp.GreaterThan = 		<<Exp> \> <Exp>> {left}
+Exp.GreaterThanEqual =	<<Exp> \>= <Exp>> {left}
+
+Exp.Equal =				<<Exp> == <Exp>> {left}
+Exp.Inequal =			<<Exp> != <Exp>> {left}
+
+Exp.BitwiseAnd = 		<<Exp> & <Exp>> {left}
+
+Exp.BitwiseXor = 		<<Exp> ^ <Exp>> {left}
+
+Exp.BitwiseOr =			<<Exp> | <Exp>> {left}
+
+Exp.And = 				<<Exp> && <Exp>> {left}
+
+Exp.Or = 				<<Exp> || <Exp>> {left}
+
+Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
+
+//TODO: assignments (are they expressions in C?)
+
+//TODO: comma's (seperate expressions, what do they do in C?)
+
+template options
+context-free priorities
+{ left:
+	"(" Exp ")"         -> Exp
+    Exp "[" Exp "]"     -> Exp
+    Exp "." Exp         -> Exp 
+    Exp "-" ">" Exp     -> Exp 
+    Exp "++"            -> Exp 
+    Exp "--"            -> Exp 
+} >
+{ right:
+    "++" Exp            -> Exp
+    "--" Exp            -> Exp
+    "+" Exp             -> Exp
+    "-" Exp             -> Exp
+    "!" Exp             -> Exp
+    "~" Exp             -> Exp
+    "*" Exp             -> Exp
+    "&" Exp             -> Exp
+    "sizeof" Exp        -> Exp
+} >
+{ left:
+    Exp "*" Exp         -> Exp
+    Exp "\\" Exp        -> Exp
+    Exp "%" Exp         -> Exp
+} >
+{ left:
+    Exp "+" Exp         -> Exp
+    Exp "-" Exp         -> Exp
+} >
+{ left:
+    Exp "<<" Exp        -> Exp
+    Exp ">>" Exp        -> Exp
+} >
+{ left:
+    Exp "<" Exp         -> Exp
+    Exp "<" "=" Exp     -> Exp
+    Exp ">" Exp         -> Exp
+    Exp ">" "=" Exp     -> Exp
+} >
+{ left:
+	Exp "==" Exp        -> Exp
+    Exp "!=" Exp        -> Exp
+} >
+{
+    Exp "&" Exp         -> Exp
+} >
+{
+    Exp "^" Exp         -> Exp
+} >
+{
+    Exp "|" Exp         -> Exp
+} >
+{
+    Exp "&&" Exp        -> Exp
+} >
+{
+    Exp "||" Exp        -> Exp
+} >
+{
+    Exp "?" Exp ":" Exp -> Exp
+}
+
+
+lexical restrictions
+    "+" -/- [\+]
+    "-" -/- [\-]
+    "&" -/- [\&]
