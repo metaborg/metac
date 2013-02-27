@@ -69,65 +69,68 @@ Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
 
 template options
 context-free priorities
+{
+	"(" Exp ")"         -> Exp	//Old notation, because of no constructor
+} >
 { left:
-	"(" Exp ")"         -> Exp
-    Exp "[" Exp "]"     -> Exp
-    Exp "." Exp         -> Exp 
-    Exp "-" ">" Exp     -> Exp 
-    Exp "++"            -> Exp 
-    Exp "--"            -> Exp 
+	Exp.ArrayField
+	Exp.Field
+	Exp.FieldViaPointer
+	Exp.IncrementPostfix
+	Exp.DecrementPostfix
 } >
 { right:
-    "++" Exp            -> Exp
-    "--" Exp            -> Exp
-    "+" Exp             -> Exp
-    "-" Exp             -> Exp
-    "!" Exp             -> Exp
-    "~" Exp             -> Exp
-    "*" Exp             -> Exp
-    "&" Exp             -> Exp
-    "sizeof" Exp        -> Exp
+	Exp.IncrementPrefix
+	Exp.DecrementPrefix
+	Exp.Positive
+	Exp.Negative
+	Exp.Not
+	Exp.BitwiseComplement
+	//TODO: (type) typeconversion
+	Exp.Dereference
+	Exp.Address
+	Exp.SizeOf
 } >
 { left:
-    Exp "*" Exp         -> Exp
-    Exp "\\" Exp        -> Exp
-    Exp "%" Exp         -> Exp
+	Exp.Multiplication
+	Exp.Division
+	Exp.Modulo
 } >
 { left:
-    Exp "+" Exp         -> Exp
-    Exp "-" Exp         -> Exp
+	Exp.Addition
+	Exp.Subtraction
 } >
 { left:
-    Exp "<<" Exp        -> Exp
-    Exp ">>" Exp        -> Exp
+	Exp.BitshiftLeft
+	Exp.BitshiftRight
 } >
 { left:
-    Exp "<" Exp         -> Exp
-    Exp "<" "=" Exp     -> Exp
-    Exp ">" Exp         -> Exp
-    Exp ">" "=" Exp     -> Exp
+	Exp.LessThan
+	Exp.LessThanEqual
+	Exp.GreaterThan
+	Exp.GreaterThanEqual
 } >
 { left:
-	Exp "==" Exp        -> Exp
-    Exp "!=" Exp        -> Exp
+	Exp.Equal
+	Exp.Inequal
 } >
 {
-    Exp "&" Exp         -> Exp
+    Exp.BitwiseAnd
 } >
 {
-    Exp "^" Exp         -> Exp
+    Exp.BitwiseXor
 } >
 {
-    Exp "|" Exp         -> Exp
+    Exp.BitwiseOr
 } >
 {
-    Exp "&&" Exp        -> Exp
+    Exp.And
 } >
 {
-    Exp "||" Exp        -> Exp
+    Exp.Or
 } >
 {
-    Exp "?" Exp ":" Exp -> Exp
+    Exp.TernaryConditional
 }
 
 
