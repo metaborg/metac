@@ -1,36 +1,98 @@
+lexical syntax
+
+ID = "statemachine" {reject}
+StatemachineVarModifier = "readable" | "writable"
+
 templates
 
   Statemachine.Statemachine = <
-    statemachine <ID> initial <ID> = {
-    	<StateMachineComponent*; separator="\n">
+    statemachine <ID> initial = <ID> {
+    	<StateMachineComponent*>
     }
   >
   
   StateMachineComponent.StateMachineState = <
   	state <ID> {
-  		<StateComponent>
+  		<StateBody*>
   	}
   >
   
-  StateMachineComponent.StateMachineInEvent = <>
+  StateMachineComponent.StateMachineInEvent = <
+  	in <ID> ( <ParamList> ) 
+  >																										//TODO add binding?
+  																										//TODO change sort for ParamList																										
   
-  StateMachineComponent.StateMachineOutEvent = <>
-  
-  StateMachineComponent.StateMachineVariable = <>
-  
-  
-  
-  BasicTypeName.Int = <int>
-  BasicTypeName.Char = <char>
-  BasicTypeName.Short = <short>
-  BasicTypeName.Long = <long>
-  BasicTypeName.Float = <float>
-  BasicTypeName.Double = <double>
-  BasicTypeName.Signed = <signed>
-  BasicTypeName.Unsigned = <unsigned>
-  	
- 
-context-free syntax
+  StateMachineComponent.StateMachineOutEvent = <
+  	out <ID> ( <ParamList>) <StateMachineEventBinding?>
+  >
+  																										//TODO change sort for ParamList
 
-  "statemachine" -> ID {reject}
+  StateMachineComponent.StateMachineVarDecl = <
+  	<StatemachineVarModifier?> var <Type> <ID> = <Exp>	
+  >																										//TODO change sort from INT to constant
+  
+  StateMachineEventBinding.Binding = <
+  	=\> <ID>
+  >	
+  	
+  StateBody.Entry = <
+  	entry <CompoundStatement>														
+  >																										//TODO change sort for compoundStatement
+  
+  StateBody.Exit = <
+  	exit <CompoundStatement>
+  >																										//TODO change sort for compoundStatement
+  	
+  StateBody.Transition = <
+  	on <ID> [ <Exp?> ] -\> <ID> <CompoundStatement?>
+  >																										//TOOD change sort for ID, Exp, compoundStatement
+ 
+  
+
+// helpers - delete later
+
+ 
+  Type.Int8 = <int8>
+  Type.Int16 = <int16>
+  Type.Int32 = <int32>
+
+  lexical syntax 
+  INT = [0-9]+
+  
+  lexical restrictions
+  INT -/- [0-9]
+
+  templates
+  CompoundStatement.Block = <
+	{
+		<Statement*>
+	}
+  >
+  
+  Statement.Assign = <<Var> = <Exp>;>
    
+  Exp.Int = <<INT>>
+  Exp.Var = <<ID>>
+  Exp.Addition = <<Exp> + <Exp>> {left}
+  Exp.Subtraction = <<Exp> - <Exp>> {left}
+  Exp.Multiplication = <<Exp> * <Exp>> {left}
+  Exp.And = <<Exp> && <Exp>> {left}
+  Exp.Lessthan = <<Exp> \< <Exp>> {left}
+  
+  ParamDecl.ParamDecl = < <Type> <ID> >
+  
+  ParamList.ParamList = < <ParamDecl*> > 
+  
+  
+  
+  // Start symbol
+  context-free start-symbols
+  Start
+
+  templates
+  Start = <<Program>> 
+   
+  templates
+  Program.Program = <
+	<Statemachine*>
+  > 
