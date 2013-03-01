@@ -1,0 +1,10 @@
+module MetaC-Enum
+language MetaC
+
+start symbol Enum
+
+test Type [[enum myFirstEnum {  One = 1;  Two = 5;  Three; } ]] parse succeeds
+test Type [[enum myFirstEnum { One; Two; Three;} ]] parse succeeds
+test Type [[enum myFirstEnum { One; Two Three} ]] parse fails
+test Type [[enum myFirstEnum { One; Two Three;} ]] parse fails
+test Type [[enum myFirstEnum { One; Two; Three; }]] parse succeeds
