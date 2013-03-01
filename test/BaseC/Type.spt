@@ -1,0 +1,7 @@
+module MetaC-ID
+language MetaC
+
+start symbol Type
+
+test Type int8 [[int8]] parse succeeds
+test Type int9 [[int9]] parse fails

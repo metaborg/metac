@@ -1,0 +1,25 @@
+
+
+lexical syntax
+	BasicType = "boolean"
+	BasicType = "int8"			//default: char
+	BasicType = "int16"			//default: short
+	BasicType = "int32"			//default: int
+	BasicType = "int64"     	//default: long long
+	BasicType = "uint8"			//default: unsigned char
+	BasicType = "uint16"		//default: unsigned short
+	BasicType = "uint32"		//default: unsigned int
+	BasicType = "uint64"		//default: unsigned long long
+	BasicType = "float" 		//default: 32 bit
+	BasicType = "double" 		//default: 64 bit
+	BasicType = "long double" 	//default: 128 bit
+
+lexical restrictions
+	BasicType -/- [a-zA-Z0-9\_]
+	
+templates
+	Type = <<BasicType>>
+	
+	Type = <<Identifier>>		// structs
+	
+	//TODO: arrays of basic types and of structs
