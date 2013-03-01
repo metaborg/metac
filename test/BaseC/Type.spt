@@ -5,3 +5,7 @@ start symbol Type
 
 test Type int8 [[int8]] parse succeeds
 test Type int9 [[int9]] parse succeeds //struct name
+test Type intarray [[ int8[21] ]] parse succeeds
+test Type intmatrix [[ int8[21][11] ]] parse succeeds
+test Type intspace [[ int32[12][24][86] ]] parse succeeds
+test Type longwhatever [[ long double [54][54][54][54][54][54][54][54][54] ]]
