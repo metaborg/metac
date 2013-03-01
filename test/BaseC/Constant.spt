@@ -7,3 +7,10 @@ test CONS 1 [[1]] parse succeeds
 test CONS 12 [[12]] parse succeeds
 test CONS a [[a]] parse fails
 
+test CONS_BINARY [[bin<001010>]] parse succeeds
+test CONS_NON_BINARY [[bin<002010>]] parse fails
+test CONS_HEX [[hex<cacca>]] parse succeeds
+test CONS_NON_HEX [[hex<vacca>]] parse fails
+test CONS_OCTAL [[oct<71>]] parse succeeds
+test CONS_NON_OCTAL [[0xA]] parse fails
+
