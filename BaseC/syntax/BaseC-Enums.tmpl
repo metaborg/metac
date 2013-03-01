@@ -1,0 +1,9 @@
+
+templates
+
+	EnumAssignment = <<Identifier> = <Constant>> 
+	EnumList = <>
+	EnumList = <<EnumAssignment>; <EnumList>>
+	EnumList = <<Identifier> ; <EnumList>>
+	
+	Enum = <enum <Identifier> { <EnumList> }>   
