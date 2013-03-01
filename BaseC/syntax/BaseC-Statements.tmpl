@@ -1,0 +1,29 @@
+
+//TODO: add more statements
+
+templates
+
+Stm = <<Exp>;>
+	
+Stm.Block = <
+{
+	<Statement*>
+}
+>
+
+Stm.If = <
+	if (<Exp>)
+		<Stm>
+>
+
+Stm.IfElse = <
+	if (<Exp>)
+		<Stm>
+	else
+		<Stm>
+>
+
+Stm.While = <
+	while (<Exp>)
+		<Stm>
+>

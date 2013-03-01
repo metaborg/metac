@@ -1,0 +1,7 @@
+module MetaC-Statements
+language MetaC
+
+start symbol Stm
+
+test Stm assign [[a =2;]] parse succeeds
+test Stm if [[if(a==3) a++;]]

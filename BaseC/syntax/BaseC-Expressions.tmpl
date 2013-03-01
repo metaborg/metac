@@ -63,9 +63,20 @@ Exp.Or = 				<<Exp> || <Exp>> {left}
 
 Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
 
-//TODO: assignments (are they expressions in C?)
+Exp.Assign = 			<<Identifier> <AssignOp> <Exp>> {right}
+AssignOp.Assign = 				<=>
+AssignOp.PlusAssign = 			<+=>
+AssignOp.MinusAssign = 			<-=>
+AssignOp.MultiplyAssign = 		<*=>
+AssignOp.DivisionAssign = 		</=>
+AssignOp.ModuloAssign = 		<%=>
+AssignOp.BitwiseAndAssign = 	<&=>
+AssignOp.BitwiseXorAssign = 	<^=>
+AssignOp.BitwiseOrAssign =		<|=>
+AssignOp.BitshiftLeftAssign =	<\<\<=>
+AssignOp.BitshiftRightAssign =	<\>\>=>
 
-//TODO: comma's (seperate expressions, what do they do in C?)
+//TODO: comma-expressions (in a diff construct because diff use)
 
 template options
 context-free priorities
@@ -131,6 +142,9 @@ context-free priorities
 } >
 {
     Exp.TernaryConditional
+} >
+{
+	Exp.Assign
 }
 
 

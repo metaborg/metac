@@ -8,3 +8,4 @@ test Exp addition vars [[a + a]] parse succeeds
 test Exp addition constants [[1 + 2]] parse succeeds
 test Exp increment postfix [[a++]] parse succeeds
 test Exp increment prefix [[++a]] parse succeeds
+test Exp inline assignment [[a+=3]] parse succeeds
