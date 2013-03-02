@@ -23,6 +23,7 @@ lib/*.generated.str
 lib-refactoring/*.generated.str
 trans/names.str
 
-Statemachine/syntax/Statemachine.generated.esv
-Statemachine/syntax/Statemachine.generated.str
-Statemachine/syntax/Statemachinegenerated.sdf
+#Files generated from tmpl
+*.generated.esv
+*.generated.str
+*generated.sdf
