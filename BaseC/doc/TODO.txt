@@ -1,0 +1,7 @@
+
+Decide on:
+- expression construct names:
+	- all the same name seems to be not specific enough
+	- Usually CommaExpressions allowed.
+	- In the case of a switch statement only ConstantExpressions (no assigns and no comma's) are allowed
+	- any other exceptions?

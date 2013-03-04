@@ -1,29 +1,64 @@
 
-//TODO: add more statements
-
 templates
 
-Stm = <<Exp>;>
-	
+// labels
+Stm.Label = <<Identifier> : <Stm>>
+Stm.Case = <case <Exp> : <Stm>>	//TODO: disallow assigns @see doc/TODO.txt
+Stm.Default = <default : <Stm>>
+
+// blocks
+//TODO: add declarations
 Stm.Block = <
 {
-	<Statement*>
+	<Stm*>
 }
 >
 
+// expresions
+Stm.Exp = <<CommaExp> ;>
+	
+// selections
 Stm.If = <
-	if (<Exp>)
+	if ( <CommaExp> )
 		<Stm>
 >
 
 Stm.IfElse = <
-	if (<Exp>)
+	if ( <CommaExp> )
 		<Stm>
 	else
 		<Stm>
 >
 
-Stm.While = <
-	while (<Exp>)
+Stm.Switch = <
+	switch ( <CommaExp> )
 		<Stm>
 >
+
+// iterations
+Stm.While = <
+	while ( <CommaExp> )
+		<Stm>
+>
+
+Stm.DoWhile = <
+	do
+		<Stm>
+	while ( <CommaExp> )
+>
+
+Stm.For = <
+	for ( <CommaExpOpt> ; <CommaExpOpt> ; <CommaExpOpt> )
+		<Stm>
+>
+
+// jumps
+Stm.Goto = <goto <Identifier>>
+
+Stm.Continue = <continue ;>
+
+Stm.Break = <break ;>
+
+Stm.Return = <return <CommaExpOpt> ;>
+
+Stm.Exit = <exit <CommaExpOpt> ;>

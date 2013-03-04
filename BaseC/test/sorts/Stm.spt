@@ -4,4 +4,24 @@ language MetaC
 start symbol Stm
 
 test Stm assign [[a =2;]] parse succeeds
-test Stm if [[if(a==3) a++;]]
+test Stm if [[if(a==3) a++;]] parse succeeds
+test Stm if block [[if(a==3) {a++;}]] parse succeeds
+test Stm if comma [[if(a==3, b!=2) a-=b;]] parse succeeds
+
+test Stm for [[
+    for(i = 0; i < max;i++){
+ 		i--;
+ 	}
+]] parse succeeds
+
+test Stm switch [[
+switch( c ) 
+{
+    case 1:
+        capa++;
+    case 2:
+        lettera++;
+    default :
+        total++;
+}
+]] parse succeeds

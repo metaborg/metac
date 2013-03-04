@@ -28,7 +28,7 @@ Exp.Positive =			<+ <Exp>> {right}
 Exp.Negative =			<- <Exp>> {right}
 Exp.Not =				<! <Exp>> {right}
 Exp.BitwiseComplement =	<~ <Exp>> {right}
-//TODO: (type) typeconversion
+Exp.TypeConversion = 	<(<Type>) <Exp>> {right}
 Exp.Dereference = 		<* <Exp>> {right}
 Exp.Address = 			<& <Exp>> {right}
 Exp.SizeOf = 			<sizeof <Exp>> {right}
@@ -76,7 +76,10 @@ AssignOp.BitwiseOrAssign =		<|=>
 AssignOp.BitshiftLeftAssign =	<\<\<=>
 AssignOp.BitshiftRightAssign =	<\>\>=>
 
-//TODO: comma-expressions (in a diff construct because diff use)
+CommaExp.CommaExp = 			<<Exp+;separator=", ">>	{left}
+
+CommaExpOpt.CommaExpOpt = <<CommaExp>>
+CommaExpOpt.CommaExpOpt = <>
 
 template options
 context-free priorities
@@ -97,7 +100,7 @@ context-free priorities
 	Exp.Negative
 	Exp.Not
 	Exp.BitwiseComplement
-	//TODO: (type) typeconversion
+	Exp.TypeConversion
 	Exp.Dereference
 	Exp.Address
 	Exp.SizeOf
