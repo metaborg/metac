@@ -25,3 +25,18 @@ switch( c )
         total++;
 }
 ]] parse succeeds
+
+test Stm while [[
+while( c ) 
+{
+    c=false;
+}
+]] parse succeeds
+
+test Stm block [[
+{
+    label1: capa++;
+    label2: lettera++;
+    goto label1;
+}
+]] parse succeeds

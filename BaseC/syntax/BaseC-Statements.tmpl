@@ -3,7 +3,7 @@ templates
 
 // labels
 Stm.Label = <<Identifier> : <Stm>>
-Stm.Case = <case <Exp> : <Stm>>	//TODO: disallow assigns @see doc/TODO.txt
+Stm.Case = <case <Exp> : <Stm>>
 Stm.Default = <default : <Stm>>
 
 // blocks
@@ -15,7 +15,7 @@ Stm.Block = <
 >
 
 // expresions
-Stm.Exp = <<CommaExp> ;>
+Stm.Exp = <<CommaExp?> ;>
 	
 // selections
 Stm.If = <
@@ -47,18 +47,19 @@ Stm.DoWhile = <
 	while ( <CommaExp> )
 >
 
+//TODO: add declarations
 Stm.For = <
-	for ( <CommaExpOpt> ; <CommaExpOpt> ; <CommaExpOpt> )
+	for ( <CommaExp?> ; <CommaExp?> ; <CommaExp?> )
 		<Stm>
 >
 
 // jumps
-Stm.Goto = <goto <Identifier>>
+Stm.Goto = <goto <Identifier>;>
 
 Stm.Continue = <continue ;>
 
 Stm.Break = <break ;>
 
-Stm.Return = <return <CommaExpOpt> ;>
+Stm.Return = <return <CommaExp?> ;>
 
-Stm.Exit = <exit <CommaExpOpt> ;>
+Stm.Exit = <exit <CommaExp?> ;>

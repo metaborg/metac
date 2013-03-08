@@ -14,7 +14,7 @@ Exp = <<Constant>>
 // The operators are ordered in preceding order, one empty line between
 // precedence groups.
 // ====================================================================
-Exp = 					<(<Exp>)> {bracket}
+Exp = 					<(<CommaExp>)> {bracket}
 //TODO: function calls
 Exp.ArrayField = 		<<Exp> [ <Exp> ]>
 Exp.Field = 			<<Exp> . <Exp> >
@@ -34,7 +34,7 @@ Exp.Address = 			<& <Exp>> {right}
 Exp.SizeOf = 			<sizeof <Exp>> {right}
 
 Exp.Multiplication =	<<Exp> * <Exp>> {left}
-Exp.Division =			<<Exp> \ <Exp>> {left}
+Exp.Division =			<<Exp> / <Exp>> {left}
 Exp.Modulo =			<<Exp> % <Exp>> {left}
 
 Exp.Addition =			<<Exp> + <Exp>> {left}
@@ -63,7 +63,8 @@ Exp.Or = 				<<Exp> || <Exp>> {left}
 
 Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
 
-Exp.Assign = 			<<Identifier> <AssignOp> <Exp>> {right}
+AssignExp = 			<<Exp>>
+AssignExp.Assign = 		<<Identifier> <AssignOp> <AssignExp>> {right}
 AssignOp.Assign = 				<=>
 AssignOp.PlusAssign = 			<+=>
 AssignOp.MinusAssign = 			<-=>
@@ -76,15 +77,14 @@ AssignOp.BitwiseOrAssign =		<|=>
 AssignOp.BitshiftLeftAssign =	<\<\<=>
 AssignOp.BitshiftRightAssign =	<\>\>=>
 
-CommaExp.CommaExp = 			<<Exp+;separator=", ">>	{left}
+CommaExp =				<<AssignExp>>
+CommaExp.CommaExp = 	<<Exp>, <AssignExp>>	{left}
 
-CommaExpOpt.CommaExpOpt = <<CommaExp>>
-CommaExpOpt.CommaExpOpt = <>
 
 template options
 context-free priorities
 {
-	"(" Exp ")"         -> Exp	//Old notation, because of no constructor
+	"(" CommaExp ")"         -> Exp	//Old notation, because of no constructor
 } >
 { left:
 	Exp.ArrayField
@@ -147,7 +147,10 @@ context-free priorities
     Exp.TernaryConditional
 } >
 {
-	Exp.Assign
+	AssignExp.Assign
+} >
+{
+	CommaExp.CommaExp
 }
 
 
