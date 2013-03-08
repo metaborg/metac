@@ -1,10 +1,9 @@
 module MetaC-Union
 language MetaC
 
-start symbol Union
+start symbol StructOrUnion
 
-test Union missing last semicolon [[ union myFirstUnion { } ]] parse fails
-test Union 1 [[ union myFirstUnion { }; ]] parse succeeds
-test Union 2 [[ union myFirstUnion { int8 fieldOne; }; ]] parse succeeds
-test Union 3 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; }; ]] parse succeeds
-test Union 4 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; int8 fieldThree; }; ]] parse succeeds
+test Union 1 [[ union myFirstUnion { } ]] parse succeeds
+test Union 2 [[ union myFirstUnion { int8 fieldOne; } ]] parse succeeds
+test Union 3 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; } ]] parse succeeds
+test Union 4 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; int8 fieldThree; } ]] parse succeeds

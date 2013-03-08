@@ -1,9 +1,8 @@
 
 templates
 
-	EnumAssignment = <<Identifier> = <Constant>> 
-	EnumList = <>
-	EnumList = <<EnumAssignment>; <EnumList>>
-	EnumList = <<Identifier> ; <EnumList>>
+	EnumItem = <<Identifier> = <Constant>> 
+	EnumItem = <<Identifier>>
 	
-	Enum = <enum <Identifier> { <EnumList> }>   
+	Enum = <enum <Identifier?> { <EnumItem*; separator=","> }>
+	Enum = <enum <Identifier?> { <EnumItem*; separator=",">, }>    

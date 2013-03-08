@@ -1,0 +1,84 @@
+module MetaC-Struct
+language MetaC
+
+start symbol StructOrUnion
+
+test Struct 1 [[ struct myFirstStruct { } ]] parse succeeds
+test Struct 2 [[ struct myFirstStruct { int8 fieldOne; } ]] parse succeeds
+test Struct 3 [[ struct myFirstStruct { int8 fieldOne; int8[2] fieldTwo; }]] parse succeeds
+test Struct 4 [[ struct myFirstStruct { int8 fieldOne; int8[2] fieldTwo; int8 fieldThree; } ]] parse succeeds
+
+test Union 1 [[ union myFirstUnion { } ]] parse succeeds
+test Union 2 [[ union myFirstUnion { int8 fieldOne; } ]] parse succeeds
+test Union 3 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; } ]] parse succeeds
+test Union 4 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; int8 fieldThree; } ]] parse succeeds
+
+
+test useless struct 								[[ struct {} ]] 						parse succeeds
+test empty struct with typename 					[[ struct foo {} ]] 					parse succeeds
+test empty struct with typename and data definition [[ struct foo {} ]] 				parse succeeds
+test struct with some integer field					[[ struct foo { int8 someint; } ]]	parse succeeds
+
+test struct forgot left parentheses					[[ struct foo  int8 someint; } ]] 	parse fails
+test struct forgot right parentheses				[[ struct foo  { int8 someint;  ]] 	parse fails
+test struct forgot parentheses						[[ struct foo  int8 someint; ]] 	parse fails
+
+
+test struct with list of fields with bitspecs
+[[ 	struct foo
+	{ 
+		int32 someint ;
+		int8 someshort ;
+	} 
+]] parse succeeds
+
+test struct with multivariable decleration and bitspecs
+[[ 	struct foo
+	{ 
+		int8 a, b, c;
+		int16 someshort;
+	}
+]] parse succeeds
+
+
+test struct with initialiser
+[[ 	struct foo
+	{ 
+		int8 a = 10;
+	} 
+]] parse fails
+
+test useless union 								[[ union {} ]] 						parse succeeds
+test empty union with typename 					[[ union foo {} ]] 					parse succeeds
+test empty union with typename and data definition [[ union foo {} ]] 				parse succeeds
+test union with some integer field				[[ union foo { int8 someint; } ]]	parse succeeds
+
+test union forgot left parentheses				[[ union foo  int8 someint; } ]] 	parse fails
+test union forgot right parentheses				[[ union foo  { int8 someint;   ]] 	parse fails
+test union forgot parentheses					[[ union foo  int8 someint;  ]] 		parse fails
+
+test union with field with bitspec 				[[ 	union foo { int32 someint ; }  ]] parse succeeds
+
+test union with list of fields with bitspecs
+[[ 	union foo
+	{ 
+		int32 someint;
+		int8 someshort ;
+	} 
+]] parse succeeds
+
+test union with multivariable decleration and bitspecs
+[[ 	union foo
+	{ 
+		int8 a, b, c ;
+		int8 someshort ;
+	} 
+]] parse succeeds
+
+
+test union with initialiser
+[[ 	union foo
+	{ 
+		int8 a = 10;
+	} 
+]] parse fails

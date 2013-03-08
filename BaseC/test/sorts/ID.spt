@@ -7,3 +7,52 @@ test ID a [[a]] parse succeeds
 test ID 1 [[1]] parse fails
 test ID THIS_IS_A_VALID_ID123 [[THIS_IS_A_VALID_ID123]] parse succeeds
 test ID struct [[struct]] parse fails
+
+test identifier name a 			[[a]] 		parse succeeds
+test identifier name a1 		[[a1]] 		parse succeeds
+test identifier name abc 		[[abc]] 	parse succeeds
+test identifier name a_b 		[[a_b]] 	parse succeeds
+test identifier name ab_ 		[[ab_]] 	parse succeeds
+test identifier name a__ 		[[a__]] 	parse succeeds
+test identifier name a_1 		[[a_1]] 	parse succeeds
+test identifier name ab_1 		[[ab_1]] 	parse succeeds
+test identifier name a__1__b 	[[a__1__b]] parse succeeds
+test identifier name _abc 		[[_abc]] 	parse succeeds
+test identifier name __abc 		[[__abc]] 	parse succeeds
+
+test invalid identifier name 1a 	[[1a]] 		parse fails
+test invalid identifier name 1 		[[1]]  		parse fails
+test invalid identifier name #a 	[[#a]] 		parse fails
+test invalid identifier name $_b1a 	[[$_b1a]] 	parse fails
+
+
+
+
+test reserved keyword auto 		[[auto]] 		parse fails
+test reserved keyword struct 	[[struct]] 		parse fails
+test reserved keyword break 	[[break]] 		parse fails
+test reserved keyword else 		[[else]] 		parse fails
+test reserved keyword switch 	[[switch]] 		parse fails
+test reserved keyword case 		[[case]] 		parse fails
+test reserved keyword enum 		[[enum]] 		parse fails
+test reserved keyword register 	[[register]] 	parse fails
+test reserved keyword typedef 	[[typedef]] 	parse fails
+test reserved keyword extern 	[[extern]] 		parse fails
+test reserved keyword return 	[[return]] 		parse fails
+test reserved keyword exit 		[[exit]]		parse fails
+test reserved keyword union 	[[union]] 		parse fails
+test reserved keyword const 	[[const]] 		parse fails
+test reserved keyword float 	[[float]] 		parse fails
+test reserved keyword unsigned 	[[unsigned]] 	parse fails
+test reserved keyword continue 	[[continue]] 	parse fails
+test reserved keyword for 		[[for]] 		parse fails
+test reserved keyword signed 	[[signed]] 		parse fails
+test reserved keyword void 		[[void]] 		parse fails
+test reserved keyword default 	[[default]] 	parse fails
+test reserved keyword goto 		[[goto]] 		parse fails
+test reserved keyword sizeof 	[[sizeof]] 		parse fails
+test reserved keyword volatile 	[[volatile]] 	parse fails
+test reserved keyword do 		[[do]] 			parse fails
+test reserved keyword if 		[[if]] 			parse fails
+test reserved keyword static 	[[static]] 		parse fails
+test reserved keyword while 	[[while]] 		parse fails
