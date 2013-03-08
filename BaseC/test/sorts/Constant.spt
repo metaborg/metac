@@ -59,9 +59,9 @@ test string abc											[["abc"]]			parse succeeds
 test string 0abc										[["0abc"]]			parse succeeds
 test string with escape character in 8 bit ascii		[["klm\x01"]]		parse succeeds
 
-test string with octal escape charater 0				[["\1abc"]]			parse succeeds
-test string with octal escape charater 12				[["\12abc"]]		parse succeeds
-test string with octal escape charater 123				[["\123abc"]]		parse succeeds
+test string with octal escape character 0				[["\1abc"]]			parse succeeds
+test string with octal escape character 12				[["\12abc"]]		parse succeeds
+test string with octal escape character 123				[["\123abc"]]		parse succeeds
 test string with escaped char "\n" 						[["abc\n"]] 		parse succeeds
 test string with escaped char "\t" 						[["abc\t"]] 		parse succeeds
 test string with escaped char "\v" 						[["abc\v"]] 		parse succeeds

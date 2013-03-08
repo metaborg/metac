@@ -1,15 +1,14 @@
- 
-//TODO: implement C99 like constants
-// @see C-Constants
 
+// numbers
+//TODO: add suffixes
 lexical syntax
 	CONS = [\-]?[1-9][0-9]*
-	CONS0 = [0]
+	CONS = [0]
 	CONSBIN = [0][b][0-1]+
 	CONSOCT = [0][0-7]+
 	CONSHEX = [0][xX][0-9a-fA-F]+
 	CONSFLOAT = [0-9]*[\.][0-9]+([eE][\-]?[0-9]+)?
-	CONSFLOAT2 = [0-9]+[eE][\-]?[0-9]+
+	CONSFLOAT = [0-9]+[eE][\-]?[0-9]+
 	
 lexical restrictions
 	CONS -/- [0-9]
@@ -20,10 +19,33 @@ lexical restrictions
 	
 templates
 	Constant.Decimal = <<CONS>>
-	Constant.Decimal = <<CONS0>>
 	Constant.Binary = <<CONSBIN>>
 	Constant.Octal = <<CONSOCT>>
 	Constant.Hexadecimal = <<CONSHEX>>
 	Constant.Float = <<CONSFLOAT>>
-	Constant.Float = <<CONSFLOAT2>>
+	
+// chars and strings
+// TODO: implement
+// @see C-Constants
+
+lexical syntax
+	CHAR = ~[\\\'\n]
+	CHAR = [\\] [ntvbrfa\\\?\'\"]
+	CHAR = [\\] [x] [0-9A-E] [0-9A-E]
+	CHAR = OCTESC
+	
+	// STRCHAR = ~[\\\"\n]
+	// STRCHAR = [\\] [ntvbrfa\\\?\"]
+	// STRCHAR = [\\] [x] [0-9A-E] [0-9A-E]
+	// CHAR = OCTESC
+	
+	OCTESC = [\\] [0-7] [0-7]? [0-7]?
+	
+	CONSCHAR = [\']CHAR[\']
+	CONSSTRING = [\"]CHAR*[\"]
+	
+templates
+	Constant.String = <<CONSCHAR>>
+	Constant.Char = <<CONSSTRING>> 
+	
 	
