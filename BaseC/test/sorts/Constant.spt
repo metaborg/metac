@@ -5,15 +5,8 @@ start symbol Constant
 
 test CONS 1 [[1]] parse succeeds
 test CONS 12 [[12]] parse succeeds
+test CONS -3 [[-3]] parse succeeds
 test CONS a [[a]] parse fails
-
-test CONS_BINARY [[bin<001010>]] parse succeeds
-test CONS_NON_BINARY [[bin<002010>]] parse fails
-test CONS_HEX [[hex<cacca>]] parse succeeds
-test CONS_NON_HEX [[hex<vacca>]] parse fails
-test CONS_OCTAL [[oct<71>]] parse succeeds
-test CONS_NON_OCTAL [[0xA]] parse fails
-
 
 test integer literal 0 [[0]] parse succeeds
 test integer literal 10 [[10]] parse succeeds
@@ -21,6 +14,7 @@ test integer literal 10 [[10]] parse succeeds
 test integer literal with hex digit 1A [[1A]] parse fails
 
 test octal literal 07 [[07]] parse succeeds
+test octal literal 08 [[08]] parse fails
 
 test hexadecimal literal 0x0  		[[0x0]] 	parse succeeds
 test hexadecimal literal 0x01 		[[0x01]] 	parse succeeds
@@ -29,6 +23,7 @@ test hexadecimal literal 0xCD 		[[0xCD]] 	parse succeeds
 test hexadecimal literal 0xEF 		[[0xEF]] 	parse succeeds
 
 test hexadecimal literal without 0x [[x6]] 		parse fails
+test hexadecimal literal with whitespace [[0x 6]] parse fails
 
 test floating point constant  .1	[[.1]] 		parse succeeds
 test floating point constant 1.1	[[1.1]] 	parse succeeds

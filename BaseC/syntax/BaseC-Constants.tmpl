@@ -3,17 +3,27 @@
 // @see C-Constants
 
 lexical syntax
-	CONS = [0-9]+
-	CONSBIN = [0-1]+
-	CONSOCT = [0-7]+
-	CONSHEX = [0-9a-fA-F]+ 
+	CONS = [\-]?[1-9][0-9]*
+	CONS0 = [0]
+	CONSBIN = [0][b][0-1]+
+	CONSOCT = [0][0-7]+
+	CONSHEX = [0][xX][0-9a-fA-F]+
+	CONSFLOAT = [0-9]*[\.][0-9]+([eE][\-]?[0-9]+)?
+	CONSFLOAT2 = [0-9]+[eE][\-]?[0-9]+
 	
 lexical restrictions
 	CONS -/- [0-9]
+	CONSBIN -/- [0-1]
+	CONSOCT -/- [0-7]
+	CONSHEX -/- [0-9a-fA-F]
+	CONSFLOAT -/- [0-9\-eE]
 	
 templates
-	Constant = <<CONS>>
-	Constant.Binary = < bin \< <CONSBIN> \> >
-	Constant.Octal = < oct \< <CONSOCT> \> >
-	Constant.Hexadecimal = < hex \< <CONSHEX> \> >
+	Constant.Decimal = <<CONS>>
+	Constant.Decimal = <<CONS0>>
+	Constant.Binary = <<CONSBIN>>
+	Constant.Octal = <<CONSOCT>>
+	Constant.Hexadecimal = <<CONSHEX>>
+	Constant.Float = <<CONSFLOAT>>
+	Constant.Float = <<CONSFLOAT2>>
 	
