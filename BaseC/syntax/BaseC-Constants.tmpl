@@ -1,21 +1,25 @@
 
 // numbers
-//TODO: add suffixes
 lexical syntax
-	CONS = [\-]?[1-9][0-9]*
-	CONS = [0]
+	CONS = [\-]?[1-9][0-9]*FLAGINT?
+	CONS = [0]FLAGINT?
 	CONSBIN = [0][b][0-1]+
-	CONSOCT = [0][0-7]+
-	CONSHEX = [0][xX][0-9a-fA-F]+
-	CONSFLOAT = [0-9]*[\.][0-9]+([eE][\-]?[0-9]+)?
-	CONSFLOAT = [0-9]+[eE][\-]?[0-9]+
+	CONSOCT = [0][0-7]+FLAGINT?
+	CONSHEX = [0][xX][0-9a-fA-F]+FLAGINT?
+	CONSFLOAT = [0-9]*[\.][0-9]+([eE][\-]?[0-9]+)?FLAGFLOAT?
+	CONSFLOAT = [0-9]+[eE][\-]?[0-9]+FLAGFLOAT?
+	
+	FLAGINT = [uUlL]
+	FLAGINT = [uU][lL]
+	FLAGFLOAT = [lLfF]
+	FLAGFLOAT = [lL][fF]
 	
 lexical restrictions
-	CONS -/- [0-9]
+	CONS -/- [0-9uUlL]
 	CONSBIN -/- [0-1]
 	CONSOCT -/- [0-7]
 	CONSHEX -/- [0-9a-fA-F]
-	CONSFLOAT -/- [0-9\-eE]
+	CONSFLOAT -/- [0-9\-eElLfF]
 	
 templates
 	Constant.Decimal = <<CONS>>
@@ -25,21 +29,11 @@ templates
 	Constant.Float = <<CONSFLOAT>>
 	
 // chars and strings
-// TODO: implement
-// @see C-Constants
-
 lexical syntax
 	CHAR = ~[\\\'\n]
 	CHAR = [\\] [ntvbrfa\\\?\'\"]
 	CHAR = [\\] [x] [0-9A-E] [0-9A-E]
-	CHAR = OCTESC
-	
-	// STRCHAR = ~[\\\"\n]
-	// STRCHAR = [\\] [ntvbrfa\\\?\"]
-	// STRCHAR = [\\] [x] [0-9A-E] [0-9A-E]
-	// CHAR = OCTESC
-	
-	OCTESC = [\\] [0-7] [0-7]? [0-7]?
+	CHAR = [\\] [0-7] [0-7]? [0-7]?
 	
 	CONSCHAR = [\']CHAR[\']
 	CONSSTRING = [\"]CHAR*[\"]

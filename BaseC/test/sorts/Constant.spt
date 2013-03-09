@@ -10,6 +10,9 @@ test CONS a [[a]] parse fails
 
 test integer literal 0 [[0]] parse succeeds
 test integer literal 10 [[10]] parse succeeds
+test integer literal 10U [[10U]] parse succeeds
+test integer literal 10L [[10L]] parse succeeds
+test integer literal 10UL [[10UL]] parse succeeds
 
 test integer literal with hex digit 1A [[1A]] parse fails
 

@@ -4,3 +4,6 @@ Decide on:
 - variable number of arguments (like printf).
 	- Is it safe enough to get into SafeC?
 
+- signed and unsigned ints?
+	- want those as datatypes?
+	- use interchangibly = errors...
