@@ -27,3 +27,7 @@ trans/names.str
 *.generated.esv
 *.generated.str
 *generated.sdf
+/editor/java/metac/Activator.java
+/editor/java/metac/MetaCParseController.java
+/editor/java/metac/MetaCParseControllerGenerated.java
+/editor/java/metac/MetaCValidator.java
