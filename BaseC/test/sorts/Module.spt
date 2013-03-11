@@ -1,0 +1,25 @@
+module MetaC-Module
+language MetaC
+
+start symbol Module
+
+test Module empty [[
+module Test {
+	
+}
+]] parse succeeds
+
+test Module imports [[
+module Test imports Test2, Test3{
+	
+}
+]] parse succeeds
+
+test Module with messagelist [[
+module Test imports Test2, Test3 {
+	messagelist messages {
+		INFO Test() active: "test"
+		WARNING Test() inactive: "test"
+	}
+}
+]] parse succeeds

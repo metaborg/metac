@@ -1,0 +1,26 @@
+
+templates
+
+
+Module.Module = <
+module <Identifier> <ModuleImports?> {
+	<ModuleContent*; separator="\n">
+}
+>
+
+ModuleImports = <imports <Identifier*; separator=",">>
+
+ModuleContent = <<FunDec>>
+ModuleContent = <<MessageList>>
+
+MessageList = <
+messagelist <Identifier> {
+	<Message*>
+}
+>
+Message = <INFO <Identifier>() <MessageActive>: <Constant>>
+Message = <WARNING <Identifier>() <MessageActive>: <Constant>>
+Message = <ERROR <Identifier>() <MessageActive>: <Constant>>
+
+MessageActive = <active>
+MessageActive = <inactive>
