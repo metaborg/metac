@@ -4,32 +4,38 @@ templates
     statemachine <ID> initial <ID> = {
     	<StateMachineComponent*; separator="\n">
     }
-  >
+  	>
   
   StateMachineComponent.StateMachineState = <
   	state <ID> {
-  		<StateComponent>
+  		<StateComponent*; separator="\n">
   	}
+  	>
+  
+  StateMachineComponent.StateMachineInEvent = <
+    in <ID>(<ParamList>)
+  	>
+  
+  StateMachineComponent.StateMachineOutEvent = <
+  	out <ID>(<ParamList>)
+  	>
+  
+  StateMachineComponent.StateMachineVariable = <
+  	var <Type> <ID> = <Expr>
+  	>
+  
+  StateComponent.Transition = <
+  	on <ID> [<Exp>] -\> <ID>
+  	>
+ 
+  StateComponent.StateEntry = <
+  	entry <CompoundStm>
   >
   
-  StateMachineComponent.StateMachineInEvent = <>
+  StateComponent.StateEntry = <
+  	exit <CompoundStm>
+  >
   
-  StateMachineComponent.StateMachineOutEvent = <>
-  
-  StateMachineComponent.StateMachineVariable = <>
-  
-  
-  
-  BasicTypeName.Int = <int>
-  BasicTypeName.Char = <char>
-  BasicTypeName.Short = <short>
-  BasicTypeName.Long = <long>
-  BasicTypeName.Float = <float>
-  BasicTypeName.Double = <double>
-  BasicTypeName.Signed = <signed>
-  BasicTypeName.Unsigned = <unsigned>
-  	
- 
 context-free syntax
 
   "statemachine" -> ID {reject}
