@@ -74,3 +74,16 @@ test assignment with shift left		[[h <<= q]] 	parse succeeds
 test assignment with shift right	[[i >>= r]] 	parse succeeds
 
 test p [[1+2*3]] parse to [[1+(2*3)]]
+
+test function call assignment [[x = f(1)]] parse succeeds
+test function call with no parameter [[ f() ]] parse succeeds
+test function call with one parameter [[ f(1) ]] parse succeeds
+test function call with two parameters [[ f(1,2) ]] parse succeeds
+test nested function call [[ f(x(5)) ]] parse succeeds
+test nested function call with two parameter [[ f(x(5),5) ]] parse succeeds
+test nested function call with two parameter and two functions [[ f(x(5),y(8)) ]] parse succeeds
+
+test wrong function call [[ f(,) ]] parse fails
+test wrong function call with one parameter [[ f(1,) ]] parse fails
+
+
