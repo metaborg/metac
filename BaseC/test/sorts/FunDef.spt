@@ -1,15 +1,11 @@
 module test_function_declarations
 language MetaC
-start symbol FunDec
+start symbol FunDef
 
-test int function proto without arguments [[ int a(); ]] parse succeeds
-test int function proto with one argument [[ int a(int b); ]] parse succeeds
-test int function proto with multiple arguments [[ int a(int b, int c, int d); ]] parse succeeds
 
 test int function without arguments [[ int a() {x = y; return 1;} ]] parse succeeds
 test int function with one argument [[ int a(int b) {x = y; return 1;} ]] parse succeeds
 test int function with multiple arguments [[ int a(int b, int c, int d) {x = y; return 1;} ]] parse succeeds
 
-test void function proto [[ void a(); ]] parse succeeds
 test void function [[ void a() {x=y;} ]] parse succeeds
 

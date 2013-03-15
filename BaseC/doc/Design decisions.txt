@@ -1,6 +1,6 @@
 
 === BaseC Syntax Definition ===
-
+TODO: add explaination why no fundec and only fundefs.
 
 == Constants ==
 

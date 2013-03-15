@@ -79,7 +79,7 @@ test do while forgot right parentheses	[[ do a=1; while (x ]] 			parse fails
 test do while forgot parentheses		[[ do a=1; while x ]] 			parse fails
 
 test for stm empty					[[ for (		;		;		); ]]	parse succeeds
-test for stm with vardecl			[[ for (int i=1	;		;		); ]] 	parse succeeds
+test for stm with vardecl			[[ for (int8 i=1	;		;		); ]] 	parse succeeds
 test for stm initializer			[[ for (i=1		;		;		); ]] 	parse succeeds
 test for stm condition only			[[ for (		; i < 10;		); ]] 	parse succeeds
 test for stm init and condition		[[ for (i=1		; i < 10;		); ]] 	parse succeeds

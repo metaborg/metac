@@ -7,12 +7,15 @@ Stm.Case = <case <Exp> : <Stm>>
 Stm.Default = <default : <Stm>>
 
 // blocks
-//TODO: add declarations
-Stm.Block = <
+Block.Block = <
 {
 	<Stm*>
 }
 >
+Stm = <<Block>>
+
+// declarations
+Stm = <<Declaration>>
 
 // expresions
 Stm.Exp = <<CommaExp?> ;>
@@ -50,6 +53,10 @@ Stm.DoWhile = <
 //TODO: add declarations
 Stm.For = <
 	for ( <CommaExp?> ; <CommaExp?> ; <CommaExp?> )
+		<Stm>
+>
+Stm.For = <
+	for ( <Declaration>  <CommaExp?> ; <CommaExp?> )
 		<Stm>
 >
 
