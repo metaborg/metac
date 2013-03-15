@@ -121,3 +121,15 @@ templates
   StructElement.StructElement= <<Type> <ID>;>
   Struct.Struct = <struct <ID> { <StructElement*> }>
   
+  Statement.Switch = <
+	switch ( <Exp> )
+		<Statement>
+  >
+  
+  Statement.Case = <case <Exp> : <Statement>>
+  
+  Statement.If = <
+	if ( <Exp> )
+		<Statement>
+  >
+  
