@@ -1,4 +1,3 @@
-
 struct Foo {
   int bar;
   char c;

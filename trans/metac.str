@@ -13,6 +13,8 @@ imports
   lib/nbl-library.generated
   //names
   check
+  Statemachine/syntax/Statemachine-mapping
+  Statemachine/trans/namebinding
 
 rules // Analysis
   
@@ -169,3 +171,7 @@ rules // Utility
     files -> None()
     with
       index-sequential-analyze-files(analyze)
+  
+  to-basec-helper: (selected, position, ast, path, project-path) -> ("to-basec-test.out", astout)
+    where
+      <to-basec(|"MainModule")> ast => astout
