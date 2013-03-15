@@ -30,10 +30,7 @@ test short declaration				[[ short x; ]] 		parse succeeds
 test short declaration with init	[[ short x=10; ]] 	parse succeeds
 test integer declaration			[[ int x; ]] 		parse succeeds
 test integer declaration with init	[[ int x=10; ]] 	parse succeeds
-test signed declaration				[[ signed x; ]] 	parse succeeds
-test signed declaration with init	[[ signed x=-3; ]]  parse succeeds
-test unsigned declaration			[[ unsigned x; ]] 	parse succeeds
-test unsigned declaration with init	[[ unsigned x=1; ]]	parse succeeds
+
 test long declaration				[[ long x; ]] 		parse succeeds
 test long declaration with init		[[ long x=8000; ]] 	parse succeeds
 
@@ -47,29 +44,8 @@ test void declaration				[[ void x; ]] 		parse fails
 test string declaration	 with init	[[ string x = "blabla"; ]] 	parse succeeds
 
 test pointer declaration			[[ int * a; ]] 				parse succeeds
-test string pointer declaration		[[ string * a ]] 			parse succeeds
-test pointer to custom type			[[ foobar * a ]] 			parse succeeds
-
-test storage class extern 			[[ extern int a; ]] 		parse succeeds
-test storage class static 			[[ static char a; ]] 		parse succeeds
-test storage class register 		[[ register int a; ]] 		parse succeeds
-test storage class auto 			[[ auto float a; ]] 		parse succeeds
-test storage class typedef			[[ typedef float a; ]] 		parse succeeds
-
-test pointer to extern				[[ extern int * a; ]] 		parse succeeds
-test pointer to static				[[ static int * b; ]]		parse succeeds
-
-test pointer to static without type [[ static * b;]]			parse fails
-
-test variable qualifier const		[[ const int a=10; ]]		parse succeeds
-test variable qualifier volatile 	[[ volatile int a=10; ]]	parse succeeds
-
-test useless type name					[[ int;	]]				parse succeeds
-
-test enum tag for variable declaration	[[ enum a x; ]]			parse succeeds
-
-test forgot closing parenthesis	with init			[[ int a = 10 ]] 			parse fails
-test forgot closing parenthesis						[[ int a; ]] 				parse fails
+test string pointer declaration		[[ string * a; ]] 			parse succeeds
+test pointer to custom type			[[ foobar * a; ]] 			parse succeeds
 
 test multi variable declaration						[[ int a, b, c; ]] 			parse succeeds
 test multi variable declaration	with initialisers	[[ int a=1, b=2, c=3; ]] 	parse succeeds
