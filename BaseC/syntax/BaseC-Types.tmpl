@@ -1,5 +1,5 @@
 
-
+//TODO: move these to keywords + specify these in template language to have contructors for all diff types.
 lexical syntax
 	BasicType = "boolean"
 	BasicType = "int8"			//default: char
@@ -12,13 +12,13 @@ lexical syntax
 	BasicType = "uint64"		//default: unsigned long long
 	BasicType = "float" 		//default: 32 bit
 	BasicType = "double" 		//default: 64 bit
-	BasicType = "long double" 	//default: 128 bit
+	BasicType = "long" LAYOUT+ "double" //default: 128 bit
 
 lexical restrictions
 	BasicType -/- [a-zA-Z0-9\_]
 	
 templates
-	Type = <<BasicType>>
+	Type.BasicType = <<BasicType>>
 	Type.Array = <<Type> [ <Constant?> ]>
-	Type = <<Identifier>>		// structs
+	Type.Identifier = <<Identifier>>		// structs
 	

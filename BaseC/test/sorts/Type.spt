@@ -5,6 +5,12 @@ start symbol Type
 
 test Type int8 [[int8]] parse succeeds
 test Type int9 [[int9]] parse succeeds //struct name
+test Type int8 int8 [[int8 int8]] parse fails
+test Type float [[float]] parse succeeds
+test Type double [[double]] parse succeeds
+test Type double double [[double double]] parse fails
+test Type long double [[long double]] parse succeeds
+test Type long double with more whitespace [[long     double]] parse succeeds
 test Type intarray [[ int8[21] ]] parse succeeds
 test Type intmatrix [[ int8[21][11] ]] parse succeeds
 test Type intspace [[ int32[12][24][86] ]] parse succeeds
