@@ -16,6 +16,9 @@ Exp = <<Constant>>
 // ====================================================================
 Exp = 					<(<CommaExp>)> {bracket}
 //TODO: function calls
+
+Exp.FunctionCall = <<Identifier>(<Exp*;separator=", ">)>
+
 Exp.ArrayField = 		<<Exp> [ <Exp> ]>
 Exp.Field = 			<<Exp> . <Exp> >
 Exp.FieldViaPointer =	<<Exp> -\> <Exp> >
