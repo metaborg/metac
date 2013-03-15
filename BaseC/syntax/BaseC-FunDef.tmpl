@@ -4,4 +4,6 @@ FunctionParameter = <<Type> <Identifier>>
 FunctionParameter = <<FunctionParameter> [<Constant>]>
 FunctionParameter = <*<FunctionParameter>>
 
-FunDef.FunDef = <<Type> <Identifier> (<FunctionParameter*;separator=",">)<Block>>
+FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">)<Block>>
+
+Exported = <exported>

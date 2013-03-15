@@ -50,7 +50,6 @@ Stm.DoWhile = <
 	while ( <CommaExp> )
 >
 
-//TODO: add declarations
 Stm.For = <
 	for ( <CommaExp?> ; <CommaExp?> ; <CommaExp?> )
 		<Stm>
@@ -70,3 +69,6 @@ Stm.Break = <break ;>
 Stm.Return = <return <CommaExp?> ;>
 
 Stm.Exit = <exit <CommaExp?> ;>
+
+// BaseC messages
+Stm.Report = <report <Identifier>.<Identifier>();>
