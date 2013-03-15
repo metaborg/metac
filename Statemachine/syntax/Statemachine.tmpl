@@ -7,7 +7,7 @@ templates
 
   Statemachine.Statemachine = <
     statemachine <ID> initial = <ID> {
-    	<StateMachineComponent*>
+    	<StateMachineComponent*; separator = "\n">
     }
   >
   
@@ -35,15 +35,15 @@ templates
   	=\> <ID>
   >	
   	
-  StateBody.Entry = <
+  StateBody.StateEntry = <
   	entry <CompoundStatement>														
   >																										//TODO change sort for compoundStatement
   
-  StateBody.Exit = <
+  StateBody.StateExit = <
   	exit <CompoundStatement>
   >																										//TODO change sort for compoundStatement
   	
-  StateBody.Transition = <
+  StateBody.StateTransition = <
   	on <ID> [ <Exp?> ] -\> <ID> <CompoundStatement?>
   >																										//TOOD change sort for ID, Exp, compoundStatement
  
@@ -69,15 +69,21 @@ templates
 	}
   >
   
-  Statement.Assign = <<Var> = <Exp>;>
+  Var.Var = <<ID>>
+  
+  Statement.Assign = < <Var> = <Exp> ; >
+  Statement.Exp = < <Exp> ; >
+  Statement.AddAssign = < <Var> += <Exp> ;>
    
   Exp.Int = <<INT>>
-  Exp.Var = <<ID>>
+  Exp.VarRef = <<ID>>
   Exp.Addition = <<Exp> + <Exp>> {left}
   Exp.Subtraction = <<Exp> - <Exp>> {left}
   Exp.Multiplication = <<Exp> * <Exp>> {left}
   Exp.And = <<Exp> && <Exp>> {left}
   Exp.Lessthan = <<Exp> \< <Exp>> {left}
+  Exp.Equals = <<Exp> == <Exp>>
+  Exp.FunctionCall = < <ID> ( <ParamList> )>
   
   ParamDecl.ParamDecl = < <Type> <ID> >
   
@@ -90,9 +96,40 @@ templates
   Start
 
   templates
-  Start = <<Program>> 
-   
+  //Start = < <Statemachine*> >
+  
+  //Start = < <Statemachine>  <Enum*> <Struct*> > 
+  Start = < <Statemachine> >
+  /* 
   templates
   Program.Program = <
 	<Statemachine*>
   > 
+  */
+  
+  //enum generation testing
+  
+  //EnumAssignment.EnumAssignment = <<ID> = <INT>> 
+  //EnumList.EnumList = <>
+  //EnumList.EnumList = <<EnumAssignment>; <EnumList>>
+  EnumElement.EnumElement = <<ID>>
+  EnumElement.EnumElement = <<ID> = <INT>>
+  Enum.Enum = <enum <ID> { <EnumElement*; separator= ","> }>
+  
+  //FieldList.FieldList = <>
+  //FieldList.FieldList = <<Type> <ID>; <FieldList>>
+  StructElement.StructElement= <<Type> <ID>;>
+  Struct.Struct = <struct <ID> { <StructElement*> }>
+  
+  Statement.Switch = <
+	switch ( <Exp> )
+		<Statement>
+  >
+  
+  Statement.Case = <case <Exp> : <Statement>>
+  
+  Statement.If = <
+	if ( <Exp> )
+		<Statement>
+  >
+  

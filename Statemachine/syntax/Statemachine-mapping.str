@@ -1,0 +1,235 @@
+module Statemachine-mapping
+
+imports MetaC
+imports Statemachine/syntax/Statemachine
+
+rules
+	
+	to-basec(|moduleName): Statemachine(statemachineID, _, components*) -> output//states_out//headerAST//(statemachine_function, header)
+	//to-basec(|moduleName): whatever -> whatever
+	where
+		//statemachine_function:= 0;
+		<collect-components> components* => (states_out, events_out, vars_out);
+		<error> [states_out];
+		<error> [events_out];
+		<error> [vars_out];
+		<generate-statemachine-header(|moduleName, statemachineID)> (states_out, events_out, vars_out) => headerAST;
+		<generate-sm-basec-function(|moduleName, statemachineID)> states_out => output
+		//mbeddr statemachine events enum name: __moduleName_sm_events_statemachineID
+		
+		
+	collect-components: componentList* -> (states, events, vars)
+	where
+		not(<eq> (0, <length> componentList*));	 	
+	 	states:= <collect-states> componentList*;
+	 	events:= <collect-events> componentList*;
+	 	vars:= <collect-vars> componentList*
+	
+	
+	collect-states: componentList* -> states
+	where
+		not(<eq> (0, <length> componentList*));
+		states:= <mapconcat(try(collect-state))>
+		
+	collect-state: component -> out		
+	where
+		StateMachineState(_, _) := component;
+		out:= [component] <+
+		out:= []
+	
+	collect-events: componentList* -> events
+	where
+		not(<eq> (0, <length> componentList*));
+		events:= <mapconcat(try(collect-event))>
+		
+	collect-event: component -> out
+	where
+		StateMachineInEvent(_, _) := component;
+		out:= [component] <+
+		StateMachineOutEvent(_, _, _) := component;
+		out:= [component] <+
+		out:= []
+		
+	collect-vars: componentList* -> vars
+	where
+		not(<eq> (0, <length> componentList*));
+		vars:= <mapconcat(try(collect-var))>
+		
+	collect-var: component -> out
+	where
+		StateMachineVarDecl(_, _, _, _):= component;
+		out:= [component] <+
+		out:= []
+	
+	generate-statemachine-header(|moduleName, statemachineID ): (states, events, vars) -> headerAST
+	where
+		events_enumID:= <concat-strings> [moduleName, "_sm_events_", statemachineID];
+		events_enum:= <generate-sm-basec-enum(|statemachineID)> (events_enumID, events);
+		states_enumID:= <concat-strings> [moduleName, "_sm_states_", statemachineID];
+		states_enum:= <generate-sm-basec-enum(|statemachineID)> (states_enumID, states);
+		vars_structID:= <concat-strings> [moduleName, "_sm_data_", statemachineID];
+		vars_struct:= <generate-sm-basec-struct(|statemachineID)> (vars_structID, vars);
+		Struct(_, structList):= vars_struct;
+		structList2:= [StructElement(states_enumID, "__currentState")|structList];												//need structType(states_enumID)
+		vars_struct2:= Struct(vars_structID, structList2);
+		headerAST:= [events_enum, states_enum, vars_struct2]
+		//<error> [events_enum];
+		//<error> [states_enum];
+		//<error> [vars_struct]
+		
+	generate-sm-basec-enum(|statemachineID): (enumID, componentList) -> Enum(enumID, enumList)
+	where
+		enumList:= <mapconcat(try(generate-sm-basec-enumElement(|statemachineID)))> componentList
+		//<error> [enumList]
+	
+	generate-sm-basec-enumElement(|statemachineID): StateMachineInEvent(event_name, _) -> [EnumElement(name)]
+	where
+		name:= <concat-strings> [statemachineID, "__event_", event_name]
+	
+	generate-sm-basec-enumElement(|statemachineID): StateMachineOutEvent(_, _, _) -> []
+	
+	generate-sm-basec-enumElement(|statemachineID): StateMachineState(state_name, _) -> [name]
+	where
+		name:= <concat-strings> [statemachineID, "__state_", state_name]
+	
+	
+	generate-sm-basec-struct(|statemachineID): (structID, componentList) -> Struct(structID, structList)
+	where
+		structList:= <mapconcat(try(generate-sm-basec-structElement(|statemachineID)))> componentList
+		
+	generate-sm-basec-structElement(|statemachineID): StateMachineVarDecl(_, type, name, _) -> [element]
+	where
+		element:= StructElement(type, name)
+		
+	generate-sm-basec-function(|moduleName, statemachineID): statesList -> output//smFunctionAST
+	where
+		functionName:= <concat-strings> [moduleName, "_sm_execute_", statemachineID];
+		//paramList:=
+		//switch instance-> current_state
+		<map(generate-sm-basec-stateCase(|statesList))> statesList => output
+	
+	//generate-sm-basec-stateCase: statesList -> []//caseList
+	//where
+		//switch event
+		//<generate-sm-basec-eventCase> eventList 
+		//break
+	
+	generate-sm-basec-stateCase(|statesList): StateMachineState(stateID, stateBody*) -> stateCaseList
+	where
+		//case stateID
+		//switch event
+		<error> ["generate stateCase: ", stateID];
+		//<map(try(generate-sm-basec-eventCase(|statesList, stateID)))> stateBody*;
+		eventCaseList:= <map(try(generate-sm-basec-eventCase(|statesList, stateID)))> stateBody*;
+		stateCaseList := eventCaseList
+	
+	
+	/*	case eventID
+	 *	generate if condition
+	 *	generate exit from current state
+	 *	generate transitionActions
+	 *	generate switchState
+	 *	generate entry statements for targetState
+	 *	return;
+	*/
+	//generate-sm-basec-eventCase(|statesList, currentStateExit): StateTransition(eventID, condition, targetState, transitionActions) -> []
+	generate-sm-basec-eventCase(|statesList, currentStateID): StateTransition(eventID, condition, targetStateID, transitionActions) -> eventCaseStatement
+	where
+		//case eventID
+	 	//generate if condition
+	 	conditionStatement:= <get-transition-conditionStatement> condition;
+	 	basecConditionStatement:= <to-basec> conditionStatement;
+	 	//generate exit from current state
+	 	exitStatements := <mapconcat(try(get-sm-stateExit-statements(|currentStateID)))> statesList;
+		basecExitStatements:= <to-basec> exitStatements;
+		//generate transitionActions: 
+		transitionStatements:= <get-transitionStatements> transitionActions;
+	 	basecTransitionStatements:= <to-basec> transitionStatements;
+	 	//generate switchState: instance->__currentState = targetState
+	 	
+	 	//generate entry statements for targetState
+	 	entryStatements:= <mapconcat(try(get-sm-stateEntry-statements(|targetStateID)))> statesList;
+	 	basecEntryStatements:= <to-basec> entryStatements;
+	 	//return;
+	 	<error> ["generate eventCase: ", eventID];
+	 	<error> ["if: ", basecConditionStatement];
+	 	<error> ["exit: ", basecExitStatements];
+	 	<error> ["transition: ",basecTransitionStatements];
+	 	<error> ["state switch..."];
+	 	
+	 	<error> ["entry:", basecEntryStatements];
+	 	<error> ["return;"];
+	 	//ifBody:= <concat> [basecExitStatements, basecTransitionStatements, basecEntryStatements];
+	 	//ifBody:= <concat> [<unbox-block> basecExitStatements, <unbox-block> basecTransitionStatements, <unbox-block> basecEntryStatements];
+	 	ifBody:= <mapconcat(unbox-block)> [basecExitStatements, basecTransitionStatements, basecEntryStatements];
+	 	//<error> ["***   ifBody: ", ifBody];
+	 	//ifStatement:= If(basecConditionStatement, ifBody);
+	 	ifStatement:= <generate-sm-basec-ifStatement> (basecConditionStatement, ifBody);
+	 	
+	 	eventCaseStatement:= Case(eventID, Block(ifStatement))										//TODO switch to case(varRef(eventID))
+	 	
+	 	//eventCaseStatement := []
+		
+	
+	
+	
+	
+	
+	get-sm-stateExit-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
+	where
+		//statementBlock:= [];
+		<eq> (stateName, stateID);
+		StateExit(stmBlock) := <fetch-elem(get-stateExit-block)> stateBody;
+		statementBlock:= [stmBlock] <+
+		statementBlock:= []
+		//<error> [statementBlock]
+		
+	
+	get-sm-stateEntry-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
+	where
+		//statementBlock:= [];
+		<eq> (stateName, stateID);
+		//get stateEntry statements
+		StateEntry(stmBlock) := <fetch-elem(get-stateEntry-block)> stateBody; 
+		statementBlock:= [stmBlock]
+		<+
+		statementBlock:= []
+		//<error> [statementBlock]
+		
+	
+	get-stateEntry-block: StateEntry(statementBlock) -> StateEntry(statementBlock)
+	
+	get-stateExit-block: StateExit(statementBlock) -> StateExit(statementBlock)
+	
+	get-transitionStatements: None() -> []
+	
+	get-transitionStatements: Some(StatementBlock) -> [StatementBlock]
+	
+	get-transition-conditionStatement: Some(statement) -> statement
+	
+	get-transition-conditionStatement: None() -> []
+	
+	generate-sm-basec-ifStatement: ([], statementList) -> statementList
+	
+	generate-sm-basec-ifStatement: (condition, statementList) ->  If(condition, statementList)
+	
+	//TODO to-basec statements and expressions
+	
+	to-basec: anything -> anything
+	
+	to-basec: [] -> []
+	
+	to-basec: Equals(exp1, exp2) -> Equals(exp1, exp2)
+	
+	unbox-block: [Block(statementList)] -> basecStatementList
+	where
+		//<error> ["unbox: ", statementList];
+		basecStatementList:= statementList			//TODO <to-basec> statementList
+	 
+	unbox-block: [] -> [] 
+	 
+	//to-basec: StateMachineInit(id) -> FunCall(id)
+	
+	//TODO to-basec varRef - need namebinding: variables defined in statemechine desugar to instance->varname; global variables desugar to varname
+									
+	//TODO desugar eventIDs to enum->enumElement	
