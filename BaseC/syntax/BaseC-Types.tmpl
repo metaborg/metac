@@ -14,7 +14,16 @@ lexical syntax
 	BasicType = "double" 		//default: 64 bit
 	BasicType = "long" LAYOUT+ "double" //default: 128 bit
 	BasicType = "string"
-
+	
+	// tests connected to http://yellowgrass.org/issue/Spoofax/655
+	// BasicType = "d1" 		//here to test
+	// BasicType = "dou" 		//here to test
+	// BasicType = "doub" 		//here to test
+	// BasicType = "doubl" 		//here to test
+	// BasicType = "doubla" 		//here to test
+	// BasicType = "double1" 		//here to test
+	// BasicType = "doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" 		//here to test
+	
 lexical restrictions
 	BasicType -/- [a-zA-Z0-9\_]
 	
