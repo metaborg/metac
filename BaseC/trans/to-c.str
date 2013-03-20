@@ -1,0 +1,33 @@
+module to-c
+
+imports
+	lib/analysis-library.generated
+	lib/index-library.generated
+	include/MetaC
+	//TODO: import C99 signatures
+
+
+signature constructors
+
+
+rules
+	editor-to-c:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <to-c>selected
+	editor-to-c-debug:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <topdown(try(to-c))>selected
+	
+
+// === rewrite rules for BaseC to C99 === //
+rules
+	
+	/**
+	 * Constants & Literals
+	 */
+	//to-c: Decimal(a) -> IntConst(a)
+	to-c: Decimal(a) -> Char(a) //Dummy rule to test

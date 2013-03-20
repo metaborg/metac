@@ -18,4 +18,7 @@ builders
   builder  : "Clear index"                         = debug-index-clear (meta) (source)
   builder  : "Reload index"                        = debug-index-reload (meta) (source)
 
+  builder  : "to C AST"     			           = editor-to-c (openeditor) (realtime) (meta) (source)
+  builder  : "to C AST debug"                      = editor-to-c-debug (openeditor) (realtime) (meta) (source)
+
   on save  : editor-save
