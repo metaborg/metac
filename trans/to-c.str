@@ -1,0 +1,20 @@
+module to-c
+
+imports
+	lib/analysis-library.generated
+	lib/index-library.generated
+	//TODO: import BaseC and C99 signatures
+
+
+signature constructors
+
+	
+
+// === rewrite rules for BaseC to C99 === //
+rules
+	
+	/**
+	 * Constants & Literals
+	 */
+	to-c: Decimal(a) -> IntConst(a)
+	

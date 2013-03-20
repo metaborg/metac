@@ -11,7 +11,7 @@ imports
   lib/analysis-library-internal.generated
   lib/compilation-library.generated
   lib/nbl-library.generated
-  //names
+  names
   check
 
 rules // Analysis
