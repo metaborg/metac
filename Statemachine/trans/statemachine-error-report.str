@@ -1,0 +1,23 @@
+module statemachine-error-report
+
+imports 
+	
+	lib/editor-common.generated
+  	lib/index-library.generated
+  	lib/analysis-library.generated
+  	lib/analysis-library-internal.generated
+  	lib/compilation-library.generated
+  	lib/nbl-library.generated
+	
+	Statemachine/syntax/Statemachine
+	
+rules
+
+statemachine-error: 
+  Statemachine(sm, state, _) -> (state, $[Initial state is not defined. ])
+  	where <index-is-unresolved> state
+    	
+statemachine-error:
+	Transition(_,_,state,_) -> (state, $[Target state is undefined. ])
+		where <index-is-unresolved> state
+		

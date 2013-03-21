@@ -1,0 +1,253 @@
+module Statemachine
+language MetaC
+start symbol Start
+
+
+test statemachine with states and variables [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+	}
+]] parse succeeds
+
+test SM_no_states_no_initial [[
+	statemachine sm1{
+		
+	}
+]] parse fails
+
+test SM_no_states_with_initial[[
+	statemachine sm1 initial = start {
+		
+	}
+]] parse fails
+
+test SM_one_state_with_initial [[
+	statemachine sm initial = start {
+		state start {
+			
+		}
+	}
+]] parse succeeds
+
+test SM_two_states [[
+	statemachine sm initial = start {
+		state start{
+			
+		}
+		
+		state increment{
+			
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_in_event_no_parentheses[[
+	statemachine sm initial = start{
+		in in_event
+		state start{
+			
+		}
+	}
+]] parse fails
+
+test SM_one_state_in_event[[
+	statemachine sm initial = start{
+		in in_event()
+		state start{
+			
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_out_event_no_parentheses[[
+	statemachine sm inital = start{
+		out out_event
+		state start{
+			
+		}
+	}
+]] parse fails
+
+test SM_one_state_out_event[[
+	statemachine sm initial=start{
+		out out_event()
+		state start{
+			
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_out_event_binding[[
+	statemachine sm initial=start{
+		out out_event() => funcall
+		state start{
+			
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_in_event_params[[
+	statemachine sm initial = start{
+		in in_event(int8 delta)
+		state start{
+			
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_entry[[
+	statemachine sm initial = start{
+		state start{
+			entry{
+				
+			}
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_exit[[
+	statemachine sm initial = start{
+		state start{
+			exit{
+				
+			}
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_entry_exit[[
+	statemachine sm initial = start{
+		state start{
+			entry{
+				
+			}
+			exit{
+				
+			}
+		}
+	}
+]] parse succeeds
+
+test SM_one_state_one_event_and_trigger[[
+	statemachine sm initial = start{
+		in reset()
+		state start{
+			on reset[] -> start
+		}
+	}
+]] parse succeeds
+
+test simple statemechine only with states [[ 
+	statemachine stmname initial = a {
+		state a {
+			on next [] -> a
+		}
+	}	
+]] parse succeeds
+
+test simple statemechine only with states [[ 
+	statemachine stmname initial = a {
+		state a {
+			on next [] -> a
+		}
+	}	
+]] parse succeeds
+
+test statemachine with states and variables [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+	}
+]] parse succeeds
+
+test statemachine with states and multiple variables [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+		var int16 r = 4
+	}
+]] parse succeeds
+
+test statemachine with states,variables and in events [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+		in inevent()
+	}
+]] parse succeeds 
+
+test statemachine with states,variables and in events [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+		in inevent()
+		out outevent(int8 a)
+	}
+]] parse succeeds
+
+test statemachine with variables and in events [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		in inevent()
+		out outevent(int a)
+	}
+]] parse fails
+
+//// state tests
+test stm with no states [[
+	statemachine stname initial = a {
+		
+	}
+]] parse succeeds
+
+test missing name [[
+	statemachine initial = a {
+		state a {
+			on next [] -> a
+		}
+	}	
+]] parse fails
+
+test missing initial state [[
+	statemachine stmname {
+		state a {
+			on next [] -> a
+		}
+	}
+]] parse fails
+
+test missing initial state name [[
+	statemachine stmname initial = {
+		state a {
+			on next [] -> a
+		}
+	}
+]] parse fails
+
+test no events in state [[
+	statemachine stmname initial = a {
+		state a {
+		
+		}
+	}
+]] parse succeeds
+
+test multiple states [[
+	statemachine stname initial = a{
+		state a {}
+		state b {}
+		state c {}
+	}
+]] parse succeeds
+
