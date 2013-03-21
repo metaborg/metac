@@ -1,7 +1,10 @@
 module namebinding
 
 imports
-  Statemachinegenerated
+
+  Statemachine/syntax/Statemachine
+  Statemachine/syntax/Statemachine-in-Base.generated
+
   
   //CompoundStatement is considered a namespace that scopes variables
 namespaces Statemachine State StateMachineVar InEvent OutEvent
@@ -15,7 +18,8 @@ rules
 	
 	StateMachineInEvent(event_name,_) : defines unique InEvent event_name
 				
-	StatemchineOutEvent(event_name,_) : defines unique OutEvent event_name
+
+	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
 	
 	StateMachineVarDecl(_,var_type, name, _) : defines unique StateMachineVar name of type var_type
 	
@@ -28,16 +32,17 @@ rules
 							   refers to Field field
 							   refers to StateMachineVar field	
 							   */
-	Transition(event_name, _, state_name,_) : refers to InEvent event_name 
+
+	StateTransition(event_name, _, state_name,_) : refers to InEvent event_name 
 											  refers to State state_name
-											
-	sminit(sm_name) : refers to Statemachine sm_name
+										
+	StateMachineInit(sm_name) : refers to Statemachine sm_name
 	
-	smtrigger(sm_name, in_event) : refers to Statemachine sm_name
+	StateMachineTrigger(sm_name, in_event) : refers to Statemachine sm_name
 									refers to InEvent in_event
 									
-	smIsInState(sm_name, state) : refers to Statemachine sm_name
-								  refers to State state
+	StateMachineIsInState(sm_name, state) : refers to Statemachine sm_name
+								  	refers to State state
 	
 	
 							    

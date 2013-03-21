@@ -3,14 +3,28 @@ lexical syntax
 
 Keywords = "statemachine"								//change Keyword sort name?
 
+templates
 
-    
+StatemachineStm.StateMachineInit = <
+	sminit(<ID>) ;
+	>
+
+StatemachineStm.StateMachineTrigger = <
+	smtrigger(<ID>, <Exp>);
+	>
+ 
+StatemachineStm.StateMachineIsInState = <
+	smIsInState(<ID>, <ID>);
+	>
+	
+StatemachienStm.StateMachineSend = <
+	send <ID>(<Exp*;separator=", ">) 
+	>
+  
 context-free syntax
 
-  Statemachine -> Stm
-  
-  
-  
+  StatemachineStm -> Stm
+  Statemachine 	  -> Type
   
   
   //TODO add sminit, smtrigger, smIsInState statements

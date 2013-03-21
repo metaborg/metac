@@ -13,11 +13,7 @@ imports
 	
 rules
 
-statemachine-error: 
-  Statemachine(sm, state, _) -> (state, $[Initial state is not defined. ])
-  	where <index-is-unresolved> state
-    	
-statemachine-error:
-	Transition(_,_,state,_) -> (state, $[Target state is undefined. ])
-		where <index-is-unresolved> state
-		
+
+//TODO
+//errors on "readable" and "writable"
+

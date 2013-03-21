@@ -46,8 +46,7 @@ templates
   StateBody.StateTransition = <
   	on <ID> [ <Exp?> ] -\> <ID> <CompoundStatement?>
   >																										//TOOD change sort for ID, Exp, compoundStatement
- 
-  
+
 
 // helpers - delete later
 
@@ -87,7 +86,8 @@ templates
   
   ParamDecl.ParamDecl = < <Type> <ID> >
   
-  ParamList.ParamList = < <ParamDecl*> > 
+  ParamList.ParamList = < <ParamDecl*>; separator = "," > 
+
   
   
   
@@ -120,4 +120,17 @@ templates
   //FieldList.FieldList = <<Type> <ID>; <FieldList>>
   StructElement.StructElement= <<Type> <ID>;>
   Struct.Struct = <struct <ID> { <StructElement*> }>
+ 
+  Statement.Switch = <
+	switch ( <Exp> )
+		<Statement>
+  >
+  
+  Statement.Case = <case <Exp> : <Statement>>
+  
+  Statement.If = <
+	if ( <Exp> )
+		<Statement>
+  >
+
   
