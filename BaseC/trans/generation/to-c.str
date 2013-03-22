@@ -40,9 +40,40 @@ rules
 
 
 // === rewrite rules for BaseC to C99 === //
+//TODO: move to different files
 rules
 	
 	/**
-	 * Constants & Literals
+	 * Constants & Literals & Identifiers
 	 */
 	to-c: Decimal(a) -> C-IntConst(a)
+	to-c: Identifier(a) -> C-Id(a)
+	
+	
+	/**
+	 * Expressions
+	 */
+	
+	
+	/**
+	 * Types
+	 */
+
+	
+	/**
+	 * Statements
+	 */
+	to-c: Return(a) -> C-Return(a)
+	
+	
+	/**
+	 * FunDec
+	 */
+	to-c: ParamList(a) -> C-ParamList(a)
+	
+	to-c: Param(type, name) ->
+				  C-ParamDecl2(
+                    C-TypeSpec([], C-TypeId(type), [])
+                  , C-TypedefDeclarator1([], C-TypeId(name), None())
+                  )
+	

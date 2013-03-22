@@ -4,8 +4,9 @@ FunctionParameter.Param = <<Type> <Identifier>>
 FunctionParameter.Param = <<FunctionParameter> [<Constant>]>
 FunctionParameter.Param = <*<FunctionParameter>>
 
-//FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) <Block> > IT DOESN'T WORK. By the way Block is defined exactly as {Stm*}
+ParamList.ParamList = <<FunctionParameter*;separator=",">>
 
-FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) {<Stm*>} >
+//FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) <Block> > IT DOESN'T WORK. By the way Block is defined exactly as {Stm*}
+FunDef.FunDef = <<Exported?> <Type> <Identifier> (<ParamList>) {<Stm*>} >
 
 Exported.Exported = <exported>
