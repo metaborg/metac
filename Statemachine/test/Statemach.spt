@@ -1,0 +1,13 @@
+module Statemach
+language MetaC
+start symbol Start
+
+
+test statemachine with states and variables [[
+	statemachine stmname initial = a {
+		var int8 v = 8
+		state a {
+		
+		}
+	}
+]] parse succeeds

@@ -1,4 +1,33 @@
+
+lexical syntax
+
+Keywords = "statemachine"								//change Keyword sort name?
+
+templates
+
+StatemachineStm.StateMachineInit = <
+	sminit(<ID>) ;
+	>
+
+StatemachineStm.StateMachineTrigger = <
+	smtrigger(<ID>, <Exp>);
+	>
  
+StatemachineStm.StateMachineIsInState = <
+	smIsInState(<ID>, <ID>);
+	>
+
+StatemachineStm.StateMachineSend = <
+	send <ID>(<Exp*; separator=", ">) 
+	>
+
+    
 context-free syntax
 
-  Statemachine -> Stm
+  Statemachine -> Module
+  StatemachineStm -> Stm
+  //Statemachine 	  -> Type
+  
+
+  //TODO add send, trigger statement to statemachine statements?
+  

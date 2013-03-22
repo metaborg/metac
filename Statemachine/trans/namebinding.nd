@@ -1,0 +1,70 @@
+module namebinding
+
+imports
+
+  Statemachine/syntax/Statemachine
+  Statemachine/syntax/Statemachine-in-Base.generated
+
+  
+  //CompoundStatement is considered a namespace that scopes variables
+namespaces Statemachine State StateMachineVar InEvent OutEvent
+
+rules
+	Statemachine(sm,state,_) : defines unique Statemachine sm
+							scopes State, StateMachineVar, InEvent, OutEvent
+							refers to State state
+							
+	StateMachineState(state_name,_) : defines unique State state_name
+	
+	StateMachineInEvent(event_name,_) : defines unique InEvent event_name
+				
+
+	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
+	
+	StateMachineVarDecl(_,var_type, name, _) : defines unique StateMachineVar name of type var_type
+	
+	//TODO - needs BaseC namebinding
+	//Binding(function) : refers to Function function
+	
+	//field refence like struct or union
+	/*FieldRef(struct,field) : refers to Struct struct
+							   refers to Statemachine struct
+							   refers to Field field
+							   refers to StateMachineVar field	
+							   */
+
+	StateTransition(event_name, _, state_name,_) : refers to InEvent event_name 
+											  refers to State state_name
+										
+	StateMachineInit(sm_name) : refers to Statemachine sm_name
+	
+	StateMachineTrigger(sm_name, in_event) : refers to Statemachine sm_name
+									refers to InEvent in_event
+									
+	StateMachineIsInState(sm_name, state) : refers to Statemachine sm_name
+								  	refers to State state
+	
+	
+							    
+	  
+	//methods: sminit, smtrigger,smIsInState 
+ 
+//  a statemac; 
+//  stm2 second; 
+//  sminit(second); 
+//  sminit(statemac); 
+//  smtrigger(statemac, event(9)); 
+//  smIsInState(statemac, st); 
+//  statemac.variab = 5; 
+   
+ 
+   //Statemachine         : ID * ID * List(StateMachineComponent) -> Statemachine
+   //StateMachineState    : ID * List(StateBody) -> StateMachineComponent					
+   //StateMachineInEvent  : ID * ParamList -> StateMachineComponent
+   // StateMachineOutEvent : ID * ParamList * Option(StateMachineEventBinding) -> StateMachineComponent
+   // StateMachineVarDecl  : Option(StatemachineVarModifier) * Type * ID * Exp -> StateMachineComponent
+   // Binding              : ID -> StateMachineEventBinding
+   // Entry                : CompoundStatement -> StateBody
+   // Exit                 : CompoundStatement -> StateBody
+   // Transition           : ID * Option(Exp) * ID * Option(CompoundStatement) -> StateBody							
+	

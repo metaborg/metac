@@ -1,10 +1,50 @@
+lexical syntax
+
+ID = "statemachine" {reject}
+StatemachineVarModifier = "readable" | "writable"
+
 templates
 
   Statemachine.Statemachine = <
-    statemachine <ID> 
+    statemachine <ID> initial = <ID> {
+    	<StateMachineComponent*; separator = "\n">
+    }
   >
   
-context-free syntax
+  StateMachineComponent.StateMachineState = <
+  	state <ID> {
+  		<StateBody*>
+  	}
+  >
+  
+  StateMachineComponent.StateMachineInEvent = <
+  	in <ID> ( <FunctionParameter*; separator=","> ) 
+  >																										//TODO add binding?
+  																																																				
+  
+  StateMachineComponent.StateMachineOutEvent = <
+  	out <ID> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
+  >
+  																										
 
-  "statemachine" -> ID {reject}
+  StateMachineComponent.StateMachineVarDecl = <
+  	<StatemachineVarModifier?> var <Type> <ID> = <Exp>	
+  >																									
+  
+  StateMachineEventBinding.Binding = <
+  	=\> <ID>
+  >	
+  	
+  StateBody.StateEntry = <
+  	entry <Block>														
+  >																										
+  
+  StateBody.StateExit = <
+  	exit <Block>
+  >																										
+  	
+  StateBody.StateTransition = <
+  	on <ID> [ <Exp?> ] -\> <ID> <Block?>
+  >																										
+ 
   
