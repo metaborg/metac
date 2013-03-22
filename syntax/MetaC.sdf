@@ -1,17 +1,11 @@
 module MetaC
 
 imports BaseC
-%%imports Statemachinegenerated
-%%imports Statemachine-in-Basegenerated
+imports Statemachinegenerated
+imports Statemachine-in-Basegenerated
 
 exports
   
   context-free start-symbols 
   
     Start
-    
-  context-free syntax
-    
-    TranslationUnit -> Start  
-
- 
