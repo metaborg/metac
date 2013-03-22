@@ -86,4 +86,11 @@ test nested function call with two parameter and two functions [[ f(x(5),y(8)) ]
 test wrong function call [[ f(,) ]] parse fails
 test wrong function call with one parameter [[ f(1,) ]] parse fails
 
+test indirect reference [[ *x ]] parse succeeds
+test array reference [[ x[0] ]] parse succeeds
+test field reference [[ x.y ]] parse succeeds
+test field reference via pointer [[ x->y ]] parse succeeds
+test indirect reference to array [[ *x[10] ]] parse succeeds
+test wrong array reference [[ x[0 ]] parse fails
+test complicated reference [[ x[ (*y)[z->w] ] ]] parse succeeds
 

@@ -1,0 +1,39 @@
+
+templates
+
+Component = <<Exported?> component <Identifier> extends <Identifier>{
+	<ComponentContent*;separator="\n">
+}>
+
+ComponentContent = <<ComponentProvides>>
+
+ComponentProvides = <provides <Identifier> <Identifier>>
+
+ComponentContent = <<Init?> <Declaration>>
+
+Init = <init>
+
+ComponentContent = <<ComponentFunction>>
+
+ComponentFunction = <<Internal?> <Type> <Identifier> (<FunctionParameter*;separator=",">) \<- <FunctionTrigger>
+{<Stm*>} 
+> 
+
+Internal = <internal>
+FunctionTrigger = <op <Identifier>.<Identifier>>
+
+Interface = <<Exported?> cs interface <Identifier>{
+	<InterfaceContent*;separator="\n">
+}>
+
+InterfaceContent = <>
+FunctionProyotypeForInterface = <
+	<Query> <Type> <Identifier>(<FunctionParameter*;separator=",">)
+	<Precondition*;separator="\n">
+	<Postcondition*;separtor="\n">
+>
+InterfaceContent = <<Precondition>>
+InterfaceContent = <<Postcondition>>
+Query = <query>
+Precondition = <pre <Exp>>
+Postcondition = <post <Exp>>

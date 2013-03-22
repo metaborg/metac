@@ -20,8 +20,8 @@ Exp = 					<(<CommaExp>)> {bracket}
 Exp.FunctionCall = <<Identifier>(<Exp*;separator=", ">)>
 
 Exp.ArrayField = 		<<Exp> [ <Exp> ]>
-Exp.Field = 			<<Exp> . <Identifier> >
-Exp.FieldViaPointer =	<<Exp> -\> <Identifier> >
+Exp.Field = 			<<Identifier> . <Identifier> > /* <Exp>.<Identifier> */
+Exp.FieldViaPointer =	<<Identifier> -\> <Identifier> >
 Exp.IncrementPostfix =	<<Exp> ++> {left}
 Exp.DecrementPostfix =	<<Exp> --> {left}
 

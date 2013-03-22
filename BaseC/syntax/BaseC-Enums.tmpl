@@ -4,5 +4,7 @@ templates
 	EnumItem = <<Identifier> = <Constant>> 
 	EnumItem = <<Identifier>>
 	
-	Enum = <enum <Identifier?> { <EnumItem*; separator=","> }>
-	Enum = <enum <Identifier?> { <EnumItem*; separator=",">, }>    
+	Enum = <<Exported?> enum <Identifier?> { <EnumItem*; separator=","> }>
+	Enum = <<Exported?> enum <Identifier?> { <EnumItem*; separator=",">, }>
+
+    

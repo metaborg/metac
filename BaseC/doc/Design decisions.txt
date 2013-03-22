@@ -8,6 +8,7 @@ TODO: add explaination why no fundec and only fundefs.
 C99 and mbeddr have different ways of specificying hex, oct and bin constants.
 It was decided to have BaseC according to C99, because the mbeddr syntax is primarily focussed
 on the projectional editing.
+Constant strings are wrapped by quotes (see messagelist) to be closer to the standard C way
 
 
 == Expressions ==
@@ -25,3 +26,9 @@ For those cases a different constructor name is required.
 = Assignments =
 We decided to be more restrictive on assignment expressions. An assignment can now only be done
 to an identifier. This is safer. (Will probably be less restrictive in the future).
+
+== Interfaces ==
+
+= Pre and postconditions = 
+There is no number associated to the pre or post condition because we do not have support from a 
+projectional editor
