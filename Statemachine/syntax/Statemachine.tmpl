@@ -18,119 +18,33 @@ templates
   >
   
   StateMachineComponent.StateMachineInEvent = <
-  	in <ID> ( <ParamList> ) 
+  	in <ID> ( <FunctionParameter*; separator=","> ) 
   >																										//TODO add binding?
-  																										//TODO change sort for ParamList																										
+  																																																				
   
   StateMachineComponent.StateMachineOutEvent = <
-  	out <ID> ( <ParamList>) <StateMachineEventBinding?>
+  	out <ID> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
   >
-  																										//TODO change sort for ParamList
+  																										
 
   StateMachineComponent.StateMachineVarDecl = <
   	<StatemachineVarModifier?> var <Type> <ID> = <Exp>	
-  >																										//TODO change sort from INT to constant
+  >																									
   
   StateMachineEventBinding.Binding = <
   	=\> <ID>
   >	
   	
   StateBody.StateEntry = <
-  	entry <CompoundStatement>														
-  >																										//TODO change sort for compoundStatement
+  	entry <Block>														
+  >																										
   
   StateBody.StateExit = <
-  	exit <CompoundStatement>
-  >																										//TODO change sort for compoundStatement
+  	exit <Block>
+  >																										
   	
   StateBody.StateTransition = <
-  	on <ID> [ <Exp?> ] -\> <ID> <CompoundStatement?>
-  >																										//TOOD change sort for ID, Exp, compoundStatement
-
-
-// helpers - delete later
-
+  	on <ID> [ <Exp?> ] -\> <ID> <Block?>
+  >																										
  
-  Type.Int8 = <int8>
-  Type.Int16 = <int16>
-  Type.Int32 = <int32>
-
-  lexical syntax 
-  INT = [0-9]+
-  
-  lexical restrictions
-  INT -/- [0-9]
-
-  templates
-  CompoundStatement.Block = <
-	{
-		<Statement*>
-	}
-  >
-  
-  Var.Var = <<ID>>
-  
-  Statement.Assign = < <Var> = <Exp> ; >
-  Statement.Exp = < <Exp> ; >
-  Statement.AddAssign = < <Var> += <Exp> ;>
-   
-  Exp.Int = <<INT>>
-  Exp.VarRef = <<ID>>
-  Exp.Addition = <<Exp> + <Exp>> {left}
-  Exp.Subtraction = <<Exp> - <Exp>> {left}
-  Exp.Multiplication = <<Exp> * <Exp>> {left}
-  Exp.And = <<Exp> && <Exp>> {left}
-  Exp.Lessthan = <<Exp> \< <Exp>> {left}
-  Exp.Equals = <<Exp> == <Exp>>
-  Exp.FunctionCall = < <ID> ( <ParamList> )>
-  
-  ParamDecl.ParamDecl = < <Type> <ID> >
-  
-  ParamList.ParamList = < <ParamDecl*>; separator = "," > 
-
-  
-  
-  
-  // Start symbol
-  context-free start-symbols
-  Start
-
-  templates
-  //Start = < <Statemachine*> >
-  
-  //Start = < <Statemachine>  <Enum*> <Struct*> > 
-  Start = < <Statemachine> >
-  /* 
-  templates
-  Program.Program = <
-	<Statemachine*>
-  > 
-  */
-  
-  //enum generation testing
-  
-  //EnumAssignment.EnumAssignment = <<ID> = <INT>> 
-  //EnumList.EnumList = <>
-  //EnumList.EnumList = <<EnumAssignment>; <EnumList>>
-  EnumElement.EnumElement = <<ID>>
-  EnumElement.EnumElement = <<ID> = <INT>>
-  Enum.Enum = <enum <ID> { <EnumElement*; separator= ","> }>
-  
-  //FieldList.FieldList = <>
-  //FieldList.FieldList = <<Type> <ID>; <FieldList>>
-  StructElement.StructElement= <<Type> <ID>;>
-  Struct.Struct = <struct <ID> { <StructElement*> }>
- 
-  Statement.Switch = <
-	switch ( <Exp> )
-		<Statement>
-  >
-  
-  Statement.Case = <case <Exp> : <Statement>>
-  
-  Statement.If = <
-	if ( <Exp> )
-		<Statement>
-  >
-
   

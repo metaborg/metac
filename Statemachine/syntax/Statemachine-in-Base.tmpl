@@ -16,17 +16,18 @@ StatemachineStm.StateMachineTrigger = <
 StatemachineStm.StateMachineIsInState = <
 	smIsInState(<ID>, <ID>);
 	>
-	
-StatemachienStm.StateMachineSend = <
-	send <ID>(<Exp*;separator=", ">) 
+
+StatemachineStm.StateMachineSend = <
+	send <ID>(<Exp*; separator=", ">) 
 	>
-  
+
+    
 context-free syntax
 
+  Statemachine -> Module
   StatemachineStm -> Stm
-  Statemachine 	  -> Type
+  //Statemachine 	  -> Type
   
-  
-  //TODO add sminit, smtrigger, smIsInState statements
+
   //TODO add send, trigger statement to statemachine statements?
   
