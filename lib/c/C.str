@@ -1,0 +1,236 @@
+module C
+
+signature
+  constructors
+                          : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator_PostfixingAbstractDeclarator0
+                          : PostfixAbstractDeclarator -> PostfixAbstractDeclarator_PostfixingAbstractDeclarator0
+                          : TypeSpecifier -> DeclarationSpecifier_TypeSpecifier0
+                          : DeclarationSpecifier -> DeclarationSpecifier_TypeSpecifier0
+                          : IdDeclarator -> AbstractDeclarator_IdDeclarator0
+                          : AbstractDeclarator -> AbstractDeclarator_IdDeclarator0
+                          : TypedefName -> BasicTypeName_ElaboratedTypeName_TypedefName0
+                          : ElaboratedTypeName -> BasicTypeName_ElaboratedTypeName_TypedefName0
+                          : BasicTypeName -> BasicTypeName_ElaboratedTypeName_TypedefName0
+                          : BasicTypeName -> DeclarationQualifier_BasicTypeName0
+                          : DeclarationQualifier -> DeclarationQualifier_BasicTypeName0
+                          : BasicTypeName -> TypeQualifier_BasicTypeName0
+                          : TypeQualifier -> TypeQualifier_BasicTypeName0
+                          : List(TypeQualifier) -> DeclarationQualifierList_ListPlusOfTypeQualifier0
+                          : DeclarationQualifierList -> DeclarationQualifierList_ListPlusOfTypeQualifier0
+                          : ElseLine * List(ExternalDef) -> ElseLine_ListStarOfExternalDef0
+                          : ElifLine * List(ExternalDef) -> ElifLine_ListStarOfExternalDef0
+    C-FunType             : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    C-DeclBracket         : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    C-DeclBracket         : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
+    C-DeclBracket         : UnaryAbstractDeclarator -> PostfixAbstractDeclarator
+    C-ArrayDecl           : Option(ArrayAbstractDeclarator) * Option(ConstantExp) -> ArrayAbstractDeclarator
+    C-ParamList           : List(ParamDeclaration) -> PostfixingAbstractDeclarator
+    C-ParamListVarArgs    : List(ParamDeclaration) -> PostfixingAbstractDeclarator
+                          : ArrayAbstractDeclarator -> PostfixingAbstractDeclarator
+    C-Pointer             : List(Pointer) * Option(PostfixAbstractDeclarator_PostfixingAbstractDeclarator0) -> UnaryAbstractDeclarator
+                          : PostfixingAbstractDeclarator -> AbstractDeclarator
+                          : PostfixAbstractDeclarator -> AbstractDeclarator
+                          : UnaryAbstractDeclarator -> AbstractDeclarator
+    C-PointerOf           : List(TypeQualifier) -> Pointer
+    C-TypeName1           : List(TypeQualifier) * Option(AbstractDeclarator) -> TypeName
+    C-TypeName            : TypeSpecifier * Option(AbstractDeclarator) -> TypeName
+                          : List(TypeQualifier) -> ParamDeclTypeSpec
+                          : DeclarationQualifierList -> ParamDeclTypeSpec
+                          : DeclarationSpecifier -> ParamDeclTypeSpec
+                          : TypeSpecifier -> ParamDeclTypeSpec
+    C-ParamDecl2          : DeclarationSpecifier_TypeSpecifier0 * TypedefDeclarator -> ParamDeclaration
+    C-ParamDecl           : ParamDeclTypeSpec * Option(AbstractDeclarator_IdDeclarator0) -> ParamDeclaration
+    C-EnumVal             : ConstantExp -> EnumeratorValue
+    C-Enumerator          : IdOrTypedefName * Option(EnumeratorValue) -> Enumerator
+    C-EnumId              : IdOrTypedefName -> EnumSpecifier
+    C-Enum                : Option(IdOrTypedefName) * List(Enumerator) -> EnumSpecifier
+    C-BitFieldSize        : Option(Declarator) * ConstantExp -> MemberDeclarator
+                          : Declarator -> MemberDeclarator
+    C-UnionId             : IdOrTypedefName -> UnionSpecifier
+    C-Union               : Option(IdOrTypedefName) * List(MemberDeclaration) -> UnionSpecifier
+    C-StructId            : IdOrTypedefName -> StructSpecifier
+    C-Struct              : Option(IdOrTypedefName) * List(MemberDeclaration) -> StructSpecifier
+                          : EnumSpecifier -> ElaboratedTypeName
+                          : UnionSpecifier -> ElaboratedTypeName
+                          : StructSpecifier -> ElaboratedTypeName
+                          : BasicTypeName_ElaboratedTypeName_TypedefName0 -> TypeOrDefName
+    C-DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(DeclarationQualifier_BasicTypeName0) -> DeclarationSpecifier
+    C-DQualifiers         : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) -> DeclarationQualifierList
+                          : TypeQualifier -> DeclarationQualifier
+                          : StorageClass -> DeclarationQualifier
+    C-TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(TypeQualifier_BasicTypeName0) -> TypeSpecifier
+    C-AssignInit          : AssignExp -> Initializer
+    C-ArrayInitIncomplete : List(Initializer) -> Initializer
+    C-ArrayInit           : List(Initializer) -> Initializer
+    C-DeclInit            : Declarator * Initializer -> VarDecl
+                          : Declarator -> VarDecl
+    C-IdDeclInit          : IdDeclarator * Initializer -> IdDecl
+                          : IdDeclarator -> IdDecl
+    C-Declaration2        : DeclarationSpecifier_TypeSpecifier0 * List(VarDecl) -> Declaration
+    C-Declaration         : DeclarationQualifierList_ListPlusOfTypeQualifier0 * List(IdDecl) -> Declaration
+    C-Volatile            : TypeQualifier
+    C-Const               : TypeQualifier
+    C-Void                : BasicTypeName
+    C-Unsigned            : BasicTypeName
+    C-Signed              : BasicTypeName
+    C-Double              : BasicTypeName
+    C-Float               : BasicTypeName
+    C-Long                : BasicTypeName
+    C-Short               : BasicTypeName
+    C-Char                : BasicTypeName
+    C-Int                 : BasicTypeName
+    C-Register            : StorageClass
+    C-Auto                : StorageClass
+    C-Static              : StorageClass
+    C-Extern              : StorageClass
+    C-Typedef             : StorageClass
+    C-Exit                : CommaExpOpt -> JumpStm
+    C-Return              : CommaExpOpt -> JumpStm
+    C-Break               : JumpStm
+    C-Continue            : JumpStm
+    C-Goto                : IdOrTypedefName -> JumpStm
+    C-For                 : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
+    C-DoWhile             : Stm * CommaExp -> IterationStm
+    C-While               : CommaExp * Stm -> IterationStm
+    C-Switch              : CommaExp * Stm -> SelectionStm
+    C-IfElse              : CommaExp * Stm * Stm -> SelectionStm
+    C-If                  : CommaExp * Stm -> SelectionStm
+    C-Stat                : CommaExpOpt -> ExpStm
+    C-Compound            : List(Declaration) * List(Stm) -> CompoundStm
+    C-Default             : Stm -> LabeledStm
+    C-Case                : ConstantExp * Stm -> LabeledStm
+    C-Label               : IdOrTypedefName * Stm -> LabeledStm
+                          : JumpStm -> Stm
+                          : IterationStm -> Stm
+                          : SelectionStm -> Stm
+                          : ExpStm -> Stm
+                          : CompoundStm -> Stm
+                          : LabeledStm -> Stm
+                          : CondExp -> ConstantExp
+                          : CommaExp -> CommaExpOpt
+    C-EmptyExp            : CommaExpOpt
+    C-Comma               : AssignExp * CommaExp -> CommaExp
+                          : AssignExp -> CommaExp
+    C-AssignOr            : AssignOp
+    C-AssignExp           : AssignOp
+    C-AssignAnd           : AssignOp
+    C-AssignSR            : AssignOp
+    C-AssignSL            : AssignOp
+    C-AssignMin           : AssignOp
+    C-AssignPlus          : AssignOp
+    C-AssignMod           : AssignOp
+    C-AssignDiv           : AssignOp
+    C-AssignMul           : AssignOp
+    C-AssignEq            : AssignOp
+    C-Assign              : UnaryExp * AssignOp * AssignExp -> AssignExp
+                          : CondExp -> AssignExp
+    C-IfExp               : LogicalORExp * CommaExp * CondExp -> CondExp
+                          : LogicalORExp -> CondExp
+    C-LOr                 : LogicalORExp * LogicalANDExp -> LogicalORExp
+                          : LogicalANDExp -> LogicalORExp
+    C-LAnd                : LogicalANDExp * InclORExp -> LogicalANDExp
+                          : InclORExp -> LogicalANDExp
+    C-IncOr               : ExclORExp * InclORExp -> InclORExp
+                          : ExclORExp -> InclORExp
+    C-ExOr                : ANDExp * ExclORExp -> ExclORExp
+                          : ANDExp -> ExclORExp
+    C-And                 : EqualityExp * ANDExp -> ANDExp
+                          : EqualityExp -> ANDExp
+    C-NotEqual            : EqualityExp * RelExp -> EqualityExp
+    C-Equal               : EqualityExp * RelExp -> EqualityExp
+                          : RelExp -> EqualityExp
+    C-Ge                  : RelExp * ShiftExp -> RelExp
+    C-Le                  : RelExp * ShiftExp -> RelExp
+    C-Gt                  : RelExp * ShiftExp -> RelExp
+    C-Lt                  : RelExp * ShiftExp -> RelExp
+                          : ShiftExp -> RelExp
+    C-ShiftRight          : ShiftExp * AddExp -> ShiftExp
+    C-ShiftLeft           : ShiftExp * AddExp -> ShiftExp
+                          : AddExp -> ShiftExp
+    C-Subt                : AddExp * MulExp -> AddExp
+    C-Add                 : AddExp * MulExp -> AddExp
+                          : MulExp -> AddExp
+    C-Mod                 : MulExp * CastExp -> MulExp
+    C-Div                 : MulExp * CastExp -> MulExp
+    C-Mul                 : MulExp * CastExp -> MulExp
+                          : CastExp -> MulExp
+    C-TypeCast            : TypeName * CastExp -> CastExp
+                          : UnaryExp -> CastExp
+    C-SizeofType          : TypeName -> UnaryExp
+    C-SizeofExp           : UnaryExp -> UnaryExp
+    C-Negation            : CastExp -> UnaryExp
+    C-Tilde               : CastExp -> UnaryExp
+    C-Negative            : CastExp -> UnaryExp
+    C-Positive            : CastExp -> UnaryExp
+    C-Deref               : CastExp -> UnaryExp
+    C-Address             : CastExp -> UnaryExp
+    C-PreDecr             : UnaryExp -> UnaryExp
+    C-PreIncr             : UnaryExp -> UnaryExp
+                          : PostfixExp -> UnaryExp
+                          : TypedefName -> MemberName
+                          : IDENTIFIER -> MemberName
+    C-PostDecr            : PostfixExp -> PostfixExp
+    C-PostIncr            : PostfixExp -> PostfixExp
+    C-DerefMember         : PostfixExp * MemberName -> PostfixExp
+    C-Field               : PostfixExp * MemberName -> PostfixExp
+    C-FunCall             : PostfixExp * List(AssignExp) -> PostfixExp
+    C-ArrayIndex          : PostfixExp * CommaExp -> PostfixExp
+                          : PrimaryExp -> PostfixExp
+                          : CommaExp -> PrimaryExp
+                          : StringLiteralList -> PrimaryExp
+                          : Constant -> PrimaryExp
+                          : IDENTIFIER -> PrimaryExp
+                          : IdDeclarator -> FunDefDecl
+    C-NoTypeSpecifier     : NoTypeSpecifier
+                          : List(TypeQualifier) -> FunDefTypeSpec
+                          : DeclarationQualifierList -> FunDefTypeSpec
+                          : DeclarationSpecifier -> FunDefTypeSpec
+                          : TypeSpecifier -> FunDefTypeSpec
+                          : NoTypeSpecifier -> FunDefTypeSpec
+    C-FunDef              : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
+    C-TranslationUnit     : List(ExternalDef) -> TranslationUnit
+    C-TypedefDeclarator2  : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
+    C-TypedefDeclarator1  : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
+    C-FunDecl             : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+    C-IdDecl              : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+                          : TypedefDeclarator -> Declarator
+                          : IdDeclarator -> Declarator
+                          : TypedefName -> IdOrTypedefName
+                          : IDENTIFIER -> IdOrTypedefName
+    C-TypeId              : ID -> TypedefName
+    C-Id                  : ID -> IDENTIFIER
+                          : String -> ID
+    C-MemDecl             : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
+    C-PpControl           : ControlLine -> MemberDeclaration
+                          : FunDef -> ExternalDef
+    C-PpIf                : IfLine * List(ExternalDef) * List(ElifLine_ListStarOfExternalDef0) * Option(ElseLine_ListStarOfExternalDef0) -> ExternalDef
+    C-PpControl           : ControlLine -> ExternalDef
+                          : String -> ElseLine
+                          : String -> ElifLine
+                          : String -> IfLine
+                          : String -> ControlLine
+                          : String -> FloatLiteral
+                          : String -> OctLiteral
+                          : String -> HexLiteral
+                          : String -> IntLiteral
+                          : String -> CharLiteral
+                          : String -> StringLiteral
+    C-StringLit           : List(StringLiteral) -> StringLiteralList
+    C-CharConst           : CharLiteral -> Constant
+    C-FloatConst          : FloatLiteral -> Constant
+    C-OctConst            : OctLiteral -> Constant
+    C-HexConst            : HexLiteral -> Constant
+    C-IntConst            : IntLiteral -> Constant
+
+
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+
+
+signature
+  constructors
+    Cons : a * List(a) -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)

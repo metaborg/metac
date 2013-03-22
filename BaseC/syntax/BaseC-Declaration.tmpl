@@ -1,0 +1,12 @@
+
+templates
+
+Decl = <<Identifier>>
+Decl = <<Decl> [<Constant>]>
+Decl = <*<Decl>>
+
+Initialization = <<Decl>>
+Initialization = <<Decl> = <Exp>>
+InitializationList = <<Initialization+;separator=",">>
+
+Declaration.Declaration = <<Type> <InitializationList>;>

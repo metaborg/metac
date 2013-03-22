@@ -1,20 +1,18 @@
+%% SDF file for BaseC, which includes all generated source files
 module BaseC
-imports
-    BaseC-Keywords
-    BaseC-Constants
-    BaseC-Lexical
-    BaseC-Preprocessor
-    BaseC-Declarators
-    BaseC-Program
-    BaseC-Statements
-    BaseC-Identifiers
-    BaseC-Types
-    BaseC-Expressions
-    BaseC-StructsAndUnions
-    BaseC-Enumerators
-    BaseC-ParameterDeclarators
-    BaseC-AbstractDeclarators
 
-hiddens
-  context-free start-symbols TranslationUnit AssignExp Stm
- 
+imports
+BaseCgenerated
+BaseC-Lexicalgenerated
+BaseC-Keywordsgenerated
+BaseC-Identifiersgenerated
+BaseC-Constantsgenerated
+BaseC-Typesgenerated
+BaseC-Expressionsgenerated
+BaseC-Enumsgenerated
+BaseC-StructsAndUnionsgenerated
+BaseC-Statementsgenerated
+BaseC-Declarationgenerated
+BaseC-FunDefgenerated
+BaseC-Modulesgenerated
+BaseC-Componentgenerated

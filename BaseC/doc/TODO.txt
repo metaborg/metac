@@ -1,0 +1,14 @@
+
+Decide on:
+
+- variable number of arguments (like printf).
+	- Is it safe enough to get into SafeC?
+
+- decimal numbers:
+	- float, double and long double (IEEE)
+	- or decimal32, decimal64 and decimal128 (better naming)
+
+	
+TODO:
+Type checking:
+- impossible to assign unsigned int constants to signed int types

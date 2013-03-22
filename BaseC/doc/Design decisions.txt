@@ -1,0 +1,39 @@
+
+=== BaseC Syntax Definition ===
+TODO: add explaination why no fundec and only fundefs.
+
+== Constants ==
+
+= Constant Notation =
+C99 and mbeddr have different ways of specificying hex, oct and bin constants.
+It was decided to have BaseC according to C99, because the mbeddr syntax is primarily focussed
+on the projectional editing.
+Constant strings are wrapped by quotes (see messagelist) to be closer to the standard C way
+
+
+== Expressions ==
+
+= Expression Construct Names =
+Expression Constructor names are not all different as in the C syntax specification.
+Spoofax has precedence rules, so we dont need to encode those in different constructor names.
+However, in some cases an explicit subset of the expressions is needed (for example, the case
+in a switch statement allows all expressions except assignments and comma's).
+For those cases a different constructor name is required.
+
+
+== Statements ==
+
+= Assignments =
+We decided to be more restrictive on assignment expressions. An assignment can now only be done
+to an identifier. This is safer. (Will probably be less restrictive in the future).
+
+== Interfaces ==
+
+= Pre and postconditions = 
+There is no number associated to the pre or post condition because we do not have support from a 
+projectional editor
+
+== User defined data types ==
+
+= Struct and unions =
+It is allowed having a multideclaration (int8 x,y,z) inside a struct or a union.

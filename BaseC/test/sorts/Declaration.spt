@@ -1,0 +1,55 @@
+module MetaC-Declaration
+language MetaC
+
+start symbol Declaration
+
+test simple declaration [[ int8 x; ]] parse succeeds
+test simple array declaration [[ int8 x[10]; ]] parse succeeds
+test simple pointer declaration [[ int8 *x; ]] parse succeeds
+test multiple declaration [[ int8 x, y; ]] parse succeeds
+test simple declaration with initialization [[ int8 x = 5; ]] parse succeeds
+test mulitple declaration with initialization [[int8 x = 5, y = 9;]] parse succeeds
+test multiple declaration with partial initialization [[ int8 x = 5, y; ]] parse succeeds 
+test wrong simple declaration [[int8 x]] parse fails
+test wrong multiple delcaration [[int8 x = , y = 9;]] parse fails
+
+test declaration without identifier [[ int8; ]] parse fails
+test user defined type declaration [[ myStruct x; ]] parse succeeds
+
+/*
+test void function declaration [[ int8 f (); ]] parse succeeds
+test function with user defined return type declaration [[ myStruct f(); ]] parse  succeeds
+test one parameter function declaration [[ int8 f(int8 x); ]] parse succeeds
+test one parameter anonymous function declaration [[ void f(int8) ]] parse fails
+test wrong function declaration [[ int8 f(,); ]] parse fails
+test wrong function declaration [[ int8 f() ]] parse fails
+*/
+
+test char declaration				[[ char x; ]] 		parse succeeds
+test char declaration with init		[[ char x='a'; ]] 	parse succeeds
+test short declaration				[[ short x; ]] 		parse succeeds
+test short declaration with init	[[ short x=10; ]] 	parse succeeds
+test integer declaration			[[ int x; ]] 		parse succeeds
+test integer declaration with init	[[ int x=10; ]] 	parse succeeds
+
+test long declaration				[[ long x; ]] 		parse succeeds
+test long declaration with init		[[ long x=8000; ]] 	parse succeeds
+
+test float declaration				[[ float x; ]] 		parse succeeds
+test float declaration with init	[[ float x=0.1; ]] 	parse succeeds
+test double declaration				[[ double x; ]] 	parse succeeds
+test double declaration with init	[[ double x=0.1; ]] parse succeeds
+
+test void declaration				[[ void x; ]] 		parse succeeds
+
+test string declaration	 with init	[[ string x = "blabla"; ]] 	parse succeeds
+
+test pointer declaration			[[ int * a; ]] 				parse succeeds
+test string pointer declaration		[[ string * a; ]] 			parse succeeds
+test pointer to custom type			[[ foobar * a; ]] 			parse succeeds
+
+test multi variable declaration						[[ int a, b, c; ]] 			parse succeeds
+test multi variable declaration	with initialisers	[[ int a=1, b=2, c=3; ]] 	parse succeeds
+
+test multi variable declaration forgot comma		[[ int a=1 b =2, c=3; ]]		parse fails
+

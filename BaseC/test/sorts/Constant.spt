@@ -1,0 +1,82 @@
+module MetaC-Constant
+language MetaC
+
+start symbol Constant
+
+test CONS 1 [[1]] parse succeeds
+test CONS 12 [[12]] parse succeeds
+test CONS -3 [[-3]] parse succeeds
+test CONS a [[a]] parse fails
+
+test integer literal 0 [[0]] parse succeeds
+test integer literal 10 [[10]] parse succeeds
+test integer literal 10U [[10U]] parse succeeds
+test integer literal 10L [[10L]] parse succeeds
+test integer literal 10UL [[10UL]] parse succeeds
+
+test integer literal with hex digit 1A [[1A]] parse fails
+
+test octal literal 07 [[07]] parse succeeds
+test octal literal 08 [[08]] parse fails
+
+test hexadecimal literal 0x0  		[[0x0]] 	parse succeeds
+test hexadecimal literal 0x01 		[[0x01]] 	parse succeeds
+test hexadecimal literal 0xAB 		[[0xAB]] 	parse succeeds
+test hexadecimal literal 0xCD 		[[0xCD]] 	parse succeeds
+test hexadecimal literal 0xEF 		[[0xEF]] 	parse succeeds
+
+test hexadecimal literal without 0x [[x6]] 		parse fails
+test hexadecimal literal with whitespace [[0x 6]] parse fails
+
+test floating point constant  .1	[[.1]] 		parse succeeds
+test floating point constant 1.1	[[1.1]] 	parse succeeds
+test floating point constant  .1e1	[[.1e1]] 	parse succeeds
+test floating point constant 1.1e2	[[1.1e2]] 	parse succeeds
+test floating point constant  .1E3	[[.1E3]] 	parse succeeds
+test floating point constant 1.1E4	[[1.1E4]] 	parse succeeds
+test floating point constant  .1e-5	[[.1e-5]] 	parse succeeds
+test floating point constant 1.1e-6	[[1.1e-6]] 	parse succeeds
+test floating point constant  .1E-7	[[.1E-7]] 	parse succeeds
+test floating point constant 1.1E-8	[[1.1E-8]] 	parse succeeds
+test floating point constant 1E-9	[[1E-9]] 	parse succeeds
+
+test character a 							[['a']] 	parse succeeds
+test character 0 							[['0']] 	parse succeeds
+test character with escape "\n" 			[['\n']] 	parse succeeds
+test character with escape "\t" 			[['\t']] 	parse succeeds
+test character with escape "\v" 			[['\v']] 	parse succeeds
+test character with escape "\b" 			[['\b']] 	parse succeeds
+test character with escape "\r" 			[['\r']] 	parse succeeds
+test character with escape "\f" 			[['\f']] 	parse succeeds
+test character with escape "\a" 			[['\a']] 	parse succeeds
+test character with escape "\'" 			[['\'']] 	parse succeeds
+test character with escape "\?" 			[['\?']] 	parse succeeds
+test character with escape quotation mark 	[['\"']] 	parse succeeds
+
+test character ascii 				[['\xAB']] 	parse succeeds
+
+test character with unknown escape 	[['\q']] 	parse fails
+
+test string a											[["a"]]				parse succeeds
+test string abc											[["abc"]]			parse succeeds
+test string 0abc										[["0abc"]]			parse succeeds
+test string with escape character in 8 bit ascii		[["klm\x01"]]		parse succeeds
+
+test string with octal escape character 0				[["\1abc"]]			parse succeeds
+test string with octal escape character 12				[["\12abc"]]		parse succeeds
+test string with octal escape character 123				[["\123abc"]]		parse succeeds
+test string with escaped char "\n" 						[["abc\n"]] 		parse succeeds
+test string with escaped char "\t" 						[["abc\t"]] 		parse succeeds
+test string with escaped char "\v" 						[["abc\v"]] 		parse succeeds
+test string with escaped char "\b" 						[["abc\b"]] 		parse succeeds
+test string with escaped char "\r" 						[["abc\r"]] 		parse succeeds
+test string with escaped char "\f" 						[["abc\f"]] 		parse succeeds
+test string with escaped char "\a" 						[["abc\a"]] 		parse succeeds
+test string with escaped char "\'" 						[["abc\'"]] 		parse succeeds
+test string with escaped char "\?" 						[["abc\?"]] 		parse succeeds
+test string with escaped char quotation marks			[["abc\""]] 		parse succeeds
+test string with escaped char "\\" 						[["abc\\"]] 		parse succeeds
+
+test string that is not terminated by a quotation mark	[["abcde]]			parse fails
+test string that has no leading quotation mark			[[abcde"]]			parse fails
+

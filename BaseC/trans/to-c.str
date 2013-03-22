@@ -1,0 +1,48 @@
+module to-c
+
+imports
+	lib/analysis-library.generated
+	lib/index-library.generated
+	include/MetaC
+	lib/c/c
+	libstratego-gpp
+
+
+signature constructors
+
+
+rules
+	editor-to-c-ast:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <to-c>selected
+	editor-to-c-ast-debug:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <topdown(try(to-c))>selected
+			
+	editor-to-c:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c")> path;
+			result   := <to-c;pp-c-string>selected
+	editor-to-c-debug:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c")> path;
+			result   := <topdown(try(to-c;pp-c-string))>selected
+	
+	pp-c-string =
+		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
+		box2text-string(|100)
+
+
+// === rewrite rules for BaseC to C99 === //
+rules
+	
+	/**
+	 * Constants & Literals
+	 */
+	to-c: Decimal(a) -> C-IntConst(a)

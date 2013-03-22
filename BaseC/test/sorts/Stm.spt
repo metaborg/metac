@@ -1,0 +1,110 @@
+module MetaC-Statements
+language MetaC
+
+start symbol Stm
+
+test Stm assign [[a =2;]] parse succeeds
+test Stm if [[if(a==3) a++;]] parse succeeds
+test Stm if block [[if(a==3) {a++;}]] parse succeeds
+test Stm if comma [[if(a==3, b!=2) a-=b;]] parse succeeds
+
+test Stm for [[
+    for(i = 0; i < max;i++){
+ 		i--;
+ 	}
+]] parse succeeds
+
+test Stm switch [[
+switch( c ) 
+{
+    case 1:
+        capa++;
+    case 2:
+        lettera++;
+    default :
+        total++;
+}
+]] parse succeeds
+
+test Stm while [[
+while( c ) 
+{
+    c=false;
+}
+]] parse succeeds
+
+test Stm block [[
+{
+    label1: capa++;
+    label2: lettera++;
+    goto label1;
+}
+]] parse succeeds
+
+
+
+test if then						[[ if (a) b; ]] 					parse succeeds
+test if then without whitespace		[[ if(a)b; ]] 						parse succeeds
+test if then else 					[[ if (a) b=1; else c=2; ]] 		parse succeeds
+test if then else with parentheses  [[ if (a==b) {a=1;} else {b=2;}	]]	parse succeeds
+
+test if then forgot right parentheses	[[ if (a b; ]] 					parse fails
+test if then forgot left parentheses	[[ if a) b; ]] 					parse fails
+test if then forgot parentheses			[[ if a b; ]] 					parse fails
+
+test switch								[[ switch (a);]] 				parse succeeds
+test switch	without whitespace			[[ switch(a);]] 				parse succeeds
+
+test switch	forgot left parentheses		[[ switch a);]] 				parse fails
+test switch	forgot right parentheses	[[ switch (a ;]] 				parse fails
+test switch	forgot parentheses			[[ switch a ;]] 				parse fails
+
+test case							[[ case 1: b=1; ]]					parse succeeds
+test case forgot colon				[[ case 1 b=1;	]]					parse fails
+test default						[[ default: a=1; ]]					parse succeeds
+test default forgot colon			[[ default a=1; ]]					parse fails
+
+test some label						[[ labelx: a=1;	]]					parse succeeds
+
+test while							[[ while (x);]]						parse succeeds
+test while without whitespace		[[ while(x);]]						parse succeeds
+test while forgot left parentheses	[[ while x);]]						parse fails
+test while forgot right parentheses	[[ while (x;]]						parse fails
+test while forgot parentheses		[[ while x;]]						parse fails
+
+test do while						[[ do a=1; while (x) ]] 			parse succeeds
+test do while without whitespace	[[ do a=1; while(x) ]]	 			parse succeeds
+test do while forgot left parentheses	[[ do a=1; while x) ]] 			parse fails
+test do while forgot right parentheses	[[ do a=1; while (x ]] 			parse fails
+test do while forgot parentheses		[[ do a=1; while x ]] 			parse fails
+
+test for stm empty					[[ for (		;		;		); ]]	parse succeeds
+test for stm with vardecl			[[ for (int8 i = 1;		;		); ]] 	parse succeeds
+test for stm initializer			[[ for (i=1		;		;		); ]] 	parse succeeds
+test for stm condition only			[[ for (		; i < 10;		); ]] 	parse succeeds
+test for stm init and condition		[[ for (i=1		; i < 10;		); ]] 	parse succeeds
+test for stm iteration action only 	[[ for (		;		; i++	); ]] 	parse succeeds
+test for stm initializer and iter	[[ for (i=1		;		; i++	); ]] 	parse succeeds
+test for stm condition and iter		[[ for (		; i < 10; i++	); ]] 	parse succeeds
+test for stm with all options		[[ for (i=1		; i < 10; i++	); ]] 	parse succeeds
+
+// a for loop with an actual body (block plus single statement)
+
+test for stm forgot a semicolon 1		[[ for (i < 10; i++	) a=1; ]] 		parse fails
+test for stm forgot left parentheses 	[[ for i=1; i < 10; i++	) a=1; ]] 	parse fails
+test for stm forgot right parentheses 	[[ for (i=1; i < 10; i++ a=1; ]] 	parse fails
+test for stm forgot both parentheses 	[[ for i=1; i < 10; i++	a=1; ]] 	parse fails
+
+test goto							[[ goto x; ]]						parse succeeds
+test goto forgot semicolon			[[ goto x ]]						parse fails
+test goto as function				[[ goto(x); ]]						parse fails
+
+test continue						[[ continue; ]]						parse succeeds
+test continue forgot semicolon		[[ continue ]]						parse fails
+
+test break							[[ break; ]]						parse succeeds
+test break forgot semicolon			[[ break ]]							parse fails
+
+test return							[[ return 10; ]]					parse succeeds
+test return forgot semicolon		[[ return 10 ]]						parse fails
+

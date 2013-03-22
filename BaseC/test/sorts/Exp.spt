@@ -1,0 +1,96 @@
+module MetaC-Expressions
+language MetaC
+
+start symbol CommaExp
+
+test Exp var [[THIS_IS_A_VALID_ID123]] parse succeeds
+test Exp addition vars [[a + a]] parse succeeds
+test Exp addition constants [[1 + 2]] parse succeeds
+test Exp increment postfix [[a++]] parse succeeds
+test Exp increment prefix [[++a]] parse succeeds
+test Exp inline assignment [[a+=3]] parse succeeds
+test Exp type conversion [[(int16) 3+3]] parse succeeds
+
+
+
+test pre-addition 		[[++a]] parse succeeds
+test pre-addition with too many plusses			[[+++a]] parse succeeds
+test post-addition 		[[a++]] parse succeeds
+test post-addition with too many plusses		[[a+++]] parse fails
+test pre-subtraction	[[--a]] parse succeeds
+test pre-subtraction with too many minuses		[[---a]] parse succeeds
+test post-subtraction 	[[a--]] parse succeeds
+test post-subtraction with too many minuses		[[a---]] parse fails
+
+test address of id 			[[&a]] parse succeeds
+test dereferencing of id 	[[*a]] parse succeeds
+test positive id 			[[+a]] parse succeeds
+test negative id 			[[-a]] parse succeeds
+test bit inverse of id 		[[~a]] parse succeeds
+test negation of id 		[[!a]] parse succeeds
+
+test sizeof of id 				[[sizeof a]] 	parse succeeds
+test sizeof of array element	[[sizeof a[0] ]] parse succeeds
+test sizeof of type				[[sizeof(int)]] parse succeeds
+
+test typecasting expression	[[(int)a]] parse succeeds
+
+test addition 				[[a + b]] parse succeeds
+test addition with constant	[[a + 1]] parse succeeds
+test addition of constants	[[2 + 3]] parse succeeds
+
+test subtraction 		[[a - 1]] 	parse succeeds
+test multiplication 	[[b * c]] 	parse succeeds
+test division 			[[a / 3]] 	parse succeeds
+test and 				[[a & 7]] 	parse succeeds
+test or 				[[b | c]] 	parse succeeds
+test xor 				[[x ^ y]] 	parse succeeds
+test shift left 		[[x << 2]] 	parse succeeds
+test shift right 		[[x >> 5]] 	parse succeeds
+
+test logical and 				[[a && b]] 	parse succeeds
+test logical or 				[[c || d]] 	parse succeeds
+test logical is equal 			[[e == f]] 	parse succeeds
+test logical not equal 			[[g != h]] 	parse succeeds
+test logical less than			[[a < 2]] 	parse succeeds
+test logical greater than		[[a > b]] 	parse succeeds
+test logical less or equal		[[b <= c]] 	parse succeeds
+test logical greater or equal	[[d >= e]] 	parse succeeds
+
+test combination of logical tests [[((a != b) || (c < d) && e)]] parse succeeds
+
+test conditional expression [[(a == b) ? b : c]] parse succeeds
+
+test assignment 					[[a =  1]] 		parse succeeds
+test assignment with add			[[a += j]] 		parse succeeds
+test assignment with sub			[[b -= k]] 		parse succeeds
+test assignment with mul			[[c *= l]] 		parse succeeds
+test assignment with div			[[d *= m]] 		parse succeeds
+test assignment with modulo			[[s %= t]]		parse succeeds
+test assignment with or				[[e |= n]] 		parse succeeds
+test assignment with and			[[f &= o]] 		parse succeeds
+test assignment with xor			[[g ^= p]] 		parse succeeds
+test assignment with shift left		[[h <<= q]] 	parse succeeds
+test assignment with shift right	[[i >>= r]] 	parse succeeds
+
+test p [[1+2*3]] parse to [[1+(2*3)]]
+
+test function call assignment [[x = f(1)]] parse succeeds
+test function call with no parameter [[ f() ]] parse succeeds
+test function call with one parameter [[ f(1) ]] parse succeeds
+test function call with two parameters [[ f(1,2) ]] parse succeeds
+test nested function call [[ f(x(5)) ]] parse succeeds
+test nested function call with two parameter [[ f(x(5),5) ]] parse succeeds
+test nested function call with two parameter and two functions [[ f(x(5),y(8)) ]] parse succeeds
+
+test wrong function call [[ f(,) ]] parse fails
+test wrong function call with one parameter [[ f(1,) ]] parse fails
+
+test indirect reference [[ *x ]] parse succeeds
+test array reference [[ x[0] ]] parse succeeds
+test field reference [[ x.y ]] parse succeeds
+test field reference via pointer [[ x->y ]] parse succeeds
+test indirect reference to array [[ *x[10] ]] parse succeeds
+test wrong array reference [[ x[0 ]] parse fails
+test complicated reference [[ x[ (*y)[z->w] ] ]] parse succeeds
+

@@ -1,0 +1,32 @@
+
+templates
+
+
+Module.Module = <
+module <Identifier> <ModuleImports?> {
+	<ModuleContent*; separator="\n">
+}
+>
+
+ModuleImports = <imports <Identifier*; separator=",">>
+
+ModuleContent = <<Declaration>>
+ModuleContent = <<FunDef>>
+ModuleContent = <<MessageList>>
+ModuleContent = <<StructOrUnion>>
+ModuleContent = <<Enum>>
+ModuleContent = <<Component>>
+ModuleContent = <<Interface>>
+
+MessageList = <
+<Exported?> messagelist <Identifier> {
+	<Message*;separator="\n">
+}
+>
+
+Message = <INFO <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message = <WARNING <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>	
+
+MessageActive = <active>
+MessageActive = <inactive>

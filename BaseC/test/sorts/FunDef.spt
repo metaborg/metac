@@ -1,0 +1,12 @@
+module test_function_declarations
+language MetaC
+start symbol FunDef
+
+test void function without args [[ void a(){x++;} ]] parse succeeds
+
+test int function without arguments [[ int8 a() {x = y; return 1;} ]] parse succeeds
+test int function with one argument [[ int8 a(int b) {x = y; return 1;} ]] parse succeeds
+test int function with multiple arguments [[ int8 a(int b, int c, int d) {x = y; return 1;} ]] parse succeeds
+
+test void function [[ void a() {x=y;} ]] parse succeeds
+

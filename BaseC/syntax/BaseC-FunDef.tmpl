@@ -1,0 +1,11 @@
+templates
+
+FunctionParameter = <<Type> <Identifier>>
+FunctionParameter = <<FunctionParameter> [<Constant>]>
+FunctionParameter = <*<FunctionParameter>>
+
+//FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) <Block> > IT DOESN'T WORK. By the way Block is defined exactly as {Stm*}
+
+FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) {<Stm*>} >
+
+Exported = <exported>

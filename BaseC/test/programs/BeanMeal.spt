@@ -1,0 +1,71 @@
+module MetaC-BeanMeal
+language MetaC
+
+start symbol Module
+
+test beansModule [[ module BeansModule imports Components { 
+  exported int32 main(int32 argc, string[] argv) { 
+  		return 0; 
+	} 
+  } 
+]] parse succeeds 
+
+test bean meal data structure (partial) [[
+	module DataStructures imports Nothing{
+		enum BeanStatus{
+			NEW,
+			CONSUMED
+		}		
+	}
+]] parse succeeds
+
+test bean meal data structure [[
+	module DataStructures imports Nothing{
+		exported enum BeanStatus { 
+	  		NEW, 
+			CONSUMED, 
+		}
+		exported enum BeanType { 
+	  		NOTYPE, 
+	  		WHITE, 
+	  		RED, 
+		} 
+		exported struct Bean { 
+	  		int32 id; 
+	  		BeanStatus status; 
+	  		BeanType type; 
+		};
+	} 
+]] parse succeeds
+
+test bean meal component module (partial, only messagelist) [[ 
+	module Components imports DataStructures{
+		exported messagelist BeanPlantMessages { 
+			ERROR NoTypeBeanProduced(int8 op, int8 pc) active: "A no-type bean has been produced"
+			 
+		}
+	}
+]] parse succeeds
+
+test bean meal component module (partial, only one component) [[
+	module Components imports DataStructures{
+		exported component RedBeanPlant extends Nothing { 
+	  		  provides BeanPlant beanPlant
+	  		  init int32 capacity;
+	  		  	Bean beanPlant_produce() <- op beanPlant.produce { 
+					capacity--;
+				}
+		} 
+	}
+]] parse succeeds
+
+test bean meal component module (partial, only one interface) [[
+	module Components imports DataStructures{
+		exported cs interface BeanPlant { 
+			/*query boolean isExhausted()*/
+			Bean produce() 
+  				post result.type != NOTYPE 
+  				pre !isExhausted()
+		}
+	}
+]] parse succeeds

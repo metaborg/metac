@@ -1,0 +1,14 @@
+module MetaC-Enum
+language MetaC
+
+start symbol Enum
+
+test enum specification list				 		[[ enum {a, b, c, d} ]] 		parse succeeds
+test enum specification with id and list 			[[ enum foo {a, b, c, d} ]] 	parse succeeds
+test enum spec with id and list without whitespace 	[[ enum foo{a, b, c, d} ]] 	parse succeeds
+
+test enum list without left parentheses 			[[ enum foo a, b, c, d} ]] 	parse fails
+test enum list without right parentheses 			[[ enum foo {a, b, c, d ]] 	parse fails
+
+test enum spec with preset values				 	[[ enum foo {a=1, b=2, c=3, d=4} ]] 	parse succeeds
+test enum spec with half preset values				[[ enum foo {a=1, b} ]] 				parse succeeds

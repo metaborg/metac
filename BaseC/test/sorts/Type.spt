@@ -1,0 +1,32 @@
+module MetaC-Type
+language MetaC
+
+start symbol Type
+
+test Type boolean [[boolean]] parse succeeds
+test Type int8 [[int8]] parse succeeds
+test Type int9 [[int9]] parse succeeds //struct name
+test Type int8 int8 [[int8 int8]] parse fails
+test Type int16 [[int16]] parse succeeds
+test Type int32 [[int32]] parse succeeds
+test Type int64 [[int64]] parse succeeds
+test Type uint64 [[uint64]] parse succeeds
+test Type float [[float]] parse succeeds
+test Type double [[double]] parse succeeds
+test Type double double [[double double]] parse fails
+test Type long double [[long double]] parse succeeds
+test Type long double with more whitespace [[long     double]] parse succeeds
+test Type string [[string]] parse succeeds
+
+test Type intarray [[ int8[21] ]] parse succeeds
+test Type intmatrix [[ int8[21][11] ]] parse succeeds
+test Type intspace [[ int32[12][24][86] ]] parse succeeds
+test Type longwhatever [[ long double [54][54][54][54][54][54][54][54][54] ]]
+
+test Type d1 [[d1]] parse succeeds
+test Type dou [[dou]] parse succeeds
+test Type doub [[doub]] parse succeeds
+test Type doubl [[doubl]] parse succeeds
+test Type doubla [[doubla]] parse succeeds
+test Type double1 [[double1]] parse succeeds
+test Type doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [[doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]] parse succeeds

@@ -1,0 +1,46 @@
+
+// numbers
+lexical syntax
+	CONS = [\-]?[1-9][0-9]*FLAGINT?
+	CONS = [0]FLAGINT?
+	CONSBIN = [0][b][0-1]+
+	CONSOCT = [0][0-7]+FLAGINT?
+	CONSHEX = [0][xX][0-9a-fA-F]+FLAGINT?
+	CONSFLOAT = [0-9]*[\.][0-9]+([eE][\-]?[0-9]+)?FLAGFLOAT?
+	CONSFLOAT = [0-9]+[eE][\-]?[0-9]+FLAGFLOAT?
+	
+	FLAGINT = [uUlL]
+	FLAGINT = [uU][lL]
+	FLAGFLOAT = [lLfF]
+	FLAGFLOAT = [lL][fF]
+	
+lexical restrictions
+	CONS -/- [0-9uUlL]
+	CONSBIN -/- [0-1]
+	CONSOCT -/- [0-7]
+	CONSHEX -/- [0-9a-fA-F]
+	CONSFLOAT -/- [0-9\-eElLfF]
+	
+templates
+	Constant.Decimal = <<CONS>>
+	Constant.Binary = <<CONSBIN>>
+	Constant.Octal = <<CONSOCT>>
+	Constant.Hexadecimal = <<CONSHEX>>
+	Constant.Float = <<CONSFLOAT>>
+	
+// chars and strings
+lexical syntax
+	CHAR = ~[\\\'\n]
+	CHAR = [\\] [ntvbrfa\\\?\'\"]
+	CHAR = [\\] [x] [0-9A-E] [0-9A-E]
+	CHAR = [\\] [0-7] [0-7]? [0-7]?
+	
+	CONSCHAR = [\']CHAR[\']
+	CONSSTRING = [\"]CHAR*[\"]
+	
+templates
+	Constant.String = <<CONSCHAR>>
+	Constant.Char = <<CONSSTRING>> 
+
+	
+	
