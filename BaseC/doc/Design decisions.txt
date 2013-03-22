@@ -36,4 +36,4 @@ projectional editor
 == User defined data types ==
 
 = Struct and unions =
-It is not allowed having a multideclaration (int8 x,y,z) inside a struct or a union.
+It is allowed having a multideclaration (int8 x,y,z) inside a struct or a union.
