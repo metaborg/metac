@@ -26,14 +26,13 @@ Interface = <<Exported?> cs interface <Identifier>{
 	<InterfaceContent*;separator="\n">
 }>
 
-InterfaceContent = <>
+InterfaceContent = <<FunctionProyotypeForInterface>>
 FunctionProyotypeForInterface = <
 	<Query> <Type> <Identifier>(<FunctionParameter*;separator=",">)
-	<Precondition*;separator="\n">
-	<Postcondition*;separtor="\n">
+	<PreOrPostConditions*;separator="\n">
 >
-InterfaceContent = <<Precondition>>
-InterfaceContent = <<Postcondition>>
 Query = <query>
+PreOrPostConditions = <<Precondition*;separator="\n">>
+PreOrPostConditions = <<Postcondition*;separator="\n">>
 Precondition = <pre <Exp>>
 Postcondition = <post <Exp>>

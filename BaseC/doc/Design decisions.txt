@@ -32,3 +32,8 @@ to an identifier. This is safer. (Will probably be less restrictive in the futur
 = Pre and postconditions = 
 There is no number associated to the pre or post condition because we do not have support from a 
 projectional editor
+
+== User defined data types ==
+
+= Struct and unions =
+It is not allowed having a multideclaration (int8 x,y,z) inside a struct or a union.
