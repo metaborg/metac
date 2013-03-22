@@ -1,8 +1,8 @@
 module MetaC
 
 imports BaseC
-%%imports Statemachinegenerated
-%%imports Statemachine-in-Basegenerated
+imports Statemachinegenerated
+imports Statemachine-in-Basegenerated
 
 exports
   
