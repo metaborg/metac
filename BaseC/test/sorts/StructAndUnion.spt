@@ -24,7 +24,7 @@ test struct forgot right parentheses				[[ struct foo  { int8 someint;  ]] 	pars
 test struct forgot parentheses						[[ struct foo  int8 someint; ]] 	parse fails
 
 
-test struct with list of fields with bitspecs
+test struct with list of fields
 [[ 	struct foo
 	{ 
 		int32 someint ;
@@ -32,7 +32,7 @@ test struct with list of fields with bitspecs
 	} 
 ]] parse succeeds
 
-test struct with multivariable decleration and bitspecs
+test struct with multivariable decleration
 [[ 	struct foo
 	{ 
 		int8 a, b, c;
@@ -59,7 +59,7 @@ test union forgot parentheses					[[ union foo  int8 someint;  ]] 		parse fails
 
 test union with field with bitspec 				[[ 	union foo { int32 someint ; }  ]] parse succeeds
 
-test union with list of fields with bitspecs
+test union with list of fields
 [[ 	union foo
 	{ 
 		int32 someint;
@@ -67,7 +67,7 @@ test union with list of fields with bitspecs
 	} 
 ]] parse succeeds
 
-test union with multivariable decleration and bitspecs
+test union with multivariable decleration
 [[ 	union foo
 	{ 
 		int8 a, b, c ;
