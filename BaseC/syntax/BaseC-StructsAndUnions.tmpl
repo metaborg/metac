@@ -1,5 +1,5 @@
 
 templates
-	StructItem =<<Type> <Identifier+;separator=",">;>
+	StructItem =<<Type> <Identifier*;separator=",">;>
 	StructOrUnion.Struct =	<<Exported?>struct <Identifier> {<StructItem*>} >
 	StructOrUnion.Union =	<<Exported?>union <Identifier> {<StructItem*>} >
