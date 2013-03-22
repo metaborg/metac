@@ -40,7 +40,7 @@ test float declaration with init	[[ float x=0.1; ]] 	parse succeeds
 test double declaration				[[ double x; ]] 	parse succeeds
 test double declaration with init	[[ double x=0.1; ]] parse succeeds
 
-test void declaration				[[ void x; ]] 		parse fails
+test void declaration				[[ void x; ]] 		parse succeeds
 
 test string declaration	 with init	[[ string x = "blabla"; ]] 	parse succeeds
 

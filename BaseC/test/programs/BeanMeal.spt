@@ -24,7 +24,7 @@ test bean meal data structure [[
 		exported enum BeanStatus { 
 	  		NEW, 
 			CONSUMED, 
-		} 
+		}
 		exported enum BeanType { 
 	  		NOTYPE, 
 	  		WHITE, 
@@ -59,22 +59,13 @@ test bean meal component module (partial, only one component) [[
 	}
 ]] parse succeeds
 
-/*
-Bean bean;
-					
-					bean.id = capacity;
-					bean.status = NEW;
-					bean.type = RED;
-				  	return bean;
-*/
-
 test bean meal component module (partial, only one interface) [[
 	module Components imports DataStructures{
 		exported cs interface BeanPlant { 
-			query boolean isExhausted()
-			Bean produce()
+			/*query boolean isExhausted()*/
+			Bean produce() 
+  				post result.type != NOTYPE 
   				pre !isExhausted()
-  				post result.type != NOTYPE
 		}
 	}
 ]] parse succeeds
