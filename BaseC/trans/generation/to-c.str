@@ -1,4 +1,4 @@
-module to-c
+module metaC/trans/generation/to-c
 
 imports
 	lib/analysis-library.generated

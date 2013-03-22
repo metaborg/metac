@@ -1,0 +1,17 @@
+module BaseC/trans/typing/types
+
+imports
+	include/metaC
+	
+signature constructors
+	FunType : List(Type) * Type -> Type
+	
+	
+rules
+	type-of: _ -> BasicType("int8")
+	where
+		not(is-list)
+		
+	type-of: _ -> <map(type-of)>
+	where
+		is-list

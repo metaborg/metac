@@ -11,7 +11,9 @@ imports
   lib/analysis-library-internal.generated
   lib/compilation-library.generated
   lib/nbl-library.generated
-  BaseC/trans/to-c
+  BaseC/trans/generation/to-c
+  BaseC/trans/naming/names
+  BaseC/trans/desugaring/desugar
 
 rules // Analysis
   
@@ -20,7 +22,7 @@ rules // Analysis
   analyze:
     (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
     with
-      ast'                    := <id> ast; // Optional AST desugaring
+      ast'                    := <desugar-all> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
 	      errors                := <collect-all(constraint-error, conc)> ast'';
@@ -118,7 +120,7 @@ rules // Debugging
     with
       editor-init;
       filename := <guarantee-extension(|"analyzed.mc.aterm")> path;
-      result   := <analyze-top(|<language>)> (selected, path, project-path)   
+      result   := <desugar-all;analyze-top(|<language>)> (selected, path, project-path)   
       
   // Prints the entries in the index of the current file.
   debug-index-show-current-file:

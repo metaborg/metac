@@ -1,0 +1,33 @@
+module BaseC/trans/naming/names
+
+imports
+	include/metaC
+	baseC/trans/typing/types
+	
+namespaces
+	Module
+	Function
+	Variable
+	
+rules
+	Module(name, _, _):
+		defines Module name
+		scopes Function, Variable
+		
+	FunDef(_,returnType,name,params,_):
+		defines Function name of type FunType(paramsTypes,returnType)
+		scopes Variable
+		where
+			params has type paramsTypes
+
+	Param(type,name):
+		defines Variable name of type type
+	
+	Declaration(type,name):
+		defines Variable name of type type in subsequent scope
+	
+	Var(name):
+		refers to Variable name
+		
+	Assign(name, _, _):
+		refers to Variable name

@@ -1,0 +1,16 @@
+module BaseC/trans/desugaring/desugar
+
+imports
+	include/metaC
+
+	
+rules
+	desugar-all = bottomup(try(desugar);try(flatten-list))
+	
+	desugar: Declaration(type, vars) -> declarationList
+		where
+			declarationList := <map(declaration-pairwith(|type))>vars
+	
+	declaration-pairwith(|type): var -> Declaration(type, var)
+		
+

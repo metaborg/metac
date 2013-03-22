@@ -1,0 +1,160 @@
+module BaseC/trans/naming/names
+
+imports
+  lib/analysis-library.generated
+  lib/analysis-library-internal.generated
+  lib/index-library.generated
+
+
+imports
+  include/metaC
+  baseC/trans/typing/types
+
+
+signature
+  constructors
+    Type        : DefDataKind
+    Import      : DefDataKind
+    Transitive  : ImportAnno
+    CurrentFile : ImportAnno
+
+  constructors
+    Module   : Namespace
+    Function : Namespace
+    Variable : Namespace
+
+
+rules
+
+  nam-get-scope-types :
+    Module(name, _, _) -> [Function(), Variable()]
+
+  nam-get-definition-keys :
+    Module(name, _, _) -> [name]
+
+  nam-get-definitions :
+    Module(name, _, _) -> [(Module(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Module(name, _, _) -> <Module(nam-annotate-def(|path__), id, id)>
+
+  nam-unique :
+    Module(name, _, _) -> <id>
+
+
+rules
+
+  nam-get-scope-types :
+    FunDef(_, returnType, name, params, _) -> [Variable()]
+    where paramsTypes := <type-of> params
+
+  nam-get-definition-keys :
+    FunDef(_, returnType, name, params, _) -> [name]
+    where paramsTypes := <type-of> params
+
+  nam-get-definitions :
+    FunDef(_, returnType, name, params, _) -> [(Function(), [name])]
+    where paramsTypes := <type-of> params
+
+  nam-annotate-names(|paths__, path__):
+    FunDef(_, returnType, name, params, _) -> <FunDef(id, id, nam-annotate-def(|path__), id, id)>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    FunDef(_, returnType, name, params, _) -> <store__> DefData(
+                                                          [namespace__|path__]
+                                                        , Type()
+                                                        , FunType(paramsTypes, returnType)
+                                                        )
+    where paramsTypes := <type-of> params
+
+  type-of :
+    FunDef(_, returnType, name, params, _) -> FunType(paramsTypes, returnType)
+    where paramsTypes := <type-of> params
+
+  nam-unique :
+    FunDef(_, returnType, name, params, _) -> <id>
+    where paramsTypes := <type-of> params
+
+
+rules
+
+  nam-get-definition-keys :
+    Param(type, name) -> [name]
+
+  nam-get-definitions :
+    Param(type, name) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Param(type, name) -> <Param(id, nam-annotate-def(|path__))>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Param(type, name) -> <store__> DefData(
+                                     [namespace__|path__]
+                                   , Type()
+                                   , type
+                                   )
+
+  type-of :
+    Param(type, name) -> type
+
+  nam-unique :
+    Param(type, name) -> <id>
+
+
+rules
+
+  nam-ordered-def :
+    Declaration(type, name) -> <id>
+
+  nam-get-definition-keys :
+    Declaration(type, name) -> [name]
+
+  nam-get-definitions :
+    Declaration(type, name) -> [ ( Variable()
+                                 , [name, Anon(<new>)]
+                                 )
+                               ]
+
+  nam-annotate-names(|paths__, path__):
+    Declaration(type, name) -> <Declaration(id, nam-annotate-def(|path__))>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Declaration(type, name) -> <store__> DefData(
+                                           [namespace__|path__]
+                                         , Type()
+                                         , type
+                                         )
+
+  type-of :
+    Declaration(type, name) -> type
+
+  nam-unique :
+    Declaration(type, name) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Var(name) -> [name]
+
+  nam-get-uses :
+    Var(name) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Var(name) -> <Var(nam-annotate-use(|paths__, Variable()))>
+
+
+rules
+
+  nam-get-uses-keys :
+    Assign(name, _, _) -> [name]
+
+  nam-get-uses :
+    Assign(name, _, _) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Assign(name, _, _) -> <Assign(
+                             nam-annotate-use(|paths__, Variable())
+                           , id
+                           , id
+                           )>
