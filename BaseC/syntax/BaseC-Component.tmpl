@@ -23,16 +23,16 @@ Internal = <internal>
 FunctionTrigger = <op <Identifier>.<Identifier>>
 
 Interface = <<Exported?> cs interface <Identifier>{
-	<InterfaceContent*;separator="\n">
+	<InterfaceContent*;separator=";">;
 }>
 
 InterfaceContent = <<FunctionProyotypeForInterface>>
 FunctionProyotypeForInterface = <
-	<Query> <Type> <Identifier>(<FunctionParameter*;separator=",">)
-	<PreOrPostConditions*;separator="\n">
+	<Query?> <Type> <Identifier>(<FunctionParameter*;separator=",">)
+	<PreOrPostCondition*;separator="\n">
 >
 Query = <query>
-PreOrPostConditions = <<Precondition*;separator="\n">>
-PreOrPostConditions = <<Postcondition*;separator="\n">>
+PreOrPostCondition = <<Precondition>>
+PreOrPostCondition = <<Postcondition>>
 Precondition = <pre <Exp>>
 Postcondition = <post <Exp>>
