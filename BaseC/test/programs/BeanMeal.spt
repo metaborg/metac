@@ -54,8 +54,6 @@ test bean meal component module (partial, only one component) [[
 	  		  init int32 capacity;
 	  		  	Bean beanPlant_produce() <- op beanPlant.produce { 
 					capacity--;
-					Bean bean;
-					return bean;
 				}
 		} 
 	}
@@ -74,10 +72,9 @@ test bean meal component module (partial, only one interface) [[
 	module Components imports DataStructures{
 		exported cs interface BeanPlant { 
 			query boolean isExhausted()
-			
-			Bean produce() 
-  				post result.type != NOTYPE 
+			Bean produce()
   				pre !isExhausted()
+  				post result.type != NOTYPE
 		}
 	}
 ]] parse succeeds
