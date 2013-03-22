@@ -14,7 +14,7 @@ test Union 3 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; } ]] parse
 test Union 4 [[ union myFirstUnion { int8 fieldOne; int8[2] fieldTwo; int8 fieldThree; } ]] parse succeeds
 
 
-test useless struct 								[[ struct {} ]] 						parse succeeds
+test useless struct 								[[ struct {} ]] 						parse fails
 test empty struct with typename 					[[ struct foo {} ]] 					parse succeeds
 test empty struct with typename and data definition [[ struct foo {} ]] 				parse succeeds
 test struct with some integer field					[[ struct foo { int8 someint; } ]]	parse succeeds
@@ -48,7 +48,7 @@ test struct with initialiser
 	} 
 ]] parse fails
 
-test useless union 								[[ union {} ]] 						parse succeeds
+test useless union 								[[ union {} ]] 						parse fails
 test empty union with typename 					[[ union foo {} ]] 					parse succeeds
 test empty union with typename and data definition [[ union foo {} ]] 				parse succeeds
 test union with some integer field				[[ union foo { int8 someint; } ]]	parse succeeds

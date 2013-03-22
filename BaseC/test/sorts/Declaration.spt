@@ -16,13 +16,14 @@ test wrong multiple delcaration [[int8 x = , y = 9;]] parse fails
 test declaration without identifier [[ int8; ]] parse fails
 test user defined type declaration [[ myStruct x; ]] parse succeeds
 
+/*
 test void function declaration [[ int8 f (); ]] parse succeeds
 test function with user defined return type declaration [[ myStruct f(); ]] parse  succeeds
 test one parameter function declaration [[ int8 f(int8 x); ]] parse succeeds
 test one parameter anonymous function declaration [[ void f(int8) ]] parse fails
 test wrong function declaration [[ int8 f(,); ]] parse fails
 test wrong function declaration [[ int8 f() ]] parse fails
-
+*/
 
 test char declaration				[[ char x; ]] 		parse succeeds
 test char declaration with init		[[ char x='a'; ]] 	parse succeeds
