@@ -32,7 +32,7 @@ rules
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c")> path;
-			result   := <topdown(try(to-c;pp-c-string))>selected
+			result   := <topdown(try(to-c);try(pp-c-string))>selected
 	
 	pp-c-string =
 		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
