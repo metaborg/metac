@@ -15,10 +15,9 @@ Exp = <<Constant>>
 // precedence groups.
 // ====================================================================
 Exp = 					<(<CommaExp>)> {bracket}
-//TODO: function calls
 
-Exp.FunctionCall = <<Identifier>(<Exp*;separator=", ">)>
-
+//FIXME: make postfix-expressions seperate (to allow for more than identifiers in assignments etc)
+Exp.FunctionCall = 		<<Identifier>(<Exp*;separator=", ">)>
 Exp.ArrayField = 		<<Exp> [ <Exp> ]>
 Exp.Field = 			<<Identifier> . <Identifier> > /* <Exp>.<Identifier> */
 Exp.FieldViaPointer =	<<Identifier> -\> <Identifier> > 
@@ -66,8 +65,9 @@ Exp.Or = 				<<Exp> || <Exp>> {left}
 
 Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
 
+//FIXME: allow unary expressions instead of only identifiers
 AssignExp = 			<<Exp>>
-AssignExp.Assign = 		<<Exp> <AssignOp> <AssignExp>> {right}
+AssignExp.Assign = 		<<Identifier> <AssignOp> <AssignExp>> {right}
 AssignOp.Assign = 				<=>
 AssignOp.PlusAssign = 			<+=>
 AssignOp.MinusAssign = 			<-=>
@@ -90,6 +90,7 @@ context-free priorities
 	"(" CommaExp ")"         -> Exp	//Old notation, because of no constructor
 } >
 { left:
+	Exp.FunctionCall
 	Exp.ArrayField
 	Exp.Field
 	Exp.FieldViaPointer
