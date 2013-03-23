@@ -43,6 +43,10 @@ rules
 //TODO: move to different files
 rules
 	
+	//FIX for somes.	
+	to-c: Some(a) -> <to-c>a
+	
+	
 	/**
 	 * Constants & Literals & Identifiers
 	 */
@@ -64,7 +68,8 @@ rules
 	/**
 	 * Statements
 	 */
-	to-c: Return(a) -> C-Return(a)
+	to-c: Return(a) -> C-Return(<to-c>a)
+	to-c: Block(a) -> C-Compound([], <map(to-c)>a)
 	
 	
 	/**
@@ -73,20 +78,18 @@ rules
 	to-c: Param(type, name) ->
 				  C-ParamDecl(
                     <to-c>type
-                  , Some(C-IdDecl([], C-Id(name), None()))
+                  , C-IdDecl([], <to-c>name, None())
                   )
     
     //TODO: do somewhat nicer for string[] argv
     to-c: Param(Array(BasicType("string"), None()), name) ->
     			  C-ParamDecl(
                     C-TypeSpec([], C-TypeId("int8_t"), [])
-                  , Some(
-                      C-IdDecl(
-                        [C-PointerOf([])]
-                      , <to-c>name
-                      , Some(C-ArrayDecl(None(), None()))
-                      )
-                    )
+                  , C-IdDecl(
+	                  [C-PointerOf([])]
+	                , <to-c>name
+	                , C-ArrayDecl(None(), None())
+	                )
                   )
                   
     to-c: ParamList(a) -> C-ParamList(<map(to-c)>a)
@@ -99,7 +102,7 @@ rules
 				      <to-c>name,
 				      <to-c>params
 				    ),
-				    <map(to-c)>statements
+				    <to-c>Block(statements)
 				  )
 				 
 
