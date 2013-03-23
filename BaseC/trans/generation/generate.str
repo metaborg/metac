@@ -1,0 +1,72 @@
+module metaC/trans/generation/generate
+
+imports
+	lib/analysis-library.generated
+	lib/index-library.generated
+	include/MetaC
+	lib/c/c
+	libstratego-gpp
+	libstratego-lib
+	baseC/trans/desugaring/desugar
+	baseC/trans/generation/to-c
+	baseC/trans/generation/to-h
+	baseC/trans/generation/to-makefile
+
+
+rules
+	editor-to-c-ast:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <desugar-all;to-c>selected
+	editor-to-c-ast-debug:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"c.aterm")> path;
+			result   := <desugar-all;topdown(try(to-c))>selected
+	
+	//TODO: remove the string interpolation include header		
+	editor-to-c:
+	    (selected, position, ast, path, project-path) -> (filename, result')
+	    with
+			filename := <guarantee-extension(|"c")> path;
+			result   := <desugar-all;to-c;pp-c-string>selected;
+			result'  := $[#include "LessThanHelloWorld.h"
+						  
+						  [result]]
+
+	//TODO: remove the string interpolation include header
+	editor-to-c-debug:
+	    (selected, position, ast, path, project-path) -> (filename, result')
+	    with
+			filename := <guarantee-extension(|"c")> path;
+			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected;
+			result'  := $[#include "LessThanHelloWorld.h"
+						  
+						  [result]]
+	
+	editor-to-h:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := <guarantee-extension(|"h")> path;
+			result   := <to-h>selected
+			
+	editor-to-makefile:
+	    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+			filename := $[[<dirname>path]/Makefile];
+			result   := <to-makefile>selected
+	
+	//rule for compiling existing c file. Later: do first generation then compile. Even later: on save
+	//FIXME: calling make doesn't work for some reason... in cmd it does work...
+	editor-compile-existing-c-file:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			<debug>$[Making [project-path]/[<dirname>path]];
+			<try(call)> ("make", $[-C "[project-path]/[<dirname>path]"]) //full path in quotes, in case of spaces
+	
+	pp-c-string =
+		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
+		box2text-string(|100)
+
+

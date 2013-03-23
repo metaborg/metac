@@ -1,0 +1,70 @@
+module BaseC/trans/generation/to-makefile
+
+imports
+	include/MetaC
+
+rules
+	to-makefile: ast -> makefile
+		where
+			name := <module-name>ast;
+			makefile := <default-makefile>name
+
+
+//helper methods
+rules
+	module-name: Module(Identifier(modulename), _, _) -> modulename
+
+
+//makefile template
+rules
+	default-makefile: name ->
+$[
+CC=gcc
+CFLAGS=-std=c99
+ODIR=./bin
+_OBJ_[name]=[name].o
+OBJ_[name]=$(patsubst %,$(ODIR)/%,$(_OBJ_[name]))
+
+
+all: removeStuffFromLibraries clean [name] 
+.PHONY: removeStuffFromLibraries all clean
+removeStuffFromLibraries: 
+	
+$(ODIR)/%.o: %.c
+		mkdir -p $(ODIR) 
+	$(CC) $(CFLAGS)   -c -o $@ $<  
+debug: CFLAGS +=-g
+debug: clean [name]
+[name]: $(OBJ_[name])
+	$(CC) $(CFLAGS) -o $@ $^   
+clean: 
+	rm -rf $(ODIR) 
+]
+
+
+//TODO: cannot use string interpolation in overlays?
+// overlays
+// 	DEFAULT-MAKEFILE(name)=
+// "
+// CC=gcc
+// CFLAGS=-std=c99
+// ODIR=./bin
+// _OBJ_LessThanHelloWorld=LessThanHelloWorld.o
+// OBJ_LessThanHelloWorld=$(patsubst %,$(ODIR)/%,$(_OBJ_LessThanHelloWorld))
+// 
+// 
+// all: removeStuffFromLibraries clean LessThanHelloWorld 
+// .PHONY: removeStuffFromLibraries all clean
+// removeStuffFromLibraries: 
+// 	
+// $(ODIR)/%.o: %.c
+// 		mkdir -p $(ODIR) 
+// 	$(CC) $(CFLAGS)   -c -o $@ $<  
+// debug: CFLAGS +=-g
+// debug: clean LessThanHelloWorld
+// LessThanHelloWorld: $(OBJ_LessThanHelloWorld)
+// 	$(CC) $(CFLAGS) -o $@ $^   
+// clean: 
+// 	rm -rf $(ODIR) 
+// "
+

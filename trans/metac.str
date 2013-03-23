@@ -11,9 +11,9 @@ imports
   lib/analysis-library-internal.generated
   lib/compilation-library.generated
   lib/nbl-library.generated
-  BaseC/trans/generation/to-c
   BaseC/trans/naming/names
   BaseC/trans/desugaring/desugar
+  BaseC/trans/generation/generate
 
 rules // Analysis
   

@@ -1,0 +1,12 @@
+module BaseC/trans/generation/to-h
+
+rules
+	to-h: _ -> DEFAULT-HEADERFILE()
+
+overlays
+	DEFAULT-HEADERFILE()=
+"
+
+#include <stdint.h>
+
+"

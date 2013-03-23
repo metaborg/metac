@@ -9,37 +9,6 @@ imports
 	baseC/trans/desugaring/desugar
 
 
-signature constructors
-
-
-rules
-	editor-to-c-ast:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <desugar-all;to-c>selected
-	editor-to-c-ast-debug:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <desugar-all;topdown(try(to-c))>selected
-			
-	editor-to-c:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;to-c;pp-c-string>selected
-	editor-to-c-debug:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected
-	
-	pp-c-string =
-		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
-		box2text-string(|100)
-
-
 // === rewrite rules for BaseC to C99 === //
 //TODO: move to different files
 rules
