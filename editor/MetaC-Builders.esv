@@ -22,6 +22,10 @@ builders
   builder  : "to C AST debug"                      = editor-to-c-ast-debug (openeditor) (realtime) (meta) (source)
   builder  : "to C"     				           = editor-to-c (openeditor) (realtime) (meta) (source)
   builder  : "to C debug"      		               = editor-to-c-debug (openeditor) (realtime) (meta) (source)
+  
+  builder  : "to H"     				           = editor-to-h (openeditor) (realtime) (meta) (source)
+  builder  : "to makefile"     			           = editor-to-makefile (openeditor) (realtime) (meta) (source)
+  builder  : "build existing c file"               = editor-compile-existing-c-file (meta) (source)
 
 
   on save  : editor-save
