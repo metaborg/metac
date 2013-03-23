@@ -7,10 +7,13 @@ imports
 rules
 	desugar-all = bottomup(try(desugar);try(flatten-list))
 	
+	//remove all the Some() constructors
+	desugar: Some(a) -> a
+	
+	//a single declaration that declares multiple variables to multiple declarations
 	desugar: Declaration(type, vars) -> declarationList
 		where
 			declarationList := <map(declaration-pairwith(|type))>vars
-	
 	declaration-pairwith(|type): var -> Declaration(type, var)
 		
 

@@ -6,6 +6,7 @@ imports
 	include/MetaC
 	lib/c/c
 	libstratego-gpp
+	baseC/trans/desugaring/desugar
 
 
 signature constructors
@@ -16,23 +17,23 @@ rules
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <to-c>selected
+			result   := <desugar-all;to-c>selected
 	editor-to-c-ast-debug:
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <topdown(try(to-c))>selected
+			result   := <desugar-all;topdown(try(to-c))>selected
 			
 	editor-to-c:
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c")> path;
-			result   := <to-c;pp-c-string>selected
+			result   := <desugar-all;to-c;pp-c-string>selected
 	editor-to-c-debug:
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c")> path;
-			result   := <topdown(try(to-c);try(pp-c-string))>selected
+			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected
 	
 	pp-c-string =
 		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
@@ -42,9 +43,6 @@ rules
 // === rewrite rules for BaseC to C99 === //
 //TODO: move to different files
 rules
-	
-	//FIX for somes.	
-	to-c: Some(a) -> <to-c>a
 	
 	
 	/**
