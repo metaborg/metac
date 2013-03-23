@@ -22,6 +22,7 @@ utils
 lib/*.generated.str
 lib-refactoring/*.generated.str
 trans/names.str
+.spxcache/*
 
 #Files generated from tmpl
 *.generated.esv
