@@ -26,6 +26,7 @@ builders
   builder  : "to H"     				           = editor-to-h (openeditor) (realtime) (meta) (source)
   builder  : "to makefile"     			           = editor-to-makefile (openeditor) (realtime) (meta) (source)
   builder  : "build existing c file"               = editor-compile-existing-c-file (meta) (source)
+  builder  : "execute existing exe file"           = editor-execute-existing-exe (meta) (source)
 
 
   on save  : editor-save
