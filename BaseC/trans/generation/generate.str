@@ -28,23 +28,17 @@ rules
 	
 	//TODO: remove the string interpolation include header		
 	editor-to-c:
-	    (selected, position, ast, path, project-path) -> (filename, result')
+	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;to-c;pp-c-string>selected;
-			result'  := $[#include "LessThanHelloWorld.h"
-						  
-						  [result]]
+			result   := <desugar-all;to-c;pp-c-string>selected
 
 	//TODO: remove the string interpolation include header
 	editor-to-c-debug:
-	    (selected, position, ast, path, project-path) -> (filename, result')
+	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected;
-			result'  := $[#include "LessThanHelloWorld.h"
-						  
-						  [result]]
+			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected
 	
 	editor-to-h:
 	    (selected, position, ast, path, project-path) -> (filename, result)
