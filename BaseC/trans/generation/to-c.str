@@ -18,6 +18,7 @@ rules
 	 * Constants & Literals & Identifiers
 	 */
 	to-c: Decimal(a) -> C-IntConst(a)
+	to-c: String(a) -> C-StringLit([a])
 	to-c: Identifier(a) -> C-Id(a)
 	
 	
@@ -33,10 +34,16 @@ rules
 
 	
 	/**
+	 * Expressions
+	 */
+	to-c: FunctionCall(a, b) -> C-FunCall(<to-c>a, <map(to-c)>b)
+	
+	/**
 	 * Statements
 	 */
 	to-c: Return(a) -> C-Return(<to-c>a)
 	to-c: Block(a) -> C-Compound([], <map(to-c)>a)
+	to-c: Exp(a) -> C-Stat(<to-c>a)
 	
 	
 	/**
@@ -78,6 +85,10 @@ rules
 	 * Modules
 	 */
 	to-c: Module(Identifier(modulename), imports, contents) ->
-			C-TranslationUnit(<conc>([C-PpControl($[#include "[modulename].h"])],<map(to-c)>contents))
+			C-TranslationUnit(<conc>(
+				[C-PpControl($[#include "[modulename].h"]),
+				 C-PpControl($[#include <stdlib.h>])
+				],
+				<map(to-c)>contents))
 
 
