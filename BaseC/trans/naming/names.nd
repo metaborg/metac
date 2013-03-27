@@ -8,6 +8,8 @@ namespaces
 	Module
 	Function
 	Variable
+	Messagelist
+	Message
 	
 rules
 	Module(name, _, _):
@@ -31,3 +33,9 @@ rules
 		
 	Assign(name, _, _):
 		refers to Variable name
+		
+	MessageList(_,name,_):
+		defines Messagelist name
+		
+	// Message(name,_,_,_):
+	// 	defines Message name

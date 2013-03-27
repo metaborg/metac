@@ -19,9 +19,11 @@ signature
     CurrentFile : ImportAnno
 
   constructors
-    Module   : Namespace
-    Function : Namespace
-    Variable : Namespace
+    Module      : Namespace
+    Function    : Namespace
+    Variable    : Namespace
+    Messagelist : Namespace
+    Message     : Namespace
 
 
 rules
@@ -158,3 +160,18 @@ rules
                            , id
                            , id
                            )>
+
+
+rules
+
+  nam-get-definition-keys :
+    MessageList(_, name, _) -> [name]
+
+  nam-get-definitions :
+    MessageList(_, name, _) -> [(Messagelist(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    MessageList(_, name, _) -> <MessageList(id, nam-annotate-def(|path__), id)>
+
+  nam-unique :
+    MessageList(_, name, _) -> <id>

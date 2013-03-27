@@ -18,15 +18,15 @@ ModuleContent = <<Enum>;>
 ModuleContent = <<Component>>
 ModuleContent = <<Interface>>
 
-MessageList = <
+MessageList.MessageList = <
 <Exported?> messagelist <Identifier> {
 	<Message*;separator="\n">
 }
 >
 
-Message = <INFO <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
-Message = <WARNING <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
-Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>	
+Message.Message = <INFO <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message.Message = <WARNING <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message.Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>	
 
 MessageActive = <active>
 MessageActive = <inactive>
