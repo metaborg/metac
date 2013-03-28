@@ -2,6 +2,7 @@ module BaseC/trans/desugaring/desugar
 
 imports
 	include/metaC
+	BaseC/trans/desugaring/constructors
 
 	
 rules
@@ -16,4 +17,13 @@ rules
 			declarationList := <map(declaration-pairwith(|type))>vars
 	declaration-pairwith(|type): var -> Declaration(type, var)
 		
-
+	
+	/**
+	 * Expressions
+	 */
+	
+	desugar: Subtraction(exp1, exp2) -> BinExp(MINUS(), exp1, exp2)
+	desugar: Addition(exp1, exp2) -> BinExp(PLUS(), exp1, exp2)
+	desugar: Multiplication(exp1, exp2) -> BinExp(MUL(), exp1, exp2)
+	desugar: Division(exp1, exp2) -> BinExp(DIV(), exp1, exp2)
+	desugar: Modulo(exp1, exp2) -> BinExp(MOD(), exp1, exp2)

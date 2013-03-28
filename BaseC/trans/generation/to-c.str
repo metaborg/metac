@@ -7,6 +7,7 @@ imports
 	lib/c/c
 	libstratego-gpp
 	baseC/trans/desugaring/desugar
+	BaseC/trans/desugaring/constructors
 
 
 // === rewrite rules for BaseC to C99 === //
@@ -20,6 +21,23 @@ rules
 	to-c: Decimal(a) -> C-IntConst(a)
 	to-c: String(a) -> C-StringLit([a])
 	to-c: Identifier(a) -> C-Id(a)
+	to-c: Var(a) -> <to-c>a
+	
+	
+	/**
+	 * Operators
+	 */
+	to-c: Assign() -> C-AssignEq()
+	to-c: PlusAssign() -> C-AssignPlus()
+	to-c: MinusAssign() -> C-AssignMin()
+	to-c: MultiplyAssign() -> C-AssignMul()
+	to-c: DivisionAssign() -> C-AssignDiv()
+	to-c: ModuloAssign() -> C-AssignMod()
+	to-c: BitwiseAndAssign() -> C-AssignAnd()
+	to-c: BitwiseXorAssign() -> C-AssignExp()
+	to-c: BitwiseOrAssign() -> C-AssignOr()
+	to-c: BitshiftLeftAssign() -> C-AssignSL()
+	to-c: BitshiftRightAssign() -> C-AssignSR()
 	
 	
 	/**
@@ -31,12 +49,28 @@ rules
 	 * Types
 	 */
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
+	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
 
+	
+	/**
+	 * Declarations
+	 */
+	to-c: Declaration(type, name) -> 
+				  	C-Declaration2(
+				  		<to-c> type,
+				  		C-IdDecl([], <to-c> name, None())
+				  	)
+								
 	
 	/**
 	 * Expressions
 	 */
 	to-c: FunctionCall(a, b) -> C-FunCall(<to-c>a, <map(to-c)>b)
+	to-c: BinExp(PLUS(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(MINUS(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(MUL(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(DIV(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(MOD(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
 	
 	/**
 	 * Statements
@@ -44,7 +78,12 @@ rules
 	to-c: Return(a) -> C-Return(<to-c>a)
 	to-c: Block(a) -> C-Compound([], <map(to-c)>a)
 	to-c: Exp(a) -> C-Stat(<to-c>a)
-	
+	to-c: Assign(leftExp, assignOp, rightExp) ->
+					C-Assign(
+						<to-c> leftExp,
+						<to-c> assignOp,
+						<to-c> rightExp
+					)
 	
 	/**
 	 * FunDef
@@ -78,7 +117,7 @@ rules
 				    ),
 				    <to-c>Block(statements)
 				  )
-				 
+			 
 
 
 	/**
