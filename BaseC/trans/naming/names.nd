@@ -36,6 +36,7 @@ rules
 		
 	MessageList(_,name,_):
 		defines Messagelist name
+		scopes Message
 		
-	// Message(name,_,_,_):
-	// 	defines Message name
+	 Message(name,_,_,_):
+	 	defines Message name

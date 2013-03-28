@@ -1,14 +1,10 @@
-
 templates
-
 
 Module.Module = <
 module <Identifier> <ModuleImports?> {
 	<ModuleContent*; separator="\n">
 }
 >
-
-ModuleImports = <imports <Identifier*; separator=",">>
 
 ModuleContent = <<Declaration>>
 ModuleContent = <<FunDef>>
@@ -18,6 +14,8 @@ ModuleContent = <<Enum>;>
 ModuleContent = <<Component>>
 ModuleContent = <<Interface>>
 
+ModuleImports = <imports <Identifier*; separator=",">>
+
 MessageList.MessageList = <
 <Exported?> messagelist <Identifier> {
 	<Message*;separator="\n">
@@ -26,7 +24,7 @@ MessageList.MessageList = <
 
 Message.Message = <INFO <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
 Message.Message = <WARNING <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
-Message.Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>	
+Message.Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
 
-MessageActive = <active>
-MessageActive = <inactive>
+MessageActive.MessageActive = <active>
+MessageActive.MessageInactive = <inactive>
