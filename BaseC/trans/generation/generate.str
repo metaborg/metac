@@ -58,16 +58,16 @@ rules
 	    (selected, position, ast, path, project-path) -> None()
 	    with
 			<debug>$[Making [project-path]/[<dirname>path]];
-			<try(call)> ("make", $[-C "[project-path]/[<dirname>path]"]); //full path in quotes, in case of spaces
+			<try(call);debug> ("make", ["-C", $[[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
 			<refresh-workspace-file><dirname>path
 	
 	//FIXME: does not work yet either
 	editor-execute-existing-exe:
 		(selected, position, ast, path, project-path) -> None()
 	    with
-			exepath := $[[project-path]/[<dirname>path][<module-name>ast].exe];
+			exepath := $["[project-path]/[<dirname>path]/[<module-name>ast].exe"];
 			<debug> $[Executing [exepath]];
-			<try(call)> (exepath, "")
+			<try(call)> (exepath, [])
 	
 	pp-c-string =
 		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
