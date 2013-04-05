@@ -14,6 +14,13 @@ imports
 //TODO: move to different files
 rules
 	
+	/**
+	 * Default BaseC to C conversion
+	 * TODO: enable (and debug)
+	 */
+	// to-c-def: c#(args) -> $[C-[c]]#(<map(to-c-top)>args)
+	// 
+	// to-c-top = to-c <+ to-c-def
 	
 	/**
 	 * Constants & Literals & Identifiers
@@ -84,6 +91,7 @@ rules
 						<to-c> assignOp,
 						<to-c> rightExp
 					)
+	
 	
 	/**
 	 * FunDef
