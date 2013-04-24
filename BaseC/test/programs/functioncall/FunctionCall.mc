@@ -1,4 +1,4 @@
-module MethodCall { 
+module FunctionCall { 
 	exported int32 main(int32 argc, string[] argv) { 
 		int32 a, b;
 		printf("Calling a mehod!");
