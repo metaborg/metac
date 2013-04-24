@@ -22,6 +22,12 @@ signature
     Module      : Namespace
     Function    : Namespace
     Variable    : Namespace
+    Label       : Namespace
+    Field       : Namespace
+    Struct      : Namespace
+    Union       : Namespace
+    Enum        : Namespace
+    Enumlit     : Namespace
     Messagelist : Namespace
     Message     : Namespace
 
@@ -29,7 +35,12 @@ signature
 rules
 
   nam-get-scope-types :
-    Module(name, _, _) -> [Function(), Variable()]
+    Module(name, _, _) -> [ Function()
+                          , Struct()
+                          , Union()
+                          , Enum()
+                          , Variable()
+                          ]
 
   nam-get-definition-keys :
     Module(name, _, _) -> [name]
@@ -76,6 +87,18 @@ rules
   nam-unique :
     FunDef(_, returnType, name, params, _) -> <id>
     where paramsTypes := <type-of> params
+
+
+rules
+
+  nam-get-uses-keys :
+    FunctionCall(f, _) -> [f]
+
+  nam-get-uses :
+    FunctionCall(f, _) -> [(Function(), [f])]
+
+  nam-annotate-names(|paths__, path__):
+    FunctionCall(f, _) -> <FunctionCall(nam-annotate-use(|paths__, Function()), id)>
 
 
 rules
@@ -165,6 +188,36 @@ rules
 rules
 
   nam-get-definition-keys :
+    Label(l, _) -> [l]
+
+  nam-get-definitions :
+    Label(l, _) -> [(Label(), [l])]
+
+  nam-annotate-names(|paths__, path__):
+    Label(l, _) -> <Label(nam-annotate-def(|path__), id)>
+
+  nam-unique :
+    Label(l, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Goto(l) -> [l]
+
+  nam-get-uses :
+    Goto(l) -> [(Label(), [l])]
+
+  nam-annotate-names(|paths__, path__):
+    Goto(l) -> <Goto(nam-annotate-use(|paths__, Label()))>
+
+
+rules
+
+  nam-get-scope-types :
+    MessageList(_, name, _) -> [Message()]
+
+  nam-get-definition-keys :
     MessageList(_, name, _) -> [name]
 
   nam-get-definitions :
@@ -175,3 +228,18 @@ rules
 
   nam-unique :
     MessageList(_, name, _) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    Message(name, _, _, _) -> [name]
+
+  nam-get-definitions :
+    Message(name, _, _, _) -> [(Message(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Message(name, _, _, _) -> <Message(nam-annotate-def(|path__), id, id, id)>
+
+  nam-unique :
+    Message(name, _, _, _) -> <id>

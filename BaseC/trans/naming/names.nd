@@ -8,35 +8,73 @@ namespaces
 	Module
 	Function
 	Variable
+	Label 
+	Field
+	Struct
+	Union
+	Enum
+	Enumlit
 	Messagelist
 	Message
 	
 rules
+	// modules
 	Module(name, _, _):
 		defines Module name
-		scopes Function, Variable
-		
+		scopes Function, Struct, Union, Enum, Variable
+	
+	
+	// functions
 	FunDef(_,returnType,name,params,_):
 		defines Function name of type FunType(paramsTypes,returnType)
 		scopes Variable
 		where
 			params has type paramsTypes
+	FunctionCall(f,_): 
+	refers to Function f
 
+
+	// variables
 	Param(type,name):
 		defines Variable name of type type
-	
 	Declaration(type,name):
 		defines Variable name of type type in subsequent scope
-	
 	Var(name):
 		refers to Variable name
-		
 	Assign(name, _, _):
 		refers to Variable name
-		
+	
+	
+	// structs and unions
+	// TODO: enable namebinding for structs and unions
+	// Union(_, u, _):
+	// 	defines Union u 
+	// 	scopes Field
+	// Struct(_, s, _):
+	// 	defines Struct s 
+	// 	scopes Field
+	// StructType(s):
+	// 	refers to Struct s
+	// FieldDecl(t,[i]):
+	// 	defines Field i of type t
+	// Field(v, f): 
+	// 	refers to Field f in Struct s
+	// 	where v has type StructType(s)
+	
+	
+	// labels and gotos	
+	Label(l,_): 
+		defines Label l
+	Goto(l): 
+		refers to Label l
+
+
+	// message lists and messages
 	MessageList(_,name,_):
 		defines Messagelist name
 		scopes Message
 		
-	 Message(name,_,_,_):
-	 	defines Message name
+	Message(name,_,_,_):
+ 		defines Message name
+
+
