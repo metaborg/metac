@@ -1,5 +1,5 @@
  
 templates
-	StructItem.StructItem =<<Type> <Identifier*;separator=",">;>
-	StructOrUnion.Struct =	<<Exported?>struct <Identifier> {<StructItem*>} >
-	StructOrUnion.Union =	<<Exported?>union <Identifier> {<StructItem*>} >
+	FieldDecl.FieldDecl =<<Type> <Identifier*;separator=",">;>
+	StructOrUnion.Struct =	<<Exported?>struct <Identifier> {<FieldDecl*>} >
+	StructOrUnion.Union =	<<Exported?>union <Identifier> {<FieldDecl*>} >

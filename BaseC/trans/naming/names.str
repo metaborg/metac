@@ -187,6 +187,98 @@ rules
 
 rules
 
+  nam-get-scope-types :
+    Union(_, u, _) -> [Field()]
+
+  nam-get-definition-keys :
+    Union(_, u, _) -> [u]
+
+  nam-get-definitions :
+    Union(_, u, _) -> [(Union(), [u])]
+
+  nam-annotate-names(|paths__, path__):
+    Union(_, u, _) -> <Union(id, nam-annotate-def(|path__), id)>
+
+  nam-unique :
+    Union(_, u, _) -> <id>
+
+
+rules
+
+  nam-get-scope-types :
+    Struct(_, s, _) -> [Field()]
+
+  nam-get-definition-keys :
+    Struct(_, s, _) -> [s]
+
+  nam-get-definitions :
+    Struct(_, s, _) -> [(Struct(), [s])]
+
+  nam-annotate-names(|paths__, path__):
+    Struct(_, s, _) -> <Struct(id, nam-annotate-def(|path__), id)>
+
+  nam-unique :
+    Struct(_, s, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    StructType(s) -> [s]
+
+  nam-get-uses :
+    StructType(s) -> [(Struct(), [s])]
+
+  nam-annotate-names(|paths__, path__):
+    StructType(s) -> <StructType(nam-annotate-use(|paths__, Struct()))>
+
+
+rules
+
+  nam-get-definition-keys :
+    FieldDecl(t, [i]) -> [i]
+
+  nam-get-definitions :
+    FieldDecl(t, [i]) -> [(Field(), [i])]
+
+  nam-annotate-names(|paths__, path__):
+    FieldDecl(t, [i]) -> <FieldDecl(id, [nam-annotate-def(|path__)])>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    FieldDecl(t, [i]) -> <store__> DefData(
+                                     [namespace__|path__]
+                                   , Type()
+                                   , t
+                                   )
+
+  type-of :
+    FieldDecl(t, [i]) -> t
+
+  nam-unique :
+    FieldDecl(t, [i]) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Field(v, f) -> [f]
+    where StructType(s) := <type-of> v
+
+  nam-get-uses :
+    Field(v, f) -> [(Field(), [f])]
+    where StructType(s) := <type-of> v
+
+  nam-annotate-names(|paths__, path__):
+    Field(v, f) -> <Field(id, nam-annotate-use(|paths__, Field()))>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    Field(v, f) -> <index-lookup-children(|Field(), prefix__)> s
+    where <target__> f
+    where StructType(s) := <type-of> v
+
+
+rules
+
   nam-get-definition-keys :
     Label(l, _) -> [l]
 

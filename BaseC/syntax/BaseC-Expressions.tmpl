@@ -65,9 +65,9 @@ Exp.Or = 				<<Exp> || <Exp>> {left}
 
 Exp.TernaryConditional =<<Exp> ? <Exp> : <Exp>> {right}
 
-//FIXME: allow unary expressions instead of only identifiers
+//FIXME: allow unary expressions instead of all expressions above in lefthand assign
 AssignExp = 			<<Exp>>
-AssignExp.Assign = 		<<Identifier> <AssignOp> <AssignExp>> {right}
+AssignExp.Assign = 		<<Exp> <AssignOp> <AssignExp>> {right}
 AssignOp.Assign = 				<=>
 AssignOp.PlusAssign = 			<+=>
 AssignOp.MinusAssign = 			<-=>

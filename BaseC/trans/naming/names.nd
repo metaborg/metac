@@ -16,7 +16,8 @@ namespaces
 	Enumlit
 	Messagelist
 	Message
-	
+
+//TODO: fix namebinding, refers to doesnt work for variables and fields (it does work for functions)
 rules
 	// modules
 	Module(name, _, _):
@@ -31,7 +32,7 @@ rules
 		where
 			params has type paramsTypes
 	FunctionCall(f,_): 
-	refers to Function f
+		refers to Function f
 
 
 	// variables
@@ -46,20 +47,19 @@ rules
 	
 	
 	// structs and unions
-	// TODO: enable namebinding for structs and unions
-	// Union(_, u, _):
-	// 	defines Union u 
-	// 	scopes Field
-	// Struct(_, s, _):
-	// 	defines Struct s 
-	// 	scopes Field
-	// StructType(s):
-	// 	refers to Struct s
-	// FieldDecl(t,[i]):
-	// 	defines Field i of type t
-	// Field(v, f): 
-	// 	refers to Field f in Struct s
-	// 	where v has type StructType(s)
+	Union(_, u, _):
+		defines Union u 
+		scopes Field
+	Struct(_, s, _):
+		defines Struct s 
+		scopes Field
+	StructType(s):
+		refers to Struct s
+	FieldDecl(t,[i]):
+		defines Field i of type t
+	Field(v, f): 
+		refers to Field f in Struct s
+		where v has type StructType(s)
 	
 	
 	// labels and gotos	
