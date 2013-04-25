@@ -73,16 +73,40 @@ rules
 	 * Expressions
 	 */
 	to-c: FunctionCall(a, b) -> C-FunCall(<to-c>a, <map(to-c)>b)
-	to-c: BinExp(Plus(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(Minus(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(Mul(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(Div(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(Mod(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
-//	to-c: BinExp(PLUS(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
-//	to-c: BinExp(MINUS(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
-//	to-c: BinExp(MUL(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
-//	to-c: BinExp(DIV(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
-//	to-c: BinExp(MOD(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Plus(), exp1, exp2) 	-> C-Add(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Minus(), exp1, exp2) 	-> C-Subt(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Mul(), exp1, exp2)		-> C-Mul(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Div(), exp1, exp2)		-> C-Div(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Mod(), exp1, exp2) 	-> C-Mod(<to-c>exp1, <to-c>exp2)
+	
+	to-c: BinExp(LogicOr(), e1, e2)		-> C-LOr(<to-c>e1, <to-c>e2)
+	to-c: BinExp(LogicAnd(), e1, e2)	-> C-LAnd(<to-c>e1, <to-c>e2)
+
+	to-c: BinExp(BWOr(), e1, e2)		-> C-IncOr(<to-c>e1, <to-c>e2)
+	to-c: BinExp(BWXor(), e1, e2)		-> C-ExOr(<to-c>e1, <to-c>e2)
+	to-c: BinExp(BWAnd(), e1, e2)		-> C-And(<to-c>e1, <to-c>e2)
+	to-c: BinExp(NotEq(), e1, e2)		-> C-NotEqual(<to-c>e1, <to-c>e2)
+	to-c: BinExp(Eq(), e1, e2)			-> C-Equal(<to-c>e1, <to-c>e2)
+	to-c: BinExp(GTE(), e1, e2)			-> C-Ge(<to-c>e1, <to-c>e2)
+	to-c: BinExp(GT(), e1, e2)			-> C-Gt(<to-c>e1, <to-c>e2)
+	to-c: BinExp(LTE(), e1, e2)			-> C-Le(<to-c>e1, <to-c>e2)
+	to-c: BinExp(LT(), e1, e2)			-> C-Lt(<to-c>e1, <to-c>e2)
+	to-c: BinExp(BitshiftR(), e1, e2)	-> C-ShiftRight(<to-c>e1, <to-c>e2)
+	to-c: BinExp(BitshiftL(), e1, e2)	-> C-ShiftLeft(<to-c>e1, <to-c>e2)
+ 
+ 	to-c: UnExp(Size(), e1)				-> C-SizeofType(<to-c>e1)
+ 	to-c: UnExp(Addr(), e1)				-> C-Address(<to-c>e1)
+ 	to-c: UnExp(Deref(), e1)			-> C-Deref(<to-c>e1)
+ 	to-c: UnExp(BWCompl(), e1)			-> C-Tilde(<to-c>e1)
+ 	to-c: UnExp(LogicalNot(), e1)		-> C-Negation(<to-c>e1)
+ 	to-c: UnExp(Neg(), e1)				-> C-Negative(<to-c>e1)
+ 	to-c: UnExp(Pos(), e1)				-> C-Positive(<to-c>e1)
+ 	to-c: UnExp(DecPre(), e1)			-> C-PreIncr(<to-c>e1)
+ 	to-c: UnExp(IncPre(), e1)			-> C-PreDecr(<to-c>e1)
+ 	to-c: UnExp(DecPost(), e1)			-> C-PostDecr(<to-c>e1)
+ 	to-c: UnExp(IncPost(), e1)			-> C-PostIncr(<to-c>e1)
+	
+
 	
 	/**
 	 * Statements
@@ -96,7 +120,7 @@ rules
 						<to-c> assignOp,
 						<to-c> rightExp
 					)
-	
+	to-c: IfElse(t1, t2, t3) -> C-IfElse(<to-c>t1, <to-c>t2, <to-c>t3)
 	
 	/**
 	 * Structs
