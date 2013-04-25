@@ -58,7 +58,7 @@ rules
 	    (selected, position, ast, path, project-path) -> None()
 	    with
 			<debug>$[Making [project-path]/[<dirname>path]];
-			<try(call);debug> ("make", ["-C", $[[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
+			<try(call);debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
 			<refresh-workspace-file><dirname>path
 	
 	//FIXME: does not work yet either
