@@ -2,16 +2,107 @@ module BaseC/trans/typing/types
 
 imports
 	include/metaC
+	BaseC/trans/desugaring/constructors
+	lib/nbl-library.generated
+	libstratego-lib
+	lib/editor-common.generated
+	lib/index-library.generated
+	lib/analysis-library.generated
+	lib/analysis-library-internal.generated
 	
 signature constructors
 	FunType : List(Type) * Type -> Type
-	
+	Int	  : type
+	Flt	  : type
+	Ch    : type
+	Str   : type
+	Ptr   : type
 	
 rules
-	type-of: _ -> BasicType("int8")
+	/*type-of: _ -> BasicType("int8")
 	where
 		not(is-list)
+	*/
 		
-	type-of: _ -> <map(type-of)>
+	type-of: ParamList(l) -> <map(type-of)> l
 	where
-		is-list
+		<is-list> l
+	
+	type-of: Param(_, ident) -> <index-type-of> ident
+	
+	
+	type-of: Decimal(_)	 	-> Int()
+	type-of: Hexadecimal(_)	-> Int()
+	type-of: Octal(_)		-> Int()
+	type-of: Char(_)		-> Ch()
+	type-of: String(_)		-> Str()
+	type-of: Float(_)		-> Flt()
+
+	// Unary oprations that are always integers
+   	type-of : (Size(), _) 			-> Int()
+   	type-of	: (LogicalNot(), _) 	-> Int()
+   	
+   	// Pointers get their own type
+   	type-of : (Addr(), _) 			-> Ptr() 
+   	
+   	// Other unary operations
+   	type-of	:	(BWCompl(), e) 	-> e
+   	type-of	:	(Neg(), e) 		-> e
+   	type-of	:	(Pos(), e) 		-> e
+   	type-of	:	(DecPre(), e)	-> e
+   	type-of	:	(IncPre(), e) 	-> e
+   	type-of	:	(DecPost(), e) 	-> e
+   	type-of	:	(IncPost(), e) 	-> e
+   	
+   	// Coercing for different types (implicit conversion)
+   	coerce: [Ch(), Ch()]		-> Ch()
+   	coerce: [Int(), Ch()] 		-> Int()
+   	coerce: [Ch(), Int()] 		-> Int()
+   	coerce: [Int(), Int()] 		-> Int()
+   	coerce: [Flt(), Flt()] 		-> Flt()
+   	coerce: [Int(), Flt()] 		-> Flt()
+   	coerce: [Flt(), Int()] 		-> Flt()
+   	coerce: [Ch(), Flt()] 		-> Flt()
+   	coerce: [Flt(), Ch()] 		-> Flt()
+   	//coerce: [Str(), Str()]		-> Str()	// should produce an error
+   	
+   	// Binary operations   	
+   	type-of: (Plus(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Minus(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Div(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Mod(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Mul(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (BWAnd(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (BWOr(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (BWXor(), e1, e2) 		-> <coerce> [e1,e2]	
+    type-of: (BitshiftR(), e1, e2) 	-> <coerce> [e1,e2]
+   	type-of: (BitshiftL(), e1, e2) 	-> <coerce> [e1,e2]
+   	
+   	// Types of logical operations are always integers
+   	type-of: (LogicOr(), e1, e2) 	-> Int()
+   	type-of: (LogicAnd(), e1, e2) 	-> Int()
+   	type-of: (Eq(), e1, e2) 		-> Int()
+   	type-of: (NotEq(), e1, e2) 		-> Int()
+   	type-of: (GTE(), e1, e2) 		-> Int()
+   	type-of: (GT(), e1, e2) 		-> Int()
+   	type-of: (LTE(), e1, e2) 		-> Int()
+   	type-of: (LT(), e1, e2) 		-> Int()
+   	
+   	// Types of expressions
+   	type-of:	UnExp(op, e) 		-> <type-of> (op, <type-of>e)
+   	type-of: 	BinExp(op, e1, e2) 	-> <type-of> (op, <type-of>e1, <type-of>e2)
+   		
+   	index-type-of:
+  		x -> <index-get-data(|Type())> Def(uri)
+  	where
+  		uri := <index-uri> x
+   	
+   	type-of: Var(Identifier(x)) -> t
+   	where
+   		//debug(!"1: "); 
+   		//uri := <index-uri; debug(!"URI: ")> x;
+   		//t := <index-get-data(|Type()); debug(!"Type: ")> Def(uri)
+   		t := <index-type-of> x
+   			
+   	//type-of: Field(x,y) -> <nbl-get-type> y
+   	
