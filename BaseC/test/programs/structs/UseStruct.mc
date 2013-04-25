@@ -1,5 +1,12 @@
 module UseStruct {
 	
+	struct Employee
+	{
+	    int32 ID;
+	    int32 Age;
+	    int32 Wage;
+	};
+	
 	exported int32 main(){//int32 argc, string[] argv) { 
 		Employee Joe;
 		Joe.ID = 14;
@@ -9,10 +16,4 @@ module UseStruct {
 	 	return 0; 
 	}
 	
-	struct Employee
-	{
-	    int32 nID;
-	    int32 nAge;
-	    int32 fWage;
-	};
 }
