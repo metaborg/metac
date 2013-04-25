@@ -121,6 +121,8 @@ rules
 						<to-c> rightExp
 					)
 	to-c: IfElse(t1, t2, t3) -> C-IfElse(<to-c>t1, <to-c>t2, <to-c>t3)
+	to-c: If(t1, t2) -> C-If(<to-c>t1, <to-c>t2)
+	to-c: While(t1, t2) -> C-While(<to-c>t1, <to-c>t2)
 	
 	/**
 	 * Structs

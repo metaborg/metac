@@ -4,7 +4,7 @@ module test7 {
   	  printf("software >> yes I can, 5! is %d \n", fact(5));
 	  return 0;
 	}
-  int32 fatc(int32 x){
+  int32 fact(int32 x){
   	int32 a = 1;
   	while (x >= 1) 
   		a *= x--;
