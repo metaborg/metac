@@ -20,9 +20,9 @@ namespaces
 //TODO: fix namebinding, refers to doesnt work for variables and fields (it does work for functions)
 rules
 	// modules
-	Module(name, _, _):
+	Module(Identifier(name), _, _):
 		defines Module name
-		scopes Function, Struct, Union, Enum, Variable
+		scopes Function, Struct, Enum, Variable, Union
 	
 	
 	// functions
@@ -32,7 +32,7 @@ rules
 		where
 			params has type paramsTypes
 	
-	FunctionCall(f,_): 
+	FunctionCall(Identifier(f),_): 
 		refers to Function f
 
 
@@ -42,29 +42,31 @@ rules
 		defines Variable name of type type
 	
 	Declaration(type,Identifier(name)):
-		defines Variable name of type type in subsequent scope
-	
+		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems 
+		
 	Var(Identifier(name)):
 		refers to Variable name
 	
 	
 	// structs and unions
 	Union(_, Identifier(u), _):
-		defines Union u 
+		defines unique Union u 
 		scopes Field
 		
 	Struct(_, Identifier(s), _):
-		defines Struct s 
+		defines unique Struct s 
 		scopes Field
 	
 	StructType(Identifier(s)):
 		refers to Struct s
+		refers to Union s
 	
 	FieldDecl(t, Identifier(i)):
 		defines Field i of type t
 	
 	Field(var, Identifier(field)): 
-		refers to Field field in Struct s
+		//refers to Field field in Struct s 
+		refers to Field field in Union s
 		where 
 			var has type StructType(Identifier(s))
 	
