@@ -1,11 +1,11 @@
 
-int32_t main (int32_t argc, int8_t * argv [])
+int32_t main (){//int32_t argc, int8_t * argv [])
 {
-	struct Employee Joe;
-	Joe.ID = 14;
-	// Joe.Age = 32;
-	// Joe.Wage = 2415;
-	// printf("%d",Joe.Wage);
+	// struct Employee Joe;
+	// Joe.ID = 14;
+	// // Joe.Age = 32;
+	// // Joe.Wage = 2415;
+	// // printf("%d",Joe.Wage);
 	return(0);
 }
 

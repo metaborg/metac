@@ -99,6 +99,28 @@ rules
 	
 	
 	/**
+	 * Structs
+	 */
+	to-c: Struct(_, name, fields) -> 
+			C-Declaration2(
+		      C-TypeSpec(
+		        []
+		      , C-Struct(<to-c>name, <map(to-c)>fields)
+		      , []
+		      )
+		    , []
+		    )
+	to-c: FieldDecl(type, identifier) -> C-MemDecl(<to-c>type, [<to-c-field-decl>identifier])
+	to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
+	to-c: Declaration(a, b) -> 
+			  C-Declaration2(
+	            <to-c>a
+	          , [ C-IdDecl([], <to-c>b, None()) ]
+	          )
+    to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
+	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
+	
+	/**
 	 * FunDef
 	 */
 	to-c: Param(type, name) ->

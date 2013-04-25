@@ -1,9 +1,7 @@
 module UseStruct {
 	
-	exported int32 main(int32 argc, string[] argv) { 
-		int32 a;
-		a=1;
-  		Employee Joe;
+	exported int32 main(){//int32 argc, string[] argv) { 
+		Employee Joe;
 		Joe.ID = 14;
 		Joe.Age = 32;
 		Joe.Wage = 2415;
