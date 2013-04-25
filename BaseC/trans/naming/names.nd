@@ -26,55 +26,67 @@ rules
 	
 	
 	// functions
-	FunDef(_,returnType,name,params,_):
+	FunDef(_,returnType, Identifier(name), params,_):
 		defines Function name of type FunType(paramsTypes,returnType)
 		scopes Variable
 		where
 			params has type paramsTypes
+	
 	FunctionCall(f,_): 
 		refers to Function f
 
 
 	// variables
-	Param(type,name):
+	
+	Param(type,Identifier(name)):
 		defines Variable name of type type
-	Declaration(type,name):
+	
+	Declaration(type,Identifier(name)):
 		defines Variable name of type type in subsequent scope
-	Var(name):
-		refers to Variable name
-	Assign(name, _, _):
+	
+	Var(Identifier(name)):
 		refers to Variable name
 	
 	
 	// structs and unions
-	Union(_, u, _):
+	Union(_, Identifier(u), _):
 		defines Union u 
 		scopes Field
-	Struct(_, s, _):
+		
+	Struct(_, Identifier(s), _):
 		defines Struct s 
 		scopes Field
-	StructType(s):
-		refers to Struct s
-	FieldDecl(t,[i]):
-		defines Field i of type t
-	Field(v, f): 
-		refers to Field f in Struct s
-		where v has type StructType(s)
 	
+	StructType(Identifier(s)):
+		refers to Struct s
+	
+	FieldDecl(t, Identifier(i)):
+		defines Field i of type t
+	
+	Field(var, Identifier(field)): 
+		refers to Field field in Struct s
+		where 
+			var has type StructType(Identifier(s))
+	
+/*	FieldViaPointer(var, Identifier(field)):
+		refers to Field field in Struct s
+		where
+			var has type StructType(Identifier(s))
+*/
 	
 	// labels and gotos	
-	Label(l,_): 
+	Label(l, _): 
 		defines Label l
 	Goto(l): 
 		refers to Label l
 
 
 	// message lists and messages
-	MessageList(_,name,_):
+	MessageList(_, Identifier(name), _):
 		defines Messagelist name
 		scopes Message
 		
-	Message(name,_,_,_):
+	Message(Identifier(name), _, _, _):
  		defines Message name
 
 

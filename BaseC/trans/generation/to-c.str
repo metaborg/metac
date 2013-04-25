@@ -73,11 +73,16 @@ rules
 	 * Expressions
 	 */
 	to-c: FunctionCall(a, b) -> C-FunCall(<to-c>a, <map(to-c)>b)
-	to-c: BinExp(PLUS(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(MINUS(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(MUL(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(DIV(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
-	to-c: BinExp(MOD(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Plus(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Minus(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Mul(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Div(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
+	to-c: BinExp(Mod(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
+//	to-c: BinExp(PLUS(), exp1, exp2) -> C-Add(<to-c>exp1, <to-c>exp2)
+//	to-c: BinExp(MINUS(), exp1, exp2) -> C-Subt(<to-c>exp1, <to-c>exp2)
+//	to-c: BinExp(MUL(), exp1, exp2) -> C-Mul(<to-c>exp1, <to-c>exp2)
+//	to-c: BinExp(DIV(), exp1, exp2) -> C-Div(<to-c>exp1, <to-c>exp2)
+//	to-c: BinExp(MOD(), exp1, exp2) -> C-Mod(<to-c>exp1, <to-c>exp2)
 	
 	/**
 	 * Statements

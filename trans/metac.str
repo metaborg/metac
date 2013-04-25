@@ -14,6 +14,7 @@ imports
   BaseC/trans/naming/names
   BaseC/trans/desugaring/desugar
   BaseC/trans/generation/generate
+  BaseC/trans/typing/types
 
 rules // Analysis
   
@@ -81,9 +82,10 @@ rules // Editor services
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
   editor-hover:
-    (target, position, ast, path, project-path) -> $[[uriString]]
+    (target, position, ast, path, project-path) -> $[[<write-to-string> uriString]]
     where
       uriString := <index-uri-to-string> <index-uri> <index-find-key> target
+      ///uriString := <type-of> target
 
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
