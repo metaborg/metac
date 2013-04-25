@@ -58,34 +58,40 @@ rules
 rules
 
   nam-get-scope-types :
-    FunDef(_, returnType, name, params, _) -> [Variable()]
+    FunDef(_, returnType, Identifier(name), params, _) -> [Variable()]
     where paramsTypes := <type-of> params
 
   nam-get-definition-keys :
-    FunDef(_, returnType, name, params, _) -> [name]
+    FunDef(_, returnType, Identifier(name), params, _) -> [name]
     where paramsTypes := <type-of> params
 
   nam-get-definitions :
-    FunDef(_, returnType, name, params, _) -> [(Function(), [name])]
+    FunDef(_, returnType, Identifier(name), params, _) -> [(Function(), [name])]
     where paramsTypes := <type-of> params
 
   nam-annotate-names(|paths__, path__):
-    FunDef(_, returnType, name, params, _) -> <FunDef(id, id, nam-annotate-def(|path__), id, id)>
+    FunDef(_, returnType, Identifier(name), params, _) -> <FunDef(
+                                                             id
+                                                           , id
+                                                           , Identifier(nam-annotate-def(|path__))
+                                                           , id
+                                                           , id
+                                                           )>
 
   adjust-index-def-data(store__|namespace__, path__):
-    FunDef(_, returnType, name, params, _) -> <store__> DefData(
-                                                          [namespace__|path__]
-                                                        , Type()
-                                                        , FunType(paramsTypes, returnType)
-                                                        )
+    FunDef(_, returnType, Identifier(name), params, _) -> <store__> DefData(
+                                                                      [namespace__|path__]
+                                                                    , Type()
+                                                                    , FunType(paramsTypes, returnType)
+                                                                    )
     where paramsTypes := <type-of> params
 
   type-of :
-    FunDef(_, returnType, name, params, _) -> FunType(paramsTypes, returnType)
+    FunDef(_, returnType, Identifier(name), params, _) -> FunType(paramsTypes, returnType)
     where paramsTypes := <type-of> params
 
   nam-unique :
-    FunDef(_, returnType, name, params, _) -> <id>
+    FunDef(_, returnType, Identifier(name), params, _) -> <id>
     where paramsTypes := <type-of> params
 
 
@@ -104,177 +110,176 @@ rules
 rules
 
   nam-get-definition-keys :
-    Param(type, name) -> [name]
+    Param(type, Identifier(name)) -> [name]
 
   nam-get-definitions :
-    Param(type, name) -> [(Variable(), [name])]
+    Param(type, Identifier(name)) -> [(Variable(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Param(type, name) -> <Param(id, nam-annotate-def(|path__))>
+    Param(type, Identifier(name)) -> <Param(id, Identifier(nam-annotate-def(|path__)))>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Param(type, name) -> <store__> DefData(
-                                     [namespace__|path__]
-                                   , Type()
-                                   , type
-                                   )
+    Param(type, Identifier(name)) -> <store__> DefData(
+                                                 [namespace__|path__]
+                                               , Type()
+                                               , type
+                                               )
 
   type-of :
-    Param(type, name) -> type
+    Param(type, Identifier(name)) -> type
 
   nam-unique :
-    Param(type, name) -> <id>
+    Param(type, Identifier(name)) -> <id>
 
 
 rules
 
   nam-ordered-def :
-    Declaration(type, name) -> <id>
+    Declaration(type, Identifier(name)) -> <id>
 
   nam-get-definition-keys :
-    Declaration(type, name) -> [name]
+    Declaration(type, Identifier(name)) -> [name]
 
   nam-get-definitions :
-    Declaration(type, name) -> [ ( Variable()
-                                 , [name, Anon(<new>)]
-                                 )
-                               ]
+    Declaration(type, Identifier(name)) -> [ ( Variable()
+                                             , [name, Anon(<new>)]
+                                             )
+                                           ]
 
   nam-annotate-names(|paths__, path__):
-    Declaration(type, name) -> <Declaration(id, nam-annotate-def(|path__))>
+    Declaration(type, Identifier(name)) -> <Declaration(id, Identifier(nam-annotate-def(|path__)))>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Declaration(type, name) -> <store__> DefData(
-                                           [namespace__|path__]
-                                         , Type()
-                                         , type
-                                         )
+    Declaration(type, Identifier(name)) -> <store__> DefData(
+                                                       [namespace__|path__]
+                                                     , Type()
+                                                     , type
+                                                     )
 
   type-of :
-    Declaration(type, name) -> type
+    Declaration(type, Identifier(name)) -> type
 
   nam-unique :
-    Declaration(type, name) -> <id>
+    Declaration(type, Identifier(name)) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    Var(name) -> [name]
+    Var(Identifier(name)) -> [name]
 
   nam-get-uses :
-    Var(name) -> [(Variable(), [name])]
+    Var(Identifier(name)) -> [(Variable(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Var(name) -> <Var(nam-annotate-use(|paths__, Variable()))>
-
-
-rules
-
-  nam-get-uses-keys :
-    Assign(name, _, _) -> [name]
-
-  nam-get-uses :
-    Assign(name, _, _) -> [(Variable(), [name])]
-
-  nam-annotate-names(|paths__, path__):
-    Assign(name, _, _) -> <Assign(
-                             nam-annotate-use(|paths__, Variable())
-                           , id
-                           , id
-                           )>
+    Var(Identifier(name)) -> <Var(
+                                Identifier(nam-annotate-use(|paths__, Variable()))
+                              )>
 
 
 rules
 
   nam-get-scope-types :
-    Union(_, u, _) -> [Field()]
+    Union(_, Identifier(u), _) -> [Field()]
 
   nam-get-definition-keys :
-    Union(_, u, _) -> [u]
+    Union(_, Identifier(u), _) -> [u]
 
   nam-get-definitions :
-    Union(_, u, _) -> [(Union(), [u])]
+    Union(_, Identifier(u), _) -> [(Union(), [u])]
 
   nam-annotate-names(|paths__, path__):
-    Union(_, u, _) -> <Union(id, nam-annotate-def(|path__), id)>
+    Union(_, Identifier(u), _) -> <Union(
+                                     id
+                                   , Identifier(nam-annotate-def(|path__))
+                                   , id
+                                   )>
 
   nam-unique :
-    Union(_, u, _) -> <id>
+    Union(_, Identifier(u), _) -> <id>
 
 
 rules
 
   nam-get-scope-types :
-    Struct(_, s, _) -> [Field()]
+    Struct(_, Identifier(s), _) -> [Field()]
 
   nam-get-definition-keys :
-    Struct(_, s, _) -> [s]
+    Struct(_, Identifier(s), _) -> [s]
 
   nam-get-definitions :
-    Struct(_, s, _) -> [(Struct(), [s])]
+    Struct(_, Identifier(s), _) -> [(Struct(), [s])]
 
   nam-annotate-names(|paths__, path__):
-    Struct(_, s, _) -> <Struct(id, nam-annotate-def(|path__), id)>
+    Struct(_, Identifier(s), _) -> <Struct(
+                                      id
+                                    , Identifier(nam-annotate-def(|path__))
+                                    , id
+                                    )>
 
   nam-unique :
-    Struct(_, s, _) -> <id>
+    Struct(_, Identifier(s), _) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    StructType(s) -> [s]
+    StructType(Identifier(s)) -> [s]
 
   nam-get-uses :
-    StructType(s) -> [(Struct(), [s])]
+    StructType(Identifier(s)) -> [(Struct(), [s])]
 
   nam-annotate-names(|paths__, path__):
-    StructType(s) -> <StructType(nam-annotate-use(|paths__, Struct()))>
+    StructType(Identifier(s)) -> <StructType(
+                                    Identifier(nam-annotate-use(|paths__, Struct()))
+                                  )>
 
 
 rules
 
   nam-get-definition-keys :
-    FieldDecl(t, [i]) -> [i]
+    FieldDecl(t, Identifier(i)) -> [i]
 
   nam-get-definitions :
-    FieldDecl(t, [i]) -> [(Field(), [i])]
+    FieldDecl(t, Identifier(i)) -> [(Field(), [i])]
 
   nam-annotate-names(|paths__, path__):
-    FieldDecl(t, [i]) -> <FieldDecl(id, [nam-annotate-def(|path__)])>
+    FieldDecl(t, Identifier(i)) -> <FieldDecl(id, Identifier(nam-annotate-def(|path__)))>
 
   adjust-index-def-data(store__|namespace__, path__):
-    FieldDecl(t, [i]) -> <store__> DefData(
-                                     [namespace__|path__]
-                                   , Type()
-                                   , t
-                                   )
+    FieldDecl(t, Identifier(i)) -> <store__> DefData(
+                                               [namespace__|path__]
+                                             , Type()
+                                             , t
+                                             )
 
   type-of :
-    FieldDecl(t, [i]) -> t
+    FieldDecl(t, Identifier(i)) -> t
 
   nam-unique :
-    FieldDecl(t, [i]) -> <id>
+    FieldDecl(t, Identifier(i)) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    Field(v, f) -> [f]
-    where StructType(s) := <type-of> v
+    Field(var, Identifier(field)) -> [field]
+    where StructType(Identifier(s)) := <type-of> var
 
   nam-get-uses :
-    Field(v, f) -> [(Field(), [f])]
-    where StructType(s) := <type-of> v
+    Field(var, Identifier(field)) -> [(Field(), [field])]
+    where StructType(Identifier(s)) := <type-of> var
 
   nam-annotate-names(|paths__, path__):
-    Field(v, f) -> <Field(id, nam-annotate-use(|paths__, Field()))>
+    Field(var, Identifier(field)) -> <Field(
+                                        id
+                                      , Identifier(nam-annotate-use(|paths__, Field()))
+                                      )>
 
   adjust-index-lookup(target__|namespace__, path__, prefix__):
-    Field(v, f) -> <index-lookup-children(|Field(), prefix__)> s
-    where <target__> f
-    where StructType(s) := <type-of> v
+    Field(var, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
+    where <target__> field
+    where StructType(Identifier(s)) := <type-of> var
 
 
 rules
@@ -307,31 +312,40 @@ rules
 rules
 
   nam-get-scope-types :
-    MessageList(_, name, _) -> [Message()]
+    MessageList(_, Identifier(name), _) -> [Message()]
 
   nam-get-definition-keys :
-    MessageList(_, name, _) -> [name]
+    MessageList(_, Identifier(name), _) -> [name]
 
   nam-get-definitions :
-    MessageList(_, name, _) -> [(Messagelist(), [name])]
+    MessageList(_, Identifier(name), _) -> [(Messagelist(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    MessageList(_, name, _) -> <MessageList(id, nam-annotate-def(|path__), id)>
+    MessageList(_, Identifier(name), _) -> <MessageList(
+                                              id
+                                            , Identifier(nam-annotate-def(|path__))
+                                            , id
+                                            )>
 
   nam-unique :
-    MessageList(_, name, _) -> <id>
+    MessageList(_, Identifier(name), _) -> <id>
 
 
 rules
 
   nam-get-definition-keys :
-    Message(name, _, _, _) -> [name]
+    Message(Identifier(name), _, _, _) -> [name]
 
   nam-get-definitions :
-    Message(name, _, _, _) -> [(Message(), [name])]
+    Message(Identifier(name), _, _, _) -> [(Message(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Message(name, _, _, _) -> <Message(nam-annotate-def(|path__), id, id, id)>
+    Message(Identifier(name), _, _, _) -> <Message(
+                                             Identifier(nam-annotate-def(|path__))
+                                           , id
+                                           , id
+                                           , id
+                                           )>
 
   nam-unique :
-    Message(name, _, _, _) -> <id>
+    Message(Identifier(name), _, _, _) -> <id>
