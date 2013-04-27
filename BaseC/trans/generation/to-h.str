@@ -8,13 +8,13 @@ imports
 
 
 rules
+	// to-h: _ -> DEFAULT-HEADERFILE()
+	
 	to-h: Module(Identifier(modulename), imports, contents) -> headerfile
 	with
 		modulenameUppercase := <upper-case>modulename;
 		fundefs := <filter(is-exported-fundef)>contents;
-		<debug>fundefs;
 		fundefIncludes := <map(to-h)>fundefs;
-
 		headerfile := $[
 			#ifndef [modulenameUppercase]
 			#define [modulenameUppercase]
@@ -30,7 +30,6 @@ rules
 	
 	to-h: FunDef(Exported(), returnType, name, params, _) -> includes
 		where
-			// <debug> ["to-h fundef", Exported(), returnType, name, params];
 			c-ast := [
 						<to-c>returnType,
 					  	C-IdDecl(
@@ -39,7 +38,7 @@ rules
 					      <to-c>params
 					    )
 				     ];
-			includes := <pp-c-string>c-ast
+			includes := $[[<pp-c-string>c-ast];]
 
 
 

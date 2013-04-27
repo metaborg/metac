@@ -195,7 +195,11 @@ rules
 				[C-PpControl($[#include "[modulename].h"]),
 				 C-PpControl($[#include <stdlib.h>])
 				],
-				<map(import-header)>imports,
+				<import-headers>imports,
 				<map(to-c)>contents])
 
+	import-headers: None()->[]
+	import-headers: imports -> <map(import-header)>imports
+		where
+			<not(equal)> (imports, None())
 	import-header: Identifier(modulename) -> C-PpControl($[#include "[modulename].h"])
