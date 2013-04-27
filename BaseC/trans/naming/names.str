@@ -35,24 +35,28 @@ signature
 rules
 
   nam-get-scope-types :
-    Module(name, _, _) -> [ Function()
-                          , Struct()
-                          , Union()
-                          , Enum()
-                          , Variable()
-                          ]
+    Module(Identifier(name), _, _) -> [ Function()
+                                      , Struct()
+                                      , Enum()
+                                      , Variable()
+                                      , Union()
+                                      ]
 
   nam-get-definition-keys :
-    Module(name, _, _) -> [name]
+    Module(Identifier(name), _, _) -> [name]
 
   nam-get-definitions :
-    Module(name, _, _) -> [(Module(), [name])]
+    Module(Identifier(name), _, _) -> [(Module(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Module(name, _, _) -> <Module(nam-annotate-def(|path__), id, id)>
+    Module(Identifier(name), _, _) -> <Module(
+                                         Identifier(nam-annotate-def(|path__))
+                                       , id
+                                       , id
+                                       )>
 
   nam-unique :
-    Module(name, _, _) -> <id>
+    Module(Identifier(name), _, _) -> <id>
 
 
 rules
@@ -98,13 +102,16 @@ rules
 rules
 
   nam-get-uses-keys :
-    FunctionCall(f, _) -> [f]
+    FunctionCall(Identifier(f), _) -> [f]
 
   nam-get-uses :
-    FunctionCall(f, _) -> [(Function(), [f])]
+    FunctionCall(Identifier(f), _) -> [(Function(), [f])]
 
   nam-annotate-names(|paths__, path__):
-    FunctionCall(f, _) -> <FunctionCall(nam-annotate-use(|paths__, Function()), id)>
+    FunctionCall(Identifier(f), _) -> <FunctionCall(
+                                         Identifier(nam-annotate-use(|paths__, Function()))
+                                       , id
+                                       )>
 
 
 rules
@@ -134,17 +141,11 @@ rules
 
 rules
 
-  nam-ordered-def :
-    Declaration(type, Identifier(name)) -> <id>
-
   nam-get-definition-keys :
     Declaration(type, Identifier(name)) -> [name]
 
   nam-get-definitions :
-    Declaration(type, Identifier(name)) -> [ ( Variable()
-                                             , [name, Anon(<new>)]
-                                             )
-                                           ]
+    Declaration(type, Identifier(name)) -> [(Variable(), [name])]
 
   nam-annotate-names(|paths__, path__):
     Declaration(type, Identifier(name)) -> <Declaration(id, Identifier(nam-annotate-def(|path__)))>
@@ -227,12 +228,20 @@ rules
     StructType(Identifier(s)) -> [s]
 
   nam-get-uses :
-    StructType(Identifier(s)) -> [(Struct(), [s])]
+    StructType(Identifier(s)) -> [ (Struct(), [s])
+                                 , (Union(), [s])
+                                 ]
 
   nam-annotate-names(|paths__, path__):
     StructType(Identifier(s)) -> <StructType(
                                     Identifier(nam-annotate-use(|paths__, Struct()))
                                   )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    StructType(Identifier(s)) -> [ [Struct()|path__]
+                                 , [Union()|path__]
+                                 ]
+    where <target__> s
 
 
 rules

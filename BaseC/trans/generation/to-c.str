@@ -123,6 +123,10 @@ rules
 	to-c: IfElse(t1, t2, t3) -> C-IfElse(<to-c>t1, <to-c>t2, <to-c>t3)
 	to-c: If(t1, t2) -> C-If(<to-c>t1, <to-c>t2)
 	to-c: While(t1, t2) -> C-While(<to-c>t1, <to-c>t2)
+	to-c: For(t1, t2, t3, t4) -> C-For(<to-c>t1, <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
+	// to-c: For([Declaration(a,Init(b,c))], t2, t3, t4) -> C-For(declaration, <to-c>t2, <to-c>t3, <to-c>t4) //declaration for loop
+	// 	where
+	// 		declaration := C-Assign(<to-c>b, C-AssignEq(), <to-c>c)
 	
 	/**
 	 * Structs
