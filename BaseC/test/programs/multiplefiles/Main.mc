@@ -1,4 +1,4 @@
-module Main {
+module Main imports Other {
 	exported int32 main(int32 argc, string[] argv){
 		int a;
 		a = times2(3);

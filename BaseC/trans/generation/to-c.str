@@ -13,6 +13,7 @@ imports
 // === rewrite rules for BaseC to C99 === //
 //TODO: move to different files
 rules
+	to-c: Exp(None()) -> C-EmptyExp()
 	
 	/**
 	 * Default BaseC to C conversion
@@ -48,25 +49,30 @@ rules
 	
 	
 	/**
-	 * Expressions
-	 */
-	
-	
-	/**
 	 * Types
 	 */
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
 	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
+	 to-c: BasicType("string")->C-TypeSpec([], C-TypeId("string"), []) //TODO: fix, C doesnt know string
 
 	
 	/**
 	 * Declarations
 	 */
-	to-c: Declaration(type, name) -> 
-				  	C-Declaration2(
-				  		<to-c> type,
-				  		C-IdDecl([], <to-c> name, None())
-				  	)
+	to-c: Declaration(a, NoInit(b)) -> 
+			  C-Declaration2(
+	            <to-c>a
+	          , [ C-IdDecl([], <to-c>b, None()) ]
+	          )
+	to-c: Declaration(a, Init(b, c)) -> 
+			  C-Declaration2(
+	            <to-c>a
+	          , [ C-DeclInit(
+	            	C-IdDecl([], <to-c>b, None())
+	              , C-AssignInit(<to-c>c)
+	              )
+	            ]
+	          )
 								
 	
 	/**
@@ -143,20 +149,6 @@ rules
 		    )
 	to-c: FieldDecl(type, identifier) -> C-MemDecl(<to-c>type, [<to-c-field-decl>identifier])
 	to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
-	to-c: Declaration(a, NoInit(b)) -> 
-			  C-Declaration2(
-	            <to-c>a
-	          , [ C-IdDecl([], <to-c>b, None()) ]
-	          )
-	to-c: Declaration(a, Init(b, c)) -> 
-			  C-Declaration2(
-	            <to-c>a
-	          , [ C-DeclInit(
-	            	C-IdDecl([], <to-c>b, None())
-	              , C-AssignInit(<to-c>c)
-	              )
-	            ]
-	          )
     to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
 	

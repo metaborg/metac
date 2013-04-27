@@ -14,7 +14,9 @@ imports
 	baseC/trans/generation/to-makefile
 
 
+// editor hooks
 rules
+	// debug builds
 	editor-to-c-ast:
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
@@ -26,51 +28,99 @@ rules
 			filename := <guarantee-extension(|"c.aterm")> path;
 			result   := <desugar-all;topdown(try(to-c))>selected
 	
-	//TODO: remove the string interpolation include header		
+	// real builders
 	editor-to-c:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;to-c;pp-c-string>selected
-
-	//TODO: remove the string interpolation include header
-	editor-to-c-debug:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;topdown(try(to-c);try(pp-c-string))>selected
-	
-	editor-to-h:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := <guarantee-extension(|"h")> path;
-			result   := <to-h>selected
-			
-	editor-to-makefile:
-	    (selected, position, ast, path, project-path) -> (filename, result)
-	    with
-			filename := $[[<dirname>path]/Makefile];
-			result   := <to-makefile>selected
-	
-	//rule for compiling existing c file. Later: do first generation then compile. Even later: on save
-	//FIXME: calling make doesn't work for some reason... in cmd it does work...
-	editor-compile-existing-c-file:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-			<debug>$[Making [project-path]/[<dirname>path]];
+			<basec-to-c> (selected, position, ast, path, project-path)
+	editor-to-h:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			<basec-to-h> (selected, position, ast, path, project-path)
+	editor-to-makefile:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			<basec-to-makefile> (selected, position, ast, path, project-path)
+	editor-compile:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+	    	<base-c-to-compiledc> (selected, position, ast, path, project-path)
+	editor-execute:
+		(selected, position, ast, path, project-path) -> None()
+	    with
+			<basec-execute> (selected, position, ast, path, project-path)
+
+
+// rewriting to different stages
+rules
+	basec-to-c:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			fileName := <guarantee-extension(|"c")> path;
+			result   := <desugar-all;to-c;pp-c-string>selected;
+			<write-file> (fileName, result)
+	basec-to-h:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			fileName := <guarantee-extension(|"h")> path;
+			result   := <desugar-all;to-h;pp-c-string>selected;
+			<write-file> (fileName, result)
+	basec-to-makefile:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			fileName := $[[<dirname>path]/Makefile];
+			result   := <to-makefile>selected;
+			<write-file> (fileName, result)
+	basec-to-c-h-makefile:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			<basec-to-c> (selected, position, ast, path, project-path);
+			<basec-to-h> (selected, position, ast, path, project-path);
+			<basec-to-makefile> (selected, position, ast, path, project-path)
+	c-h-makefile-to-compiledc:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
 			<try(call);debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
 			<refresh-workspace-file><dirname>path
-	
-	//FIXME: does not work yet either
-	editor-execute-existing-exe:
+	base-c-to-compiledc:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			<basec-to-c-h-makefile> (selected, position, ast, path, project-path);
+			<c-h-makefile-to-compiledc> (selected, position, ast, path, project-path)
+	compiledc-execute:
 		(selected, position, ast, path, project-path) -> None()
 	    with
 			exepath := $["[project-path]/[<dirname>path]/[<module-name>ast].exe"];
-			<debug> $[Executing [exepath]];
 			<try(call)> (exepath, [])
+	basec-execute:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			<base-c-to-compiledc> (selected, position, ast, path, project-path);
+			<compiledc-execute>	(selected, position, ast, path, project-path)
+
+
+// helper rules
+rules
+	// filewriter
+	write-file: (fileName, content) -> (fileName, content)
+		where
+			<dirname;ensure-dir> fileName
+		where
+			fileDescriptor := <fopen> (fileName, "w");
+			<fputs> (content, fileDescriptor);
+			<fclose> fileDescriptor;
+			<refresh-workspace-file> fileName
+			
+	ensure-dir: path -> path
+		where
+			<file-exists;filemode;isdir> path
+	ensure-dir: path -> path
+		where
+			<not(file-exists;filemode;isdir)> path;
+			<dirname;ensure-dir> path;
+			<mkdir> path
 	
+	// c pretty printer (external)
 	pp-c-string =
 		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
 		box2text-string(|100)
-
-
