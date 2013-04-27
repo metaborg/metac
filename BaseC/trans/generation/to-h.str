@@ -1,7 +1,47 @@
 module BaseC/trans/generation/to-h
 
+imports
+	include/MetaC
+	lib/c/c
+	libstratego-gpp
+	BaseC/trans/generation/to-c
+
+
 rules
-	to-h: _ -> DEFAULT-HEADERFILE()
+	to-h: Module(Identifier(modulename), imports, contents) -> headerfile
+	with
+		modulenameUppercase := <upper-case>modulename;
+		fundefs := <filter(is-exported-fundef)>contents;
+		<debug>fundefs;
+		fundefIncludes := <map(to-h)>fundefs;
+
+		headerfile := $[
+			#ifndef [modulenameUppercase]
+			#define [modulenameUppercase]
+
+			#include <stdint.h>
+			
+			[<concat-strings>fundefIncludes]
+			
+			#endif
+			]
+	
+	is-exported-fundef: FunDef(Exported(), t2, t3, t4, t5) -> FunDef(Exported(), t2, t3, t4, t5) 
+	
+	to-h: FunDef(Exported(), returnType, name, params, _) -> includes
+		where
+			// <debug> ["to-h fundef", Exported(), returnType, name, params];
+			c-ast := [
+						<to-c>returnType,
+					  	C-IdDecl(
+					      [],
+					      <to-c>name,
+					      <to-c>params
+					    )
+				     ];
+			includes := <pp-c-string>c-ast
+
+
 
 overlays
 	DEFAULT-HEADERFILE()=
@@ -10,3 +50,12 @@ overlays
 #include <stdint.h>
 
 "
+
+
+
+// helper rules
+rules
+	// c pretty printer (external)
+	pp-c-string =
+		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
+		box2text-string(|100)

@@ -191,10 +191,11 @@ rules
 	 * Modules
 	 */
 	to-c: Module(Identifier(modulename), imports, contents) ->
-			C-TranslationUnit(<conc>(
+			C-TranslationUnit(<concat>[
 				[C-PpControl($[#include "[modulename].h"]),
 				 C-PpControl($[#include <stdlib.h>])
 				],
-				<map(to-c)>contents))
+				<map(import-header)>imports,
+				<map(to-c)>contents])
 
-
+	import-header: Identifier(modulename) -> C-PpControl($[#include "[modulename].h"])
