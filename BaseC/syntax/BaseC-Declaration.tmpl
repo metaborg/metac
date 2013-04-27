@@ -5,8 +5,8 @@ Decl = <<Identifier>>
 Decl = <<Decl> [<Constant>]>
 Decl = <*<Decl>>
 
-Initialization = <<Decl>>
-Initialization = <<Decl> = <Exp>>
+Initialization.NoInit = <<Decl>>
+Initialization.Init = <<Decl> = <Exp>>
 InitializationList = <<Initialization+;separator=",">>
 
 Declaration.Declaration = <<Type> <InitializationList>;>

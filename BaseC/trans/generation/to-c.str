@@ -138,10 +138,19 @@ rules
 		    )
 	to-c: FieldDecl(type, identifier) -> C-MemDecl(<to-c>type, [<to-c-field-decl>identifier])
 	to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
-	to-c: Declaration(a, b) -> 
+	to-c: Declaration(a, NoInit(b)) -> 
 			  C-Declaration2(
 	            <to-c>a
 	          , [ C-IdDecl([], <to-c>b, None()) ]
+	          )
+	to-c: Declaration(a, Init(b, c)) -> 
+			  C-Declaration2(
+	            <to-c>a
+	          , [ C-DeclInit(
+	            	C-IdDecl([], <to-c>b, None())
+	              , C-AssignInit(<to-c>c)
+	              )
+	            ]
 	          )
     to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
