@@ -27,4 +27,4 @@ builders
   builder  : "to compiled exe"            		   = editor-compile (meta) (source)
   builder  : "to execute"           			   = editor-execute (meta) (source)
 
-  on save  : editor-save
+  on save  : editor-compile
