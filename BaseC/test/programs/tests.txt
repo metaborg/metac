@@ -1,0 +1,75 @@
+test1.mc
+	outline: just an empty main
+	involves: nothing
+
+=== HELLOWORLD ===
+	outline: basic output
+
+test2.mc
+	multiple printf calls
+test3.mc
+	multiple printf calls
+	
+=== LEARNING MATH ===
+	outline: basic output and basic calculations
+
+test4.mc
+	multiple printf calls and inline calculations
+test5.mc
+	multiple printf, IF statement and integer comparisons
+test6.mc
+	multiple printf, function definition and call, IF statement
+test7.mc
+	multiple printf, function definition and call, while statement
+test8.mc
+	multiple printf, FOR LOOP
+	
+=== IO ===
+	outline: basic IO
+	
+test9.mc
+	multiple printf, user input with scanf
+	
+=== STRUCT AND UNIONS ===
+
+test10.mc
+	simple struct with one field, declaration and usage.
+	
+=== BITWISE EXPRESSION ===
+
+test11.mc
+	computations using AND, OR, XOR
+	
+=== NON-DECIMAL NUMBER FORMAT ===
+
+test12.mc
+	hexadecimal calculations
+
+test13.mc
+	octal calculations
+	
+test14.mc
+	binary calculations
+	
+=== ARRAYS AND POINTERS ===
+
+test15.mc
+	basic type array, manual value assignment
+
+test16.mc
+	basic type array, iterated value assignment
+	
+test17.mc
+	pointer declaration
+	
+test18.mc
+	pointer declaration and initialization
+	
+test19.mc
+	pointer declaration, initialization and usage
+	
+test20.mc
+	array pointer declaration, for loop assignment and usage
+	
+test21.mc
+	
