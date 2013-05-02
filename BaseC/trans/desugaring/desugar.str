@@ -24,6 +24,11 @@ rules
 			
 	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
 	
+	desugar: BasicType(a) -> BasicType("long double")
+	where
+		<is-substring(!"long")> a;
+		<is-substring(!"double")> a
+	
 	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 		
 	
