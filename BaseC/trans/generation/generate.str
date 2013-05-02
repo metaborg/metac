@@ -32,71 +32,71 @@ rules
 	editor-to-c:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-			<basec-to-c> (selected, position, ast, path, project-path)
+			<basec-to-c> (selected, path)
 	editor-to-h:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-			<basec-to-h> (selected, position, ast, path, project-path)
+			<basec-to-h> (selected, path)
 	editor-to-makefile:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-			<basec-to-makefile> (selected, position, ast, path, project-path)
+			<basec-to-makefile> (selected, path)
 	editor-compile:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-	    	<base-c-to-compiledc> (selected, position, ast, path, project-path)
+	    	<base-c-to-compiledc> (selected, path, project-path)
 	editor-execute:
 		(selected, position, ast, path, project-path) -> None()
 	    with
-			<basec-execute> (selected, position, ast, path, project-path)
+			<basec-execute> (selected, path, project-path)
 
 
-// rewriting to different stages
+// rewriting single files
 rules
 	basec-to-c:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, path) -> None()
 	    with
 			fileName := <guarantee-extension(|"c")> path;
 			result   := <desugar-all;to-c;pp-c-string>selected;
 			<write-file> (fileName, result)
 	basec-to-h:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, path) -> None()
 	    with
 			fileName := <guarantee-extension(|"h")> path;
 			result   := <desugar-all;to-h;pp-c-string>selected;
 			<write-file> (fileName, result)
 	basec-to-makefile:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, path) -> None()
 	    with
 			fileName := $[[<dirname>path]/Makefile];
 			result   := <to-makefile>selected;
 			<write-file> (fileName, result)
 	basec-to-c-h-makefile:
-		(selected, position, ast, path, project-path) -> None()
+		(selected, path) -> None()
 		with
-			<basec-to-c> (selected, position, ast, path, project-path);
-			<basec-to-h> (selected, position, ast, path, project-path);
-			<basec-to-makefile> (selected, position, ast, path, project-path)
+			<basec-to-c> (selected, path);
+			<basec-to-h> (selected, path);
+			<basec-to-makefile> (selected, path)
 	c-h-makefile-to-compiledc:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, path, project-path) -> None()
 	    with
 			<try(call);debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
 			<refresh-workspace-file><dirname>path
 	base-c-to-compiledc:
-		(selected, position, ast, path, project-path) -> None()
+		(selected, path, project-path) -> None()
 		with
-			<basec-to-c-h-makefile> (selected, position, ast, path, project-path);
-			<c-h-makefile-to-compiledc> (selected, position, ast, path, project-path)
+			<basec-to-c-h-makefile> (selected, path);
+			<c-h-makefile-to-compiledc> (selected, path, project-path)
 	compiledc-execute:
-		(selected, position, ast, path, project-path) -> None()
+		(selected, path, project-path) -> None()
 	    with
-			exepath := $["[project-path]/[<dirname>path]/[<module-name>ast].exe"];
+			exepath := $["[project-path]/[<dirname>path]/[<module-name>selected].exe"];
 			<try(call)> (exepath, [])
 	basec-execute:
-		(selected, position, ast, path, project-path) -> None()
+		(selected, path, project-path) -> None()
 		with
-			<base-c-to-compiledc> (selected, position, ast, path, project-path);
-			<compiledc-execute>	(selected, position, ast, path, project-path)
+			<base-c-to-compiledc> (selected, path, project-path);
+			<compiledc-execute>	(selected, path, project-path)
 
 
 // helper rules
