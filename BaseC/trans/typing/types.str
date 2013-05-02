@@ -63,6 +63,9 @@ rules
 	supertype-of: BasicType("int16") -> BasicType("int32")
 	supertype-of: BasicType("int32") -> BasicType("int64")
 	
+	
+	//TODO: pointer subtypes?
+	
 	subtype-of: (type, type) -> None()
 	
 	subtype-of: (type, super) -> None()
@@ -87,8 +90,12 @@ rules
    	type-of	: (LogicalNot(), _) 	-> Int()
    	
    	// Pointers get their own type
-   	type-of : (Addr(), _) 			-> Ptr() 
+   	type-of : (Addr(), e) 			-> Pointer(<type-of> e)
    	
+   	type-of: (Deref(), e) -> derefType
+   	where
+   		Pointer(derefType):= <type-of> e
+   	 
    	// Other unary operations
    	type-of	:	(BWCompl(), e) 	-> <type-of> e
    	type-of	:	(Neg(), e) 		-> <type-of> e
