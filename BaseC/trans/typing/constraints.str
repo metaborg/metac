@@ -1,0 +1,41 @@
+module BaseC/trans/typing/constraints
+
+imports
+	include/metaC
+	BaseC/trans/desugaring/constructors
+	BaseC/trans/typing/types
+	lib/nbl-library.generated
+	libstratego-lib
+	lib/editor-common.generated
+	lib/index-library.generated
+	lib/analysis-library.generated
+	lib/analysis-library-internal.generated
+	
+	
+rules
+		
+    check-exp(str):
+		(exp, expected) -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> expT].])
+	where  <generictype-of> <type-of> exp => expT
+	where not (<str> (expected, expT))
+	
+	check-assign(str):
+		(expected, exp) -> (exp, $[Error: type [<write-to-string> expT] is not a subtype of [<write-to-string> expected].])
+	where <type-of> exp => expT
+	where not (<str> (expT, expected))
+
+	constraint-error: Assign(exp, op, exp2) -> errors
+	where
+		<filter(check-assign(subtype-of))> [(<type-of>exp, exp2)] => errors
+		
+	constraint-error: 
+ 		 BinExp(op, exp1, exp2 ) -> errors
+ 	 where
+    	(et1, et2, _) := <type-of> op;
+    	<filter(check-exp(eq))> [(exp1, et1), (exp2, et2)] => errors
+    
+    constraint-error: 
+ 		 UnExp(op, exp) -> errors
+ 	 where
+    	(et, _) := <type-of> op;
+    	<filter(check-exp(eq))> [(exp, et)] => errors

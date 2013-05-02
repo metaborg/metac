@@ -21,6 +21,8 @@ rules
 	desugar: FieldDecl(type, vars) -> declarationList
 		where
 			declarationList := <map(fieldDecl-pairwith(|type))>vars
+			
+	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
 	
 	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 		

@@ -41,8 +41,11 @@ rules
 	Param(type,Identifier(name)):
 		defines Variable name of type type
 	
-	Declaration(type,Identifier(name)):
+	Declaration(type, Init(Identifier(name), _)):
 		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems 
+	
+	Declaration(type, NoInit(Identifier(name))):
+		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
 		
 	Var(Identifier(name)):
 		refers to Variable name

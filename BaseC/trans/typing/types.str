@@ -18,12 +18,59 @@ signature constructors
 	Str   : type
 	Ptr   : type
 	
+	Int8	: Type
+	
 rules
 	/*type-of: _ -> BasicType("int8")
 	where
 		not(is-list)
 	*/
+	
+	/*
+	 *	Constants
+	 */
+	
+	//checks if val is in interval [-(posLimit+1), posLimit]; posLimit >=0
+	in-range(|posLimit): strVal -> "True"
+	where
+		val:= <try(string-to-int)> strVal;
+		<leq> (val, posLimit);
+		<geq> (val, <subti> (0, <addi> (posLimit, 1)))
+	 
+	type-of: Decimal(val) -> type
+	where
+		debug(!"decimal: ");
+		<in-range(|127)> val;			type:= BasicType("int8")	<+
+		<in-range(|32767)> val;			type:= BasicType("int16")	<+
+		<in-range(|2147483647)> val; 	type:= BasicType("int32")	<+
+										type:= BasicType("int64")
+	
+	type-of: Hexadecimal(val)-> <type-of> Decimal(<hex-string-to-int> hexval)
+	where
+		hexval:= <ltrim-chars(?'0'); try(ltrim-chars(?'X')); try(ltrim-chars(?'x'))> val
 		
+		
+	type-of: Octal(val)	-> <type-of> Decimal(<oct-string-to-int> val)
+	
+		
+	
+	generictype-of: BasicType("int8") -> Int()
+	generictype-of: BasicType("int16") -> Int()
+	generictype-of: BasicType("int32") -> Int()
+	generictype-of: BasicType("int64") -> Int()
+	
+	supertype-of: BasicType("int8") -> BasicType("int16")
+	supertype-of: BasicType("int16") -> BasicType("int32")
+	supertype-of: BasicType("int32") -> BasicType("int64")
+	
+	subtype-of: (type, type) -> None()
+	
+	subtype-of: (type, super) -> None()
+	where
+		<eq> (<supertype-of> type, super)	<+
+		<subtype-of> (<supertype-of> type, super)
+		 
+	 
 	type-of: ParamList(l) -> <map(type-of)> l
 	where
 		<is-list> l
@@ -31,12 +78,9 @@ rules
 	type-of: Param(_, ident) -> <index-type-of> ident
 	
 	
-	type-of: Decimal(_)	 	-> Int()
-	type-of: Hexadecimal(_)	-> Int()
-	type-of: Octal(_)		-> Int()
-	type-of: Char(_)		-> Ch()
-	type-of: String(_)		-> Str()
-	type-of: Float(_)		-> Flt()
+	//type-of: Char(_)		-> Ch()
+	//type-of: String(_)		-> Str()
+	//type-of: Float(_)		-> Flt()
 
 	// Unary oprations that are always integers
    	type-of : (Size(), _) 			-> Int()
@@ -46,15 +90,26 @@ rules
    	type-of : (Addr(), _) 			-> Ptr() 
    	
    	// Other unary operations
-   	type-of	:	(BWCompl(), e) 	-> e
-   	type-of	:	(Neg(), e) 		-> e
-   	type-of	:	(Pos(), e) 		-> e
-   	type-of	:	(DecPre(), e)	-> e
-   	type-of	:	(IncPre(), e) 	-> e
-   	type-of	:	(DecPost(), e) 	-> e
-   	type-of	:	(IncPost(), e) 	-> e
+   	type-of	:	(BWCompl(), e) 	-> <type-of> e
+   	type-of	:	(Neg(), e) 		-> <type-of> e
+   	type-of	:	(Pos(), e) 		-> <type-of> e
+   	type-of	:	(DecPre(), e)	-> <type-of> e
+   	type-of	:	(IncPre(), e) 	-> <type-of> e
+   	type-of	:	(DecPost(), e) 	-> <type-of> e
+   	type-of	:	(IncPost(), e) 	-> <type-of> e
    	
    	// Coercing for different types (implicit conversion)
+   	
+  	coerce: [type1, type1] -> type1
+  	
+  	coerce: [type1, type2] -> type2
+  	where
+  		<subtype-of> (type1, type2)
+  	
+  	coerce: [type1, type2] -> type1
+  	where
+  		<subtype-of> (type2, type1)
+   	
    	coerce: [Ch(), Ch()]		-> Ch()
    	coerce: [Int(), Ch()] 		-> Int()
    	coerce: [Ch(), Int()] 		-> Int()
@@ -89,8 +144,28 @@ rules
    	type-of: (LT(), e1, e2) 		-> Int()
    	
    	// Types of expressions
-   	type-of:	UnExp(op, e) 		-> <type-of> (op, <type-of>e)
-   	type-of: 	BinExp(op, e1, e2) 	-> <type-of> (op, <type-of>e1, <type-of>e2)
+   	type-of:	UnExp(op, e) 		-> <type-of> (op, <type-of> e)
+   	type-of: 	BinExp(op, e1, e2) 	-> <type-of> (op, <type-of> e1, <type-of> e2)
+   	
+   	// operators
+   	
+   	type-of: Plus() -> (Int(), Int(), Int())
+   	type-of: Minus() -> (Int(), Int(), Int())
+   	type-of: Mul() -> (Int(), Int(), Int())
+   	type-of: Div() -> (Int(), Int(), Int())
+   	type-of: Mod() -> (Int(), Int(), Int())
+   	type-of: BWAnd() -> (Int(), Int(), Int())
+   	type-of: BWOr() -> (Int(), Int(), Int())
+   	type-of: BWXor() -> (Int(), Int(), Int())	
+    type-of: BitshiftR() -> (Int(), Int(), Int())
+   	type-of: BitshiftL() -> (Int(), Int(), Int())
+   	
+   	type-of: Neg() -> (Int(), Int())
+   	
+   	
+   	
+   	
+   	
    		
    	index-type-of:
   		x -> <index-get-data(|Type())> Def(uri)
@@ -105,4 +180,7 @@ rules
    		t := <index-type-of> x
    			
    	//type-of: Field(x,y) -> <nbl-get-type> y
+   	
+   	//dummy: remove
+   	type-of: (exp, _) -> <type-of> exp
    	

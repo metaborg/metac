@@ -15,6 +15,7 @@ imports
   BaseC/trans/desugaring/desugar
   BaseC/trans/generation/generate
   BaseC/trans/typing/types
+  BaseC/trans/typing/constraints
 
 rules // Analysis
   
@@ -66,7 +67,7 @@ rules // Analysis
 
 rules // Editor services
   
-	constraint-error = fail
+	//constraint-error = fail
 	constraint-warning = fail
 	constraint-note = fail
   
@@ -84,8 +85,8 @@ rules // Editor services
   editor-hover:
     (target, position, ast, path, project-path) -> $[[<write-to-string> uriString]]
     where
-      uriString := <index-uri-to-string> <index-uri> <index-find-key> target
-      ///uriString := <type-of> target
+      //uriString := <index-uri-to-string> <index-uri> <index-find-key> target
+      uriString := <type-of> target
 
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)

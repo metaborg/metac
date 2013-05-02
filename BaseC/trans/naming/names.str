@@ -142,26 +142,75 @@ rules
 rules
 
   nam-get-definition-keys :
-    Declaration(type, Identifier(name)) -> [name]
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> [name]
 
   nam-get-definitions :
-    Declaration(type, Identifier(name)) -> [(Variable(), [name])]
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> [(Variable(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Declaration(type, Identifier(name)) -> <Declaration(id, Identifier(nam-annotate-def(|path__)))>
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> <Declaration(
+            id
+          , Init(Identifier(nam-annotate-def(|path__)), id)
+          )>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Declaration(type, Identifier(name)) -> <store__> DefData(
-                                                       [namespace__|path__]
-                                                     , Type()
-                                                     , type
-                                                     )
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> <store__> DefData(
+                     [namespace__|path__]
+                   , Type()
+                   , type
+                   )
 
   type-of :
-    Declaration(type, Identifier(name)) -> type
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> type
 
   nam-unique :
-    Declaration(type, Identifier(name)) -> <id>
+    Declaration(
+      type
+    , Init(Identifier(name), _)
+    ) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    Declaration(type, NoInit(Identifier(name))) -> [name]
+
+  nam-get-definitions :
+    Declaration(type, NoInit(Identifier(name))) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Declaration(type, NoInit(Identifier(name))) -> <Declaration(
+                                                      id
+                                                    , NoInit(Identifier(nam-annotate-def(|path__)))
+                                                    )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Declaration(type, NoInit(Identifier(name))) -> <store__> DefData(
+                                                               [namespace__|path__]
+                                                             , Type()
+                                                             , type
+                                                             )
+
+  type-of :
+    Declaration(type, NoInit(Identifier(name))) -> type
+
+  nam-unique :
+    Declaration(type, NoInit(Identifier(name))) -> <id>
 
 
 rules
