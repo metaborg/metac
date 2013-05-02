@@ -9,11 +9,9 @@ imports
   	lib/compilation-library.generated
   	lib/nbl-library.generated
 	
-	Statemachine/syntax/Statemachine
-	
 rules
 
 
 //TODO
 //errors on "readable" and "writable"
-
+// error on undefined initial state

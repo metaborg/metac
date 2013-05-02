@@ -1,50 +1,55 @@
-module namebinding
+module statemachine-names
 
 imports
 
-  Statemachine/syntax/Statemachine
-  Statemachine/syntax/Statemachine-in-Base.generated
-
+  BaseC/trans/naming/names
+  BaseC/trans/typing/types
+  Statemachine/trans/statemachine-types
+  include/MetaC
   
   //CompoundStatement is considered a namespace that scopes variables
-namespaces Statemachine State StateMachineVar InEvent OutEvent
+namespaces 
+	Statemachine 
+	State 
+	StateMachineVar 
+	InEvent 
+	OutEvent
 
 rules
-	Statemachine(sm,state,_) : defines unique Statemachine sm
+	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
 							scopes State, StateMachineVar, InEvent, OutEvent
 							refers to State state
 							
-	StateMachineState(state_name,_) : defines unique State state_name
+	StatemachineType(Identifier(sm)) : refers to Statemachine sm
 	
-	StateMachineInEvent(event_name,_) : defines unique InEvent event_name
+	StateMachineState(Identifier(state_name),_) : defines unique State state_name
+	
+	StateMachineInEvent(Identifier(event_name),_) : defines unique InEvent event_name
 				
 
-	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
+	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
 	
-	StateMachineVarDecl(_,var_type, name, _) : defines unique StateMachineVar name of type var_type
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique StateMachineVar name of type var_type
 	
 	//TODO - needs BaseC namebinding
-	//Binding(function) : refers to Function function
+	Binding(Identifier(f)) : refers to Function f
 	
 	//field refence like struct or union
-	/*FieldRef(struct,field) : refers to Struct struct
-							   refers to Statemachine struct
-							   refers to Field field
-							   refers to StateMachineVar field	
-							   */
-
-	StateTransition(event_name, _, state_name,_) : refers to InEvent event_name 
+	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
+							   		where 
+										var has type StatemachineType(Identifier(stm))
+	
+			
+	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : refers to InEvent event_name 
 											  refers to State state_name
 										
-	StateMachineInit(sm_name) : refers to Statemachine sm_name
+	StateMachineInit(Identifier(sm_name)) : refers to Statemachine sm_name
 	
-	StateMachineTrigger(sm_name, in_event) : refers to Statemachine sm_name
+	StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) : refers to Statemachine sm_name
 									refers to InEvent in_event
 									
-	StateMachineIsInState(sm_name, state) : refers to Statemachine sm_name
+	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
 								  	refers to State state
-	
-	
 							    
 	  
 	//methods: sminit, smtrigger,smIsInState 

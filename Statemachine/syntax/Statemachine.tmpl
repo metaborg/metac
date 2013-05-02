@@ -6,33 +6,33 @@ StatemachineVarModifier = "readable" | "writable"
 templates
 
   Statemachine.Statemachine = <
-    statemachine <ID> initial = <ID> {
+    statemachine <Identifier> initial = <Identifier> {
     	<StateMachineComponent*; separator = "\n">
     }
   >
-  
+ 
   StateMachineComponent.StateMachineState = <
-  	state <ID> {
+  	state <Identifier> {
   		<StateBody*>
   	}
   >
   
   StateMachineComponent.StateMachineInEvent = <
-  	in <ID> ( <FunctionParameter*; separator=","> ) 
+  	in <Identifier> ( <FunctionParameter*; separator=","> ) 
   >																										//TODO add binding?
   																																																				
   
   StateMachineComponent.StateMachineOutEvent = <
-  	out <ID> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
+  	out <Identifier> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
   >
   																										
 
   StateMachineComponent.StateMachineVarDecl = <
-  	<StatemachineVarModifier?> var <Type> <ID> = <Exp>	
+  	<StatemachineVarModifier?> var <Type> <Identifier> = <Exp>	
   >																									
   
   StateMachineEventBinding.Binding = <
-  	=\> <ID>
+  	=\> <Identifier>
   >	
   	
   StateBody.StateEntry = <
@@ -44,7 +44,7 @@ templates
   >																										
   	
   StateBody.StateTransition = <
-  	on <ID> [ <Exp?> ] -\> <ID> <Block?>
+  	on <Identifier> [ <Exp?> ] -\> <Identifier> <Block?>
   >																										
  
   
