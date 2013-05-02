@@ -12,7 +12,10 @@ imports
 	baseC/trans/generation/to-c
 	baseC/trans/generation/to-h
 	baseC/trans/generation/to-makefile
+	
+signature constructors
 
+Import : Identifier -> Import
 
 // editor hooks
 rules
@@ -109,11 +112,18 @@ rules
 	    	<debug> "multiple c files generation";
 	    	<desugar-all;debug> selected;
 	    	allModules := <desugar-all;all-module-names>selected;
-	    	<debug>allModules
+	    	<debug>allModules;
+	    	importIds := <desugar-all;import-ids>selected;
+	    	<debug>importIds
+	    	//get index def
+	    	//index-get-file iets
 	    	//TODO: actually do compile these
 
 	id-to-name: Identifier(name) -> name
+	id-to-name: Import(Identifier(name)) -> name
 	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
+	import-ids: Module(_, imports, _) -> <map(import-to-id)>imports
+	import-to-id: Import(identifier) -> identifier
 			
 
 // helper rules
