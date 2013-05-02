@@ -20,6 +20,7 @@ signature
 
   constructors
     Module      : Namespace
+    Import      : Namespace
     Function    : Namespace
     Variable    : Namespace
     Label       : Namespace
@@ -57,6 +58,34 @@ rules
 
   nam-unique :
     Module(Identifier(name), _, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Import(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    Import(Identifier(name)) -> [(Module(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Import(Identifier(name)) -> <Import(
+                                   Identifier(nam-annotate-use(|paths__, Module()))
+                                 )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Function()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Struct()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
 
 
 rules

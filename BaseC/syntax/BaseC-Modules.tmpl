@@ -14,7 +14,9 @@ ModuleContent = <<Enum>;>
 ModuleContent = <<Component>>
 ModuleContent = <<Interface>>
 
-ModuleImports = <imports <Identifier*; separator=",">>
+ModuleImports = <imports <Import*; separator=",">> 
+
+Import.Import = <<Identifier>>
 
 MessageList.MessageList = <
 <Exported?> messagelist <Identifier> {

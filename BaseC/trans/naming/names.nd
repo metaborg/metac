@@ -6,6 +6,7 @@ imports
 	
 namespaces
 	Module
+	Import
 	Function
 	Variable
 	Label 
@@ -23,7 +24,13 @@ rules
 	Module(Identifier(name), _, _):
 		defines Module name
 		scopes Function, Struct, Enum, Variable, Union
-	
+		
+	Import(Identifier(name)):
+		//defines non-unique Import name
+		refers to Module name
+		imports Function from Module name
+		imports Struct from Module name
+		
 	
 	// functions
 	FunDef(_,returnType, Identifier(name), params,_):
