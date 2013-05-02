@@ -19,6 +19,7 @@ rules
 	
 	id-to-name: Identifier(name) -> name
 	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
+	all-module-names: Module(identifier, None(), _) -> [<id-to-name>identifier]
 
 
 //makefile template
