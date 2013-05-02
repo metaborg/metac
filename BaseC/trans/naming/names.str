@@ -342,6 +342,28 @@ rules
 
 rules
 
+  nam-get-uses-keys :
+    FieldViaPointer(e, Identifier(field)) -> [field]
+    where Pointer(StructType(Identifier(s))) := <type-of> e
+
+  nam-get-uses :
+    FieldViaPointer(e, Identifier(field)) -> [(Field(), [field])]
+    where Pointer(StructType(Identifier(s))) := <type-of> e
+
+  nam-annotate-names(|paths__, path__):
+    FieldViaPointer(e, Identifier(field)) -> <FieldViaPointer(
+                                                id
+                                              , Identifier(nam-annotate-use(|paths__, Field()))
+                                              )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    FieldViaPointer(e, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
+    where <target__> field
+    where Pointer(StructType(Identifier(s))) := <type-of> e
+
+
+rules
+
   nam-get-definition-keys :
     Label(l, _) -> [l]
 
