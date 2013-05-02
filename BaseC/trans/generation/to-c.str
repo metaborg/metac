@@ -59,7 +59,7 @@ rules
 	/**
 	 * Declarations
 	 */
-	to-c: Declaration(a, NoInit(b)) -> 
+	/*to-c: Declaration(a, NoInit(b)) -> 
 			  C-Declaration2(
 	            <to-c>a
 	          , [ C-IdDecl([], <to-c>b, None()) ]
@@ -73,8 +73,34 @@ rules
 	              )
 	            ]
 	          )
-								
+	*/          
+	to-c: Declaration(a, NoInit(b)) -> 
+			  C-Declaration2(
+	            <to-c> typespec
+	          , [ C-IdDecl(plist, <to-c>b, None()) ]
+	          )
+	where
+		(typespec, plist):= <getTypeSpec(|[])> a
 	
+	to-c: Declaration(a, Init(b, c)) -> 
+			  C-Declaration2(
+	            <to-c> typespec
+	          , [ C-DeclInit(
+	            	C-IdDecl(plist, <to-c>b, None())
+	              , C-AssignInit(<to-c>c)
+	              )
+	            ]
+	          )          
+	where
+		(typespec, plist):= <getTypeSpec(|[])> a
+									
+	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist)
+	where
+		(typespec, nlist):= <getTypeSpec(|list)> a; 
+		nnlist:= [C-PointerOf([])|nlist]	<+
+		typespec:= a; nnlist:= [C-PointerOf([])|list]
+		
+	getTypeSpec(|list): BasicType(a) -> (BasicType(a), list)
 	/**
 	 * Expressions
 	 */

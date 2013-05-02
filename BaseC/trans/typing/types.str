@@ -39,7 +39,6 @@ rules
 	 
 	type-of: Decimal(val) -> type
 	where
-		debug(!"decimal: ");
 		<in-range(|127)> val;			type:= BasicType("int8")	<+
 		<in-range(|32767)> val;			type:= BasicType("int16")	<+
 		<in-range(|2147483647)> val; 	type:= BasicType("int32")	<+
@@ -63,8 +62,6 @@ rules
 	supertype-of: BasicType("int16") -> BasicType("int32")
 	supertype-of: BasicType("int32") -> BasicType("int64")
 	
-	
-	//TODO: pointer subtypes?
 	
 	subtype-of: (type, type) -> None()
 	
