@@ -73,11 +73,11 @@ rules
 		where 
 			var has type StructType(Identifier(s))
 	
-/*	FieldViaPointer(var, Identifier(field)):
-		refers to Field field in Struct s
+	FieldViaPointer(e, Identifier(field)):
+		refers to Field field in Union s
 		where
-			var has type StructType(Identifier(s))
-*/
+			e has type Pointer(StructType(Identifier(s)))
+
 	
 	// labels and gotos	
 	Label(l, _): 
