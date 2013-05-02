@@ -22,6 +22,7 @@ builders
   builder  : "to C AST debug"                      = editor-to-c-ast-debug (openeditor) (realtime) (meta) (source)
   
   builder  : "to C"     				           = editor-to-c (meta) (source)
+  builder  : "to C including imports"     		   = editor-and-imports-to-c (meta) (source)
   builder  : "to H"     				           = editor-to-h (meta) (source)
   builder  : "to makefile"     			           = editor-to-makefile (meta) (source)
   builder  : "to compiled exe"            		   = editor-compile (meta) (source)

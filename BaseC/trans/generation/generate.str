@@ -49,7 +49,10 @@ rules
 		(selected, position, ast, path, project-path) -> None()
 	    with
 			<basec-execute> (selected, path, project-path)
-
+	editor-and-imports-to-c:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			<basec-to-c-multiple> (selected, path)
 
 // rewriting single files
 rules
@@ -69,7 +72,7 @@ rules
 	    (selected, path) -> None()
 	    with
 			fileName := $[[<dirname>path]/Makefile];
-			result   := <to-makefile>selected;
+			result   := <desugar-all;to-makefile>selected;
 			<write-file> (fileName, result)
 	basec-to-c-h-makefile:
 		(selected, path) -> None()
@@ -98,6 +101,20 @@ rules
 			<base-c-to-compiledc> (selected, path, project-path);
 			<compiledc-execute>	(selected, path, project-path)
 
+
+// rewrite multiple files
+	basec-to-c-multiple:
+	    (selected, path) -> None()
+	    with
+	    	<debug> "multiple c files generation";
+	    	<desugar-all;debug> selected;
+	    	allModules := <desugar-all;all-module-names>selected;
+	    	<debug>allModules
+	    	//TODO: actually do compile these
+
+	id-to-name: Identifier(name) -> name
+	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
+			
 
 // helper rules
 rules
