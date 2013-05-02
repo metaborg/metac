@@ -47,11 +47,12 @@ rules
 	type-of: Hexadecimal(val)-> <type-of> Decimal(<hex-string-to-int> hexval)
 	where
 		hexval:= <ltrim-chars(?'0'); try(ltrim-chars(?'X')); try(ltrim-chars(?'x'))> val
-		
-		
+			
 	type-of: Octal(val)	-> <type-of> Decimal(<oct-string-to-int> val)
 	
-		
+	type-of: Binary(val) -> <type-of> Decimal(<bin-string-to-int> binval)
+	where
+		binval:= <ltrim-chars(?'0'); ltrim-chars(?'b')> val
 	
 	generictype-of: BasicType("int8") -> Int()
 	generictype-of: BasicType("int16") -> Int()
@@ -167,6 +168,9 @@ rules
    	type-of: Neg() -> (Int(), Int())
    	
    	
+   	//struct fields
+   	type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId
+   	//type-of: FieldViaPointer()
    	
    	
    	

@@ -27,6 +27,9 @@ rules
 	 * Constants & Literals & Identifiers
 	 */
 	to-c: Decimal(a) -> C-IntConst(a)
+	to-c: Hexadecimal(a) -> C-HexConst(a)
+	to-c: Octal(a) -> C-OctConst(a)
+//	to-c: Binary(a) -> C-BinConst(a)
 	to-c: String(a) -> C-StringLit([a])
 	to-c: Identifier(a) -> C-Id(a)
 	to-c: Var(a) -> <to-c>a
@@ -101,6 +104,10 @@ rules
 		typespec:= a; nnlist:= [C-PointerOf([])|list]
 		
 	getTypeSpec(|list): BasicType(a) -> (BasicType(a), list)
+	
+	getTypeSpec(|list): StructType(a) -> (StructType(a), list)
+	
+	
 	/**
 	 * Expressions
 	 */
