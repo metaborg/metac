@@ -43,10 +43,8 @@ rules
 	where
 		Identifier(name) := typeId; 
 		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
-		
-		
+			
 	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
-		
 	
 	/**
 	 * Expressions

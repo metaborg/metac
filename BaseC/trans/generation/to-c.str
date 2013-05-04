@@ -180,6 +180,16 @@ rules
 		      )
 		    , []
 		    )
+	
+	to-c: NestedStruct(Struct(_, name, fields)) ->
+			C-MemDecl(
+				C-TypeSpec(
+					[]
+				, 	C-Struct(<to-c>name, <map(to-c)>fields)
+				,	[]
+				)
+			,	[C-IdDecl([], <to-c> name, None())]
+			)
 		    
 	to-c: FieldDecl(type, identifier) -> 
 			C-MemDecl(

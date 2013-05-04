@@ -64,8 +64,8 @@ rules
 		scopes Field
 		
 	Struct(_, Identifier(s), _):
-		defines unique Struct s 
-		scopes Field
+		defines unique Struct s of type StructType(Identifier(s))		//remove later?
+		scopes Field, Struct
 	
 	StructType(Identifier(s)):
 		refers to Struct s
@@ -74,17 +74,18 @@ rules
 	FieldDecl(t, Identifier(i)):
 		defines Field i of type t
 	
-	Field(var, Identifier(field)): 
+	Field(e, Identifier(field)): 
 		//refers to Field field in Struct s 
 		refers to Field field in Union s
+		refers to Struct field in Union s
 		where 
-			var has type StructType(Identifier(s))
+			e has type StructType(Identifier(s))
 	
 	FieldViaPointer(e, Identifier(field)):
 		refers to Field field in Union s
 		where
 			e has type Pointer(StructType(Identifier(s)))
-
+		
 	
 	// labels and gotos	
 	Label(l, _): 
