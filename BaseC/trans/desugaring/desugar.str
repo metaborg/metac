@@ -2,6 +2,12 @@ module BaseC/trans/desugaring/desugar
 
 imports
 	include/metaC
+	lib/nbl-library.generated
+	libstratego-lib
+	lib/editor-common.generated
+	lib/index-library.generated
+	lib/analysis-library.generated
+	lib/analysis-library-internal.generated
 	BaseC/trans/desugaring/constructors
 
 	
@@ -28,7 +34,13 @@ rules
 	where
 		<is-substring(!"long")> a;
 		<is-substring(!"double")> a
-	
+		
+	desugar: amb([Exp(_), Declaration(Pointer(StructType(typeId)), init)]) -> Declaration(Pointer(StructType(typeId)),init)
+	where
+		Identifier(name) := typeId; 
+		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
+		
+		
 	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 		
 	

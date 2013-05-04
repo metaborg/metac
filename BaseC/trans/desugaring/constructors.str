@@ -4,6 +4,9 @@ imports
 	include/metaC
 	
 signature constructors
+	amb: List(ModuleContent) -> ModuleContent
+	
+	
 	/**
 	 * Binary Operators
 	 */

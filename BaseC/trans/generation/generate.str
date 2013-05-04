@@ -12,7 +12,10 @@ imports
 	baseC/trans/generation/to-c
 	baseC/trans/generation/to-h
 	baseC/trans/generation/to-makefile
+	
+signature constructors
 
+Import : Identifier -> Import
 
 // editor hooks
 rules
@@ -49,7 +52,10 @@ rules
 		(selected, position, ast, path, project-path) -> None()
 	    with
 			<basec-execute> (selected, path, project-path)
-
+	editor-and-imports-to-c:
+	    (selected, position, ast, path, project-path) -> None()
+	    with
+			<basec-to-c-multiple> (selected, path, project-path)
 
 // rewriting single files
 rules
@@ -69,7 +75,7 @@ rules
 	    (selected, path) -> None()
 	    with
 			fileName := $[[<dirname>path]/Makefile];
-			result   := <to-makefile>selected;
+			result   := <desugar-all;to-makefile>selected;
 			<write-file> (fileName, result)
 	basec-to-c-h-makefile:
 		(selected, path) -> None()
@@ -98,6 +104,31 @@ rules
 			<base-c-to-compiledc> (selected, path, project-path);
 			<compiledc-execute>	(selected, path, project-path)
 
+
+// rewrite multiple files
+	basec-to-c-multiple:
+	    (selected, path, project-path) -> None()
+	    with
+	    	// <debug> "multiple c files generation";
+	    	desugaredAst := <desugar-all> selected;
+	    	(analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
+	    	// <debug> analyzedAst;
+	    	importIds := <import-ids>analyzedAst;
+	    	// <debug>importIds;
+	    	importFiles := <filter(\Identifier(name) -> <index-lookup; index-get-files-of; map(Fst)> name\); concat; make-set> importIds;
+	    	<debug> importFiles;
+	    	<debug> "TODO: parse the files"
+	    	// <mapconcat(index-get-files-of);debug> importIds
+	    	//get index def
+	    	//index-get-file iets
+	    	//TODO: actually do compile these
+
+	id-to-name: Identifier(name) -> name
+	id-to-name: Import(Identifier(name)) -> name
+	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
+	import-ids: Module(_, imports, _) -> <map(import-to-id)>imports
+	import-to-id: Import(identifier) -> identifier
+			
 
 // helper rules
 rules

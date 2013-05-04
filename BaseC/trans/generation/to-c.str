@@ -145,7 +145,7 @@ rules
  	to-c: UnExp(DecPost(), e1)			-> C-PostDecr(<to-c>e1)
  	to-c: UnExp(IncPost(), e1)			-> C-PostIncr(<to-c>e1)
 	
-
+	to-c: FieldViaPointer(var, fieldId) -> C-DerefMember(<to-c> var, <to-c> fieldId)
 	
 	/**
 	 * Statements
@@ -180,8 +180,16 @@ rules
 		      )
 		    , []
 		    )
-	to-c: FieldDecl(type, identifier) -> C-MemDecl(<to-c>type, [<to-c-field-decl>identifier])
-	to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
+		    
+	to-c: FieldDecl(type, identifier) -> 
+			C-MemDecl(
+				<to-c> typespec, 
+				//[<to-c-field-decl>identifier]
+				[C-IdDecl(plist, <to-c>identifier, None())]
+				)
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	//to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
     to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
 	
@@ -235,4 +243,4 @@ rules
 	import-headers: imports -> <map(import-header)>imports
 		where
 			<not(equal)> (imports, None())
-	import-header: Identifier(modulename) -> C-PpControl($[#include "[modulename].h"])
+	import-header: Import(Identifier(modulename)) -> C-PpControl($[#include "[modulename].h"])

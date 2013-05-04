@@ -3,6 +3,7 @@ module BaseC/trans/typing/types
 imports
 	include/metaC
 	BaseC/trans/desugaring/constructors
+	BaseC/trans/naming/names	
 	lib/nbl-library.generated
 	libstratego-lib
 	lib/editor-common.generated
@@ -200,11 +201,18 @@ rules
    	
    	
    	//struct fields
-   	type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId
-   	//TODO: type-of: FieldViaPointer()
+   	type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId		//TODO: modify similar to FieldViaPointer for nested structs/unions
+   	type-of: FieldViaPointer(e, Identifier(fieldId)) -> type
+   	where
+   		Pointer(StructType(Identifier(s))) := <type-of> e;
+   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		type := <index-type-of> field
    	
    	
-   	
+   	debug2(s):
+   		t -> t
+   		where
+   			<debug(s)> [t]
    		
    	index-type-of:
   		x -> <index-get-data(|Type())> Def(uri)
