@@ -2,12 +2,13 @@ module metaC/trans/generation/generate
 
 imports
 	lib/analysis-library.generated
-	lib/index-library.generated
+	lib/analysis-library-internal.generated
 	lib/editor-common.generated
-	include/MetaC
-	lib/c/c
+	lib/index-library.generated
 	libstratego-gpp
 	libstratego-lib
+	lib/c/c
+	include/MetaC
 	baseC/trans/desugaring/desugar
 	baseC/trans/generation/to-c
 	baseC/trans/generation/to-h
@@ -109,25 +110,23 @@ rules
 	basec-to-c-multiple:
 	    (selected, path, project-path) -> None()
 	    with
-	    	// <debug> "multiple c files generation";
 	    	desugaredAst := <desugar-all> selected;
 	    	(analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
-	    	// <debug> analyzedAst;
 	    	importIds := <import-ids>analyzedAst;
-	    	// <debug>importIds;
 	    	importFiles := <filter(\Identifier(name) -> <index-lookup; index-get-files-of; map(Fst)> name\); concat; make-set> importIds;
-	    	<debug> importFiles;
-	    	<debug> "TODO: parse the files"
-	    	// <mapconcat(index-get-files-of);debug> importIds
-	    	//get index def
-	    	//index-get-file iets
+			importAsts := <map(filename-to-ast)> importFiles;
+			<debug>importAsts;
+			<debug> "TODO: rewrite to c, h + make 'recursive'"
 	    	//TODO: actually do compile these
+	    	//TODO: make recursive (or not really recursive, because circular imports)
 
 	id-to-name: Identifier(name) -> name
 	id-to-name: Import(Identifier(name)) -> name
 	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
 	import-ids: Module(_, imports, _) -> <map(import-to-id)>imports
 	import-to-id: Import(identifier) -> identifier
+	
+	filename-to-ast: file -> <index-get-value> AST(("MetaC", file), ())
 			
 
 // helper rules
