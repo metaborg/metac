@@ -114,8 +114,10 @@ rules
 	    	(analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
 	    	// <debug> analyzedAst;
 	    	importIds := <import-ids>analyzedAst;
-	    	<debug>importIds;
-	    	<debug> "TODO: use these identifiers to parse the files" //;
+	    	// <debug>importIds;
+	    	importFiles := <filter(\Identifier(name) -> <index-lookup; index-get-files-of; map(Fst)> name\); concat; make-set> importIds;
+	    	<debug> importFiles;
+	    	<debug> "TODO: parse the files"
 	    	// <mapconcat(index-get-files-of);debug> importIds
 	    	//get index def
 	    	//index-get-file iets
