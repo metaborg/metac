@@ -1,5 +1,6 @@
  
 templates
 	FieldDecl.FieldDecl =<<Type> <Identifier*;separator=",">;>
+	FieldDecl.NestedStruct = <<StructOrUnion>;>
 	StructOrUnion.Struct =	<<Exported?>struct <Identifier> {<FieldDecl*>} >
 	StructOrUnion.Union =	<<Exported?>union <Identifier> {<FieldDecl*>} >

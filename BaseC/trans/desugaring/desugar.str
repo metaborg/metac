@@ -30,6 +30,10 @@ rules
 			
 	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
 	
+	desugar: Binary(val) -> Decimal(<bin-string-to-int> binval)			//needed because there is no def of binary in the c syntax
+	where
+		binval:= <ltrim-chars(?'0'); ltrim-chars(?'b')> val
+	
 	desugar: BasicType(a) -> BasicType("long double")
 	where
 		<is-substring(!"long")> a;
