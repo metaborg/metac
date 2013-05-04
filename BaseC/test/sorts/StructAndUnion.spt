@@ -82,3 +82,52 @@ test union with initialiser
 		int8 a = 10;
 	} 
 ]] parse fails
+
+test nested dummy struct 
+[[
+	struct X{
+		struct Y{
+			
+		};
+	} 
+]] parse succeeds
+
+test nested struct
+[[
+	struct X{
+		struct Y{
+			int z;
+		};
+		int w;
+	}
+]] parse succeeds
+
+test union inside struct 
+[[
+	struct X{
+		union Y{
+			int z;
+		};
+		int w;
+	}
+]] parse succeeds
+
+test struct inside union
+[[
+	union Y{
+		struct X{
+			int w;
+		};
+		int z;
+	}
+]] parse succeeds
+
+test nested union
+[[
+	union Y{
+		union K{
+			int j;
+		};
+		int z;
+	}
+]] parse succeeds
