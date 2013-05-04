@@ -243,4 +243,4 @@ rules
 	import-headers: imports -> <map(import-header)>imports
 		where
 			<not(equal)> (imports, None())
-	import-header: Identifier(modulename) -> C-PpControl($[#include "[modulename].h"])
+	import-header: Import(Identifier(modulename)) -> C-PpControl($[#include "[modulename].h"])
