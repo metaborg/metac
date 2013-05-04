@@ -13,6 +13,7 @@ imports
 	
 signature constructors
 	FunType : List(Type) * Type -> Type
+	MsgListType: Identifier -> Type
 	
 	Int	  : Type
 	Flt	  : Type
@@ -237,6 +238,8 @@ rules
    		//uri := <index-uri; debug(!"URI: ")> x;
    		//t := <index-get-data(|Type()); debug(!"Type: ")> Def(uri)
    		t := <index-type-of> x
+   	
+   	type-of: MListRef(Identifier(x)) -> <index-type-of> x
    			
    	//type-of: Field(x,y) -> <nbl-get-type> y
    	

@@ -71,4 +71,6 @@ Stm.Return = <return <CommaExp?> ;>
 Stm.Exit = <exit <CommaExp?> ;>
 
 // BaseC messages
-Stm.Report = <report <Identifier>.<Identifier>();>
+Stm.Report = <report <MListRef>.<Identifier>();>
+
+MListRef.MListRef = <<Identifier>>

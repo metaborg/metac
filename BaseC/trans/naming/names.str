@@ -41,6 +41,7 @@ rules
                                       , Enum()
                                       , Variable()
                                       , Union()
+                                      , Messagelist()
                                       ]
 
   nam-get-definition-keys :
@@ -258,6 +259,20 @@ rules
 
 rules
 
+  nam-get-uses-keys :
+    MListRef(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    MListRef(Identifier(name)) -> [(Messagelist(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    MListRef(Identifier(name)) -> <MListRef(
+                                     Identifier(nam-annotate-use(|paths__, Messagelist()))
+                                   )>
+
+
+rules
+
   nam-get-scope-types :
     Union(_, Identifier(u), _) -> [Field()]
 
@@ -450,6 +465,16 @@ rules
                                             , id
                                             )>
 
+  adjust-index-def-data(store__|namespace__, path__):
+    MessageList(_, Identifier(name), _) -> <store__> DefData(
+                                                       [namespace__|path__]
+                                                     , Type()
+                                                     , MsgListType(Identifier(name))
+                                                     )
+
+  type-of :
+    MessageList(_, Identifier(name), _) -> MsgListType(Identifier(name))
+
   nam-unique :
     MessageList(_, Identifier(name), _) -> <id>
 
@@ -472,3 +497,25 @@ rules
 
   nam-unique :
     Message(Identifier(name), _, _, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Report(var, Identifier(msg)) -> [msg]
+    where MsgListType(Identifier(mList)) := <type-of> var
+
+  nam-get-uses :
+    Report(var, Identifier(msg)) -> [(Message(), [msg])]
+    where MsgListType(Identifier(mList)) := <type-of> var
+
+  nam-annotate-names(|paths__, path__):
+    Report(var, Identifier(msg)) -> <Report(
+                                       id
+                                     , Identifier(nam-annotate-use(|paths__, Message()))
+                                     )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    Report(var, Identifier(msg)) -> <index-lookup-children(|Message(), prefix__)> mList
+    where <target__> msg
+    where MsgListType(Identifier(mList)) := <type-of> var

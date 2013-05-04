@@ -23,7 +23,7 @@ rules
 	// modules
 	Module(Identifier(name), _, _):
 		defines Module name
-		scopes Function, Struct, Enum, Variable, Union
+		scopes Function, Struct, Enum, Variable, Union, Messagelist
 		
 	Import(Identifier(name)):
 		//defines non-unique Import name
@@ -56,7 +56,9 @@ rules
 		
 	Var(Identifier(name)):
 		refers to Variable name
-	
+		
+	MListRef(Identifier(name)):
+		refers to Messagelist name
 	
 	// structs and unions
 	Union(_, Identifier(u), _):
@@ -96,10 +98,15 @@ rules
 
 	// message lists and messages
 	MessageList(_, Identifier(name), _):
-		defines Messagelist name
+		defines unique Messagelist name of type MsgListType(Identifier(name))
 		scopes Message
 		
 	Message(Identifier(name), _, _, _):
  		defines Message name
+ 		
+ 	Report(var, Identifier(msg)):
+ 		refers to Message msg in Messagelist mList
+ 		where
+ 			var has type MsgListType(Identifier(mList))
 
 
