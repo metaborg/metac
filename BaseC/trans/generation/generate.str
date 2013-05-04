@@ -55,7 +55,7 @@ rules
 	editor-and-imports-to-c:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
-			<basec-to-c-multiple> (selected, path)
+			<basec-to-c-multiple> (selected, path, project-path)
 
 // rewriting single files
 rules
@@ -107,14 +107,16 @@ rules
 
 // rewrite multiple files
 	basec-to-c-multiple:
-	    (selected, path) -> None()
+	    (selected, path, project-path) -> None()
 	    with
-	    	<debug> "multiple c files generation";
-	    	<desugar-all;debug> selected;
-	    	allModules := <desugar-all;all-module-names>selected;
-	    	<debug>allModules;
-	    	importIds := <desugar-all;import-ids>selected;
-	    	<debug>importIds
+	    	// <debug> "multiple c files generation";
+	    	desugaredAst := <desugar-all> selected;
+	    	(analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
+	    	// <debug> analyzedAst;
+	    	importIds := <import-ids>analyzedAst;
+	    	<debug>importIds;
+	    	<debug> "TODO: use these identifiers to parse the files" //;
+	    	// <mapconcat(index-get-files-of);debug> importIds
 	    	//get index def
 	    	//index-get-file iets
 	    	//TODO: actually do compile these
