@@ -1,6 +1,6 @@
 module test16 { 
   exported int32 main(int32 argc, string[] argv) {
-  		printf("software >> Let's build an int32 array!\n");
+  		printf("software >> Let\'s build an int32 array!\n");
   		int32 array[12];
   		int32 i;
   	  	array[0] = 0;
