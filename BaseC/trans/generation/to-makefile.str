@@ -4,7 +4,6 @@ imports
 	include/MetaC
 
 rules
-	//FIXME: actually recursively find all required imports, instead of just these imports.
 	to-makefile: ast -> makefile
 		where
 			name := <module-name>ast;
@@ -12,6 +11,11 @@ rules
 			all-object-files := <separate-by>(" ", <map(guarantee-extension(|"o"))>all-names);
 			makefile := <default-makefile>(name, all-object-files)
 
+	to-makefile: (ast, all-names) -> makefile
+		where
+			name := <module-name>ast;
+			all-object-files := <separate-by>(" ", <map(guarantee-extension(|"o"))>all-names);
+			makefile := <default-makefile>(name, all-object-files)
 
 //helper methods
 rules
