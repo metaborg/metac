@@ -7,22 +7,33 @@ rules
 	to-makefile: ast -> makefile
 		where
 			name := <module-name>ast;
-			makefile := <default-makefile>name
+			all-names := <all-module-names>ast;
+			all-object-files := <separate-by>(" ", <map(guarantee-extension(|"o"))>all-names);
+			makefile := <default-makefile>(name, all-object-files)
 
+	to-makefile: (ast, all-names) -> makefile
+		where
+			name := <module-name>ast;
+			all-object-files := <separate-by>(" ", <map(guarantee-extension(|"o"))>all-names);
+			makefile := <default-makefile>(name, all-object-files)
 
 //helper methods
 rules
 	module-name: Module(Identifier(modulename), _, _) -> modulename
+	
+	id-to-name: Identifier(name) -> name
+	all-module-names: Module(identifier, imports, _) -> <conc;map(id-to-name)>([identifier], imports)
+	all-module-names: Module(identifier, None(), _) -> [<id-to-name>identifier]
 
 
 //makefile template
 rules
-	default-makefile: name ->
+	default-makefile: (name, all-object-files) ->
 $[
 CC=gcc
 CFLAGS=-std=c99
 ODIR=./bin
-_OBJ_[name]=[name].o
+_OBJ_[name]=[<concat-strings>all-object-files]
 OBJ_[name]=$(patsubst %,$(ODIR)/%,$(_OBJ_[name]))
 
 

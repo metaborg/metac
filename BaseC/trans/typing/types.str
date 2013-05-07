@@ -3,6 +3,7 @@ module BaseC/trans/typing/types
 imports
 	include/metaC
 	BaseC/trans/desugaring/constructors
+	BaseC/trans/naming/names	
 	lib/nbl-library.generated
 	libstratego-lib
 	lib/editor-common.generated
@@ -12,13 +13,15 @@ imports
 	
 signature constructors
 	FunType : List(Type) * Type -> Type
-	Int	  : type
-	Flt	  : type
-	Ch    : type
-	Str   : type
-	Ptr   : type
+	MsgListType: Identifier -> Type
 	
-	Int8	: Type
+	Int	  : Type
+	Flt	  : Type
+	Ch    : Type
+	Str   : Type
+	Ptr   : Type
+	
+	IntOrFlt: Type
 	
 rules
 	/*type-of: _ -> BasicType("int8")
@@ -53,16 +56,28 @@ rules
 	type-of: Binary(val) -> <type-of> Decimal(<bin-string-to-int> binval)
 	where
 		binval:= <ltrim-chars(?'0'); ltrim-chars(?'b')> val
+		
+	type-of: Float(a) -> BasicType("float")			//TODO: edit similar to decimal?
 	
 	generictype-of: BasicType("int8") -> Int()
 	generictype-of: BasicType("int16") -> Int()
 	generictype-of: BasicType("int32") -> Int()
 	generictype-of: BasicType("int64") -> Int()
 	
+	generictype-of: BasicType("float") -> Flt()
+	generictype-of: BasicType("double") -> Flt()
+	generictype-of: BasicType("long double") -> Flt()
+	
+	generictype-of: Int() -> IntOrFlt()
+	generictype-of: Flt() -> IntOrFlt()
+	
 	supertype-of: BasicType("int8") -> BasicType("int16")
 	supertype-of: BasicType("int16") -> BasicType("int32")
 	supertype-of: BasicType("int32") -> BasicType("int64")
 	
+	supertype-of: BasicType("int64") -> BasicType("float")
+	supertype-of: BasicType("float") -> BasicType("double")
+	supertype-of: BasicType("double") -> BasicType("long double")
 	
 	subtype-of: (type, type) -> None()
 	
@@ -105,7 +120,21 @@ rules
    	
    	// Coercing for different types (implicit conversion)
    	
-  	coerce: [type1, type1] -> type1
+   	coerce(|type): [type1, type1] -> <type-of> type1
+   		where
+   			type:= <generictype-of> type1
+   	
+   	coerce(|type): [type1, type2] -> type2
+  	where
+  		<subtype-of> (type1, type2);
+  		type:= <generictype-of> type2
+  	
+  	coerce(|type): [type1, type2] -> type1
+  	where
+  		<subtype-of> (type2, type1);
+  		type:= <generictype-of> type1
+   	
+  	coerce: [type1, type1] -> <type-of> type1
   	
   	coerce: [type1, type2] -> type2
   	where
@@ -129,9 +158,10 @@ rules
    	// Binary operations   	
    	type-of: (Plus(), e1, e2) 		-> <coerce> [e1,e2]
    	type-of: (Minus(), e1, e2) 		-> <coerce> [e1,e2]
-   	type-of: (Div(), e1, e2) 		-> <coerce> [e1,e2]
-   	type-of: (Mod(), e1, e2) 		-> <coerce> [e1,e2]
    	type-of: (Mul(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Div(), e1, e2) 		-> <coerce> [e1,e2]
+   	type-of: (Mod(), e1, e2) 		-> <coerce(|Int())> [e1,e2]
+   	
    	type-of: (BWAnd(), e1, e2) 		-> <coerce> [e1,e2]
    	type-of: (BWOr(), e1, e2) 		-> <coerce> [e1,e2]
    	type-of: (BWXor(), e1, e2) 		-> <coerce> [e1,e2]	
@@ -150,30 +180,52 @@ rules
    	
    	// Types of expressions
    	type-of:	UnExp(op, e) 		-> <type-of> (op, <type-of> e)
+   	
    	type-of: 	BinExp(op, e1, e2) 	-> <type-of> (op, <type-of> e1, <type-of> e2)
    	
-   	// operators
-   	
-   	type-of: Plus() -> (Int(), Int(), Int())
-   	type-of: Minus() -> (Int(), Int(), Int())
-   	type-of: Mul() -> (Int(), Int(), Int())
-   	type-of: Div() -> (Int(), Int(), Int())
+   	// operators:		type-of: operator -> (operand1_type, operand2_type, result_type) 
+	type-of: Plus() -> (IntOrFlt(), IntOrFlt(), IntOrFlt())
+	type-of: Minus() -> (IntOrFlt(), IntOrFlt(), IntOrFlt()) 
+	type-of: Mul() -> (IntOrFlt(), IntOrFlt(), IntOrFlt())
+	type-of: Div() -> (IntOrFlt(), IntOrFlt(), IntOrFlt())
+	
    	type-of: Mod() -> (Int(), Int(), Int())
+   	
+   	//bitwise operators - only ints
    	type-of: BWAnd() -> (Int(), Int(), Int())
    	type-of: BWOr() -> (Int(), Int(), Int())
    	type-of: BWXor() -> (Int(), Int(), Int())	
     type-of: BitshiftR() -> (Int(), Int(), Int())
    	type-of: BitshiftL() -> (Int(), Int(), Int())
    	
-   	type-of: Neg() -> (Int(), Int())
+   	type-of: Neg() -> (IntOrFlt(), IntOrFlt())
    	
    	
    	//struct fields
-   	type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId
-   	//type-of: FieldViaPointer()
+   	//type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId		//TODO: modify similar to FieldViaPointer for nested structs/unions
+   	type-of: Field(e, Identifier(fieldId)) -> type
+   	where
+   		StructType(Identifier(s)) := <type-of> e;
+   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		type := <index-type-of> field <+
+   		StructType(Identifier(s)) := <type-of> e;
+   		field := <index-lookup-children(|Struct(), fieldId); Hd> s;
+   		type := <index-type-of> field
+   		//type:= <debug(!"3ns: ")> StructType(Identifier(fieldId))
+   		
+   		
+   		
+   	type-of: FieldViaPointer(e, Identifier(fieldId)) -> type
+   	where
+   		Pointer(StructType(Identifier(s))) := <type-of> e;
+   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		type := <index-type-of> field
    	
    	
-   	
+   	debug2(s):
+   		t -> t
+   		where
+   			<debug(s)> [t]
    		
    	index-type-of:
   		x -> <index-get-data(|Type())> Def(uri)
@@ -186,9 +238,11 @@ rules
    		//uri := <index-uri; debug(!"URI: ")> x;
    		//t := <index-get-data(|Type()); debug(!"Type: ")> Def(uri)
    		t := <index-type-of> x
+   	
+   	type-of: MListRef(Identifier(x)) -> <index-type-of> x
    			
    	//type-of: Field(x,y) -> <nbl-get-type> y
    	
    	//dummy: remove
-   	type-of: (exp, _) -> <type-of> exp
+   	//type-of: (exp, _) -> <type-of> exp
    	

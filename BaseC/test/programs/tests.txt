@@ -71,5 +71,33 @@ test19.mc
 test20.mc
 	array pointer declaration, for loop assignment and usage
 	
+=== STATE MACHINES ===
+
 test21.mc
+	empty state machine
+
+test22.mc
+	state machines from the tutorial, just 4 states
+	doesn't generate the right C code
+
+test23.mc
+	two states and one transition
+	doesn't generate the right C code
+test24.mc
+	two states and two conditional transitions
+	doesn't generate the right C code
+test25.mc
+	three states and five conditional transitions
+	doesn't generate the right C code
+
+test26.mc
+	three states, five conditional transition and a local variable
+	doesn't generate the right C code
 	
+test27.mc
+	three states, conditional transitions, a local variable and a call to an external function
+	doesn't compile
+	
+test28.mc
+	three states, conditional transitions, a local variable and a rising of an output event
+	doesn't compile

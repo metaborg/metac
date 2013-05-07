@@ -20,6 +20,7 @@ signature
 
   constructors
     Module      : Namespace
+    Import      : Namespace
     Function    : Namespace
     Variable    : Namespace
     Label       : Namespace
@@ -40,6 +41,7 @@ rules
                                       , Enum()
                                       , Variable()
                                       , Union()
+                                      , Messagelist()
                                       ]
 
   nam-get-definition-keys :
@@ -57,6 +59,34 @@ rules
 
   nam-unique :
     Module(Identifier(name), _, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Import(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    Import(Identifier(name)) -> [(Module(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Import(Identifier(name)) -> <Import(
+                                   Identifier(nam-annotate-use(|paths__, Module()))
+                                 )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Function()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Struct()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
 
 
 rules
@@ -229,6 +259,20 @@ rules
 
 rules
 
+  nam-get-uses-keys :
+    MListRef(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    MListRef(Identifier(name)) -> [(Messagelist(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    MListRef(Identifier(name)) -> <MListRef(
+                                     Identifier(nam-annotate-use(|paths__, Messagelist()))
+                                   )>
+
+
+rules
+
   nam-get-scope-types :
     Union(_, Identifier(u), _) -> [Field()]
 
@@ -252,7 +296,7 @@ rules
 rules
 
   nam-get-scope-types :
-    Struct(_, Identifier(s), _) -> [Field()]
+    Struct(_, Identifier(s), _) -> [Field(), Struct()]
 
   nam-get-definition-keys :
     Struct(_, Identifier(s), _) -> [s]
@@ -266,6 +310,16 @@ rules
                                     , Identifier(nam-annotate-def(|path__))
                                     , id
                                     )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Struct(_, Identifier(s), _) -> <store__> DefData(
+                                               [namespace__|path__]
+                                             , Type()
+                                             , StructType(Identifier(s))
+                                             )
+
+  type-of :
+    Struct(_, Identifier(s), _) -> StructType(Identifier(s))
 
   nam-unique :
     Struct(_, Identifier(s), _) -> <id>
@@ -321,23 +375,49 @@ rules
 rules
 
   nam-get-uses-keys :
-    Field(var, Identifier(field)) -> [field]
-    where StructType(Identifier(s)) := <type-of> var
+    Field(e, Identifier(field)) -> [field]
+    where StructType(Identifier(s)) := <type-of> e
 
   nam-get-uses :
-    Field(var, Identifier(field)) -> [(Field(), [field])]
-    where StructType(Identifier(s)) := <type-of> var
+    Field(e, Identifier(field)) -> [ (Field(), [field])
+                                   , (Struct(), [field])
+                                   ]
+    where StructType(Identifier(s)) := <type-of> e
 
   nam-annotate-names(|paths__, path__):
-    Field(var, Identifier(field)) -> <Field(
-                                        id
-                                      , Identifier(nam-annotate-use(|paths__, Field()))
-                                      )>
+    Field(e, Identifier(field)) -> <Field(
+                                      id
+                                    , Identifier(nam-annotate-use(|paths__, Field()))
+                                    )>
 
   adjust-index-lookup(target__|namespace__, path__, prefix__):
-    Field(var, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
+    Field(e, Identifier(field)) -> <concat> [ <index-lookup-children(|Field(), prefix__)> s
+                                            , <index-lookup-children(|Struct(), prefix__)> s
+                                            ]
     where <target__> field
-    where StructType(Identifier(s)) := <type-of> var
+    where StructType(Identifier(s)) := <type-of> e
+
+
+rules
+
+  nam-get-uses-keys :
+    FieldViaPointer(e, Identifier(field)) -> [field]
+    where Pointer(StructType(Identifier(s))) := <type-of> e
+
+  nam-get-uses :
+    FieldViaPointer(e, Identifier(field)) -> [(Field(), [field])]
+    where Pointer(StructType(Identifier(s))) := <type-of> e
+
+  nam-annotate-names(|paths__, path__):
+    FieldViaPointer(e, Identifier(field)) -> <FieldViaPointer(
+                                                id
+                                              , Identifier(nam-annotate-use(|paths__, Field()))
+                                              )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    FieldViaPointer(e, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
+    where <target__> field
+    where Pointer(StructType(Identifier(s))) := <type-of> e
 
 
 rules
@@ -385,6 +465,16 @@ rules
                                             , id
                                             )>
 
+  adjust-index-def-data(store__|namespace__, path__):
+    MessageList(_, Identifier(name), _) -> <store__> DefData(
+                                                       [namespace__|path__]
+                                                     , Type()
+                                                     , MsgListType(Identifier(name))
+                                                     )
+
+  type-of :
+    MessageList(_, Identifier(name), _) -> MsgListType(Identifier(name))
+
   nam-unique :
     MessageList(_, Identifier(name), _) -> <id>
 
@@ -407,3 +497,25 @@ rules
 
   nam-unique :
     Message(Identifier(name), _, _, _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Report(var, Identifier(msg)) -> [msg]
+    where MsgListType(Identifier(mList)) := <type-of> var
+
+  nam-get-uses :
+    Report(var, Identifier(msg)) -> [(Message(), [msg])]
+    where MsgListType(Identifier(mList)) := <type-of> var
+
+  nam-annotate-names(|paths__, path__):
+    Report(var, Identifier(msg)) -> <Report(
+                                       id
+                                     , Identifier(nam-annotate-use(|paths__, Message()))
+                                     )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    Report(var, Identifier(msg)) -> <index-lookup-children(|Message(), prefix__)> mList
+    where <target__> msg
+    where MsgListType(Identifier(mList)) := <type-of> var

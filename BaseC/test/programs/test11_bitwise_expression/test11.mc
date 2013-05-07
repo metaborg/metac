@@ -13,10 +13,10 @@ module test11 {
   	  printf("a = a ^ b => a = %d (%X), b = %d (%X)\n", a, a, b, b);
   	  a = a >> 1;
   	  printf("a = a >> 1 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  b = b >> 2;
-  	  printf("b = b >> 2 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
   	  b = b << 2;
   	  printf("b = b << 2 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
+  	  b = b >> 2;
+  	  printf("b = b >> 2 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
 	  return 0;
 	} 
 }

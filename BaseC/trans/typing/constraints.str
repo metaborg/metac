@@ -15,9 +15,13 @@ imports
 rules
 		
     check-exp(str):
-		(exp, expected) -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> expT].])
-	where  <generictype-of> <type-of> exp => expT
-	where not (<str> (expected, expT))
+		(exp, expected) -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> <type-of> exp].])
+	where 
+		<generictype-of> <type-of> exp => expT;
+		<generictype-of> <generictype-of> <type-of> exp => expST;
+		not (<str> (expected, expT));
+		not (<str> (expected, expST))	
+		
 	
 	check-assign(str):
 		(expected, exp) -> (exp, $[Error: type [<write-to-string> expT] is not a subtype of [<write-to-string> expected].])
@@ -33,7 +37,7 @@ rules
  	 where
     	(et1, et2, _) := <type-of> op;
     	<filter(check-exp(eq))> [(exp1, et1), (exp2, et2)] => errors
-    
+
     constraint-error: 
  		 UnExp(op, exp) -> errors
  	 where
