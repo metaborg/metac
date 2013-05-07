@@ -18,6 +18,8 @@ imports
   BaseC/trans/typing/constraints
   Statemachine/trans/statemachine-names
   Statemachine/trans/statemachine-types
+  Statemachine/trans/statemachine-desugar
+  Statemachine/trans/Statemachine-mapping
 
 rules // Analysis
   

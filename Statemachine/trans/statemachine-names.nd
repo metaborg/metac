@@ -14,8 +14,17 @@ namespaces
 	StateMachineVar 
 	InEvent 
 	OutEvent
+	Function
+	Module
 
 rules
+	Module(Identifier(name), _, _):
+			scopes Statemachine
+	Function():
+			scopes Statemachine
+	
+rules
+
 	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
 							scopes State, StateMachineVar, InEvent, OutEvent
 							refers to State state

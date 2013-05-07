@@ -2,16 +2,18 @@ module Statemachine-mapping
 
 imports MetaC
 imports include/MetaC
-
+		lib/index-library.generated
+	
 rules
 	
-	to-basec(|moduleName): Statemachine(statemachineID, _, components*) -> (headerModule, executeFunction, initFunction)
+	/*to-basec: Statemachine(statemachineID, _, components*) -> [headerModule, executeFunction, initFunction]
 	where
+		[_,moduleName|_] := <index-uri> statemachineID;
 		<collect-components(|statemachineID)> components* => (states_out, events_out, vars_out);
 		<generate-statemachine-header(|moduleName, statemachineID)> (states_out, events_out, vars_out) => headerModule;
 		<generate-sm-basec-function(|moduleName, statemachineID)> states_out => executeFunction;
 		<generate-sm-basec-init(|moduleName, statemachineID)> vars_out => initFunction
-		
+		*/
 	collect-components(|statemachineID): componentList* -> (states, events, vars)
 	where
 		not(<eq> (0, <length> componentList*));	 	
@@ -62,16 +64,17 @@ rules
 		states_enum:= <generate-sm-basec-enum(|statemachineID)> (states_enumID, states);
 		vars_struct:= <generate-sm-basec-struct(|statemachineID)> (vars_structID, vars);
 		
-		Struct(_, structList):= vars_struct;
-		structList2:= [StructItem(Identifier(states_enumID), "__currentState")|structList];												//need structType(states_enumID)?
-		vars_struct2:= Struct(vars_structID, structList2);
+		Struct(exported, _, structList):= vars_struct;
+		structList2:= [FieldDecl(Identifier(states_enumID), "__currentState")|structList];												//need structType(states_enumID)?
+		vars_struct2:= Struct(exported, vars_structID, structList2);
 		
 		smFunctionPrototype := [];										//TODO
 		headerAST:= [events_enum, states_enum, vars_struct2]
 	
 		
-	generate-sm-basec-enum(|statemachineID): (enumID, componentList) -> Enum(Some(enumID), enumList)
+	generate-sm-basec-enum(|statemachineID): (enumID, componentList) -> Enum(exported, Some(enumID), enumList)
 	where
+		exported := "exported";
 		enumList:= <mapconcat(try(generate-sm-basec-enumElement(|statemachineID)))> componentList
 	
 	generate-sm-basec-enumElement(|statemachineID): StateMachineInEvent(event_name, _) -> [EnumItem(event_name)]
@@ -80,13 +83,14 @@ rules
 	
 	generate-sm-basec-enumElement(|statemachineID): StateMachineState(state_name, _) -> [EnumItem(state_name)]
 	
-	generate-sm-basec-struct(|statemachineID): (structID, componentList) -> Struct(structID, structList)
+	generate-sm-basec-struct(|statemachineID): (structID, componentList) -> Struct("exported", structID, structList)
 	where
 		structList:= <mapconcat(try(generate-sm-basec-structElement(|statemachineID)))> componentList
 		
 	generate-sm-basec-structElement(|statemachineID): StateMachineVarDecl(_, type, name, _) -> [element]
 	where
-		element:= StructItem(type, name)
+		element:= FieldDecl(type, [name])
+		//////******
 		
 	generate-sm-basec-function(|moduleName, statemachineID): statesList -> smFunctionAST
 	where
@@ -100,9 +104,9 @@ rules
 	generate-sm-basec-function-params: (moduleName, statemachineID) -> paramList 
 	where
 		//TODO change to params pointers
-		instance:= FunctionParameter(Identifier($[[moduleName]_sm_data_[statemachineID]]), "instance");			//change to data_counter *
-		event:= FunctionParameter(Identifier($[[moduleName]_sm_events_[statemachineID]]), "event");
-		arguments:= FunctionParameter(BasicType("int8"), "arguments");					//change to void**
+		instance:= Param(Identifier($[[moduleName]_sm_data_[statemachineID]]), "instance");			//change to data_counter *
+		event:= Param(Identifier($[[moduleName]_sm_events_[statemachineID]]), "event");
+		arguments:= Param(BasicType("int8"), "arguments");					//change to void**
 		paramList:= [instance, event, arguments]
 	
 	generate-sm-basec-stateCase(|statemachineID, statesList): StateMachineState(stateID, stateBody*) -> stateCaseStatement
@@ -204,7 +208,7 @@ rules
 	where
 		initBlock:=<map(generate-sm-basec-initStm)> varList;
 		functionName:= $[[moduleName]_sm_init_[statemachineID]];
-		paramList:= [FunctionParameter(Identifier($[[moduleName]_sm_data_[statemachineID]]), "instance")];											//TODO change type to pointer
+		paramList:= [Param(Identifier($[[moduleName]_sm_data_[statemachineID]]), "instance")];											//TODO change type to pointer
 		initFunction:= FunDef(None(), BasicType("int8"), functionName, paramList, Block(initBlock))													//TODO change type to void
 		
 	generate-sm-basec-initStm: StateMachineVarDecl(_, _, varName, initValue) -> initStatement
