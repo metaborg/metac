@@ -102,6 +102,16 @@ test nested struct
 	}
 ]] parse succeeds
 
+test nested struct with var name
+[[
+	struct X{
+		struct Y{
+			int z;
+		} r;
+		int w;
+	}
+]] parse succeeds
+
 test union inside struct 
 [[
 	struct X{
@@ -129,5 +139,12 @@ test nested union
 			int j;
 		};
 		int z;
+	}
+]] parse succeeds
+
+test anonymous struct definition
+[[
+	struct {
+		int32 x;
 	}
 ]] parse succeeds
