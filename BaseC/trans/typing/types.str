@@ -33,6 +33,10 @@ rules
 	 *	Constants
 	 */
 	
+	type-of: BasicType(x) -> BasicType(x)
+	
+	type-of: StructType(x) -> StructType(x)
+	
 	//checks if val is in interval [-(posLimit+1), posLimit]; posLimit >=0
 	in-range(|posLimit): strVal -> "True"
 	where
@@ -238,9 +242,14 @@ rules
    		//debug(!"1: "); 
    		//uri := <index-uri; debug(!"URI: ")> x;
    		//t := <index-get-data(|Type()); debug(!"Type: ")> Def(uri)
+   		TypeSynonym(Identifier(name)) := <index-type-of> x;
+   		t:= <type-of> Var(Identifier(name))						//make it recursive to get the basic type
+   		<+
    		t := <index-type-of> x
    	
    	type-of: MListRef(Identifier(x)) -> <index-type-of> x
+   	
+   	type-of: TypeSynonym(Identifier(name)) -> <index-type-of; debug(!"typesynonym:")> name
    			
    	//type-of: Field(x,y) -> <nbl-get-type> y
    	
