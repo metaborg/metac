@@ -17,13 +17,14 @@ namespaces
 	Enumlit
 	Messagelist
 	Message
+	TypeSynonym
 
 //TODO: fix namebinding, refers to doesnt work for variables and fields (it does work for functions)
 rules
 	// modules
 	Module(Identifier(name), _, _):
 		defines Module name
-		scopes Function, Struct, Enum, Variable, Union, Messagelist
+		scopes Function, Struct, Enum, Variable, Union, Messagelist, TypeSynonym
 		
 	Import(Identifier(name)):
 		//defines non-unique Import name
@@ -35,7 +36,7 @@ rules
 	// functions
 	FunDef(_,returnType, Identifier(name), params,_):
 		defines Function name of type FunType(paramsTypes,returnType)
-		scopes Variable
+		scopes Variable, TypeSynonym
 		where
 			params has type paramsTypes
 	
@@ -49,11 +50,21 @@ rules
 		defines Variable name of type type
 	
 	Declaration(type, Init(Identifier(name), _)):
-		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems 
+		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
+	//	where
+	//		typ has type t 
 	
 	Declaration(type, NoInit(Identifier(name))):
 		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
+	//	where 
+	//		typ has type t
 		
+	StructOrUnionInlineDecl(Struct(_, Identifier(s), _), Identifier(name)):
+		defines Variable name of type StructType(Identifier(s))
+	
+	StructOrUnionInlineDecl(Struct(_, None(), _), Identifier(name)):
+		defines Variable name 													//TODO add type
+	
 	Var(Identifier(name)):
 		refers to Variable name
 		
@@ -66,20 +77,23 @@ rules
 		scopes Field
 		
 	Struct(_, Identifier(s), _):
-		defines unique Struct s of type StructType(Identifier(s))		//remove later?
+		defines unique Struct s //of type StructType(Identifier(s))		//remove later?
 		scopes Field, Struct
 	
 	StructType(Identifier(s)):
 		refers to Struct s
+		
+	UnionType(Identifier(s)):
 		refers to Union s
 	
 	FieldDecl(t, Identifier(i)):
 		defines Field i of type t
 	
-	Field(e, Identifier(field)): 
-		//refers to Field field in Struct s 
+	NestedStruct(Struct(_, Identifier(s), _), Identifier(name)):
+		defines Field name of type StructType(Identifier(s))
+	
+	Field(e, Identifier(field)):  
 		refers to Field field in Union s
-		refers to Struct field in Union s
 		where 
 			e has type StructType(Identifier(s))
 	
@@ -87,6 +101,12 @@ rules
 		refers to Field field in Union s
 		where
 			e has type Pointer(StructType(Identifier(s)))
+	
+	TypedefDecl(type, Identifier(name)):
+		defines TypeSynonym name of type type
+		
+	TypeSynonym(Identifier(name)):
+		refers to TypeSynonym name
 		
 	
 	// labels and gotos	

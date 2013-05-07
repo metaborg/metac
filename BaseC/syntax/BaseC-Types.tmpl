@@ -31,6 +31,8 @@ lexical restrictions
 templates
 	Type.BasicType = <<BasicType>>
 	Type.Array = <<Type> [ <Constant?> ]>
-	Type.StructType = <<Identifier>>		// structs
+	Type.StructType = <struct <Identifier>>		// structs
+	Type.UnionType = <union <Identifier>>		// structs
+	Type.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
 	Type.Pointer = <<Type> * >
 	
