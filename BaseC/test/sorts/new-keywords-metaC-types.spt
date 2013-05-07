@@ -1,0 +1,28 @@
+module keywords-metaC-types
+language metac
+start symbol ID
+
+//types
+test id_int8 [[int8]] parse fails
+test id_int16 [[int16]] parse fails
+test id_int32 [[int32]] parse fails
+test id_int64 [[int64]] parse fails
+test id_NoopType [[NoopType]] parse fails
+test id_boolean [[boolean]] parse fails
+test id_bounded_int [[bounded_int]] parse fails
+test id_funtype [[funtype]] parse fails
+test id_ptrdiff_t [[ptrdiff_t]] parse fails
+test id_size_t [[size_t]] parse fails
+test id_string [[string]] parse fails
+test id_ubit [[ubit]] parse fails
+test id_uint8 [[uint8]] parse fails
+test id_uint16 [[uint16]] parse fails
+test id_uint32 [[uint32]] parse fails
+test id_uint64 [[uint64]] parse fails
+test id_opaque [[opaque]] parse fails
+
+test id_oct [[oct]] parse fails
+test id_hex [[hex]] parse fails
+test id_bin [[bin]] parse fails
+test id_true [[true]] parse fails
+test id_false [[false]] parse fails

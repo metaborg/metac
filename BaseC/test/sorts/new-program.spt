@@ -1,0 +1,24 @@
+module program
+language metaC
+start symbol Program
+
+test program module encapsulation violation with variable decl 
+		[[ int8 a;
+		   module a {}]] parse fails
+
+test program module encapsulation violation with function decl 
+		[[ int8 a(){}
+		   module a {}]] parse fails
+
+test program module encapsulation violation with statemachine decl 
+		[[ statemachine a initial = start { 
+  			state start { 
+     
+  			} state start 
+  			in event() <no binding> 
+			}
+		   module a {}]] parse fails
+		   
+test program multiple modules 
+		[[ module b {}
+		   module a {}]] parse fails

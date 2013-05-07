@@ -1,0 +1,52 @@
+module modules
+language metaC
+start symbol Module
+
+test module correct empty module[[module abc imports nothing { }]] parse succeeds
+
+test module correct with imports [[module abc imports a,b,c { }]] parse succeeds
+
+test module within module [[module abc imports nothing { 
+							module def imports nothing {}
+						}]] parse fails
+						
+test module without imports clause [[module abc {}]] parse succeeds
+
+//within a module you can: declare variables (global), functions, struct/union tast case, typedef, 
+//statemachine, messagelist, enum and #defines
+
+test module with variable declaration [[
+				module abc imports nothing {
+					int8 a;
+					int16 b;
+				}
+			]] parse succeeds	
+
+test module with assign expression [[
+				module abc imports nothing {
+					int8 a;
+					a = 3;
+				}
+			]] parse fails
+
+test module with conditional expression [[
+				module abc imports nothing {
+					int8 a;
+					a < 3 && a > 5;
+				}
+			]] parse fails
+
+test module with statements [[
+				module abc imports nothing {
+					int8 a;
+					if(a<4)
+						a = 7;
+				}
+			]] parse fails
+
+test module with asserts [[
+				module abc imports nothing {
+					int8 a;
+					assert(0) a < 5; 
+				}
+			]] parse fails

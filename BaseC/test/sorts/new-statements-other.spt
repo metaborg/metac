@@ -1,0 +1,23 @@
+module statements
+language metaC
+start symbol Stm
+
+//goto identifier;
+test jump statement goto [[goto abc;]] parse succeeds
+test jump statement goto integer constant [[goto 123;]] parse fails
+
+//continue;
+test jump statement continue [[continue;]] parse succeeds
+test jump statement continue + id [[continue abc;]] parse fails
+test jump statement continue + integer [[continue 132;]] parse fails
+
+//break;
+test jump statement break [[break;]] parse succeeds
+test jump statement break + id [[break abc;]] parse fails
+test jump statement break + integer [[break 132;]] parse fails
+
+//return expr(opt);
+test jump statement return [[return;]] parse succeeds
+test jump statement return + id [[return abc;]] parse succeeds
+test jump statement return + exp [[return 123;]] parse succeeds
+test jump statement return + assign exp [[return a++;]] parse succeeds

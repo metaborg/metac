@@ -1,0 +1,26 @@
+module constants-float
+language metac
+start symbol Constant
+    
+test float constant no predigits no exponent [[.89]] parse succeeds
+test float constant no predigits exponent [[.89e12]] parse succeeds
+test float constant no predigits exponent caps [[.89E12]] parse succeeds
+test float constant predigits no exponent [[1.89]] parse succeeds
+test float constant predigits exponent [[1.89e12]] parse succeeds
+test float constant just predigits [[12.]] parse succeeds
+test float constant leading zeros [[012.]] parse fails
+test float constant just predigits [[12.e2]] parse succeeds
+
+test float constant no dot [[12e2]] parse succeeds
+test float constant negative exponent [[12e-3]] parse succeeds
+
+test float constant flag l [[1.2l]] parse succeeds
+test float constant flag L [[1.2L]] parse succeeds
+test float constant flag f [[1.2f]] parse succeeds
+test float constant flag F [[1.2F]] parse succeeds
+
+test float constant flag Ff [[1.2Ff]] parse fails
+test float constant flag ll [[1.2ll]] parse fails
+
+test float constant flag u [[1.2u]] parse fails
+test float constant other characters for exponent [[1.2r4]] parse fails

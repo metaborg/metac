@@ -1,0 +1,28 @@
+module type
+language metaC
+start symbol Type
+
+test type int8 [[int8]] parse succeeds
+test type int16 [[int16]] parse succeeds
+test type int32 [[int32]] parse succeeds
+test type int64 [[int64]] parse succeeds
+test type array int8 [[int8[] ]] parse succeeds //as formal parameter
+test type array int8 [[int8[7] ]] parse succeeds //as declaration
+test type array int16 [[int16[] ]] parse succeeds
+test type array int16 [[int16[][10] ]] parse succeeds //as formal parameter
+test type array int16 [[int16[10][10] ]] parse succeeds //as declaration
+test type array int16 [[int16[][][] ]] parse succeeds 
+test type array int32 [[int32[] ]] parse succeeds
+test type array int64 [[int64[] ]] parse succeeds
+
+test type id [[abc]] parse succeeds
+
+test type boolean [[boolean]] parse succeeds
+test type array_boolean [[boolean[] ]] parse succeeds
+
+test type void [[void]] parse succeeds
+test type double [[float]] parse succeeds
+test type float [[double]] parse succeeds
+test type size_t [[size_t]] parse succeeds
+test type bounded_int [[bounded_int]] parse succeeds
+

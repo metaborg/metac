@@ -1,0 +1,121 @@
+module expressions
+language metaC
+start symbol Exp
+
+//primary expressions
+test expression identifier [[abchf]] parse succeeds
+test expression constant [[234]] parse succeeds
+test expression string [["abc"]] parse succeeds
+test expression with paranthesis [[(abc)]] parse succeeds
+test expression with double paranthesis [[((abc))]] parse succeeds
+
+//postfix expression
+//array subscripting
+test expression array subscripting id id [[ a[b] ]] parse succeeds
+test expression array subscripting id string [[ a["abc"] ]] parse succeeds
+test expression array subscripting id id with paranthesis [[ a[(b)] ]] parse succeeds
+test expression array subscripting string string [[ "abb"["abc"] ]] parse succeeds
+test expression array subscripting multiple arrays [[ abc[1][2] ]] parse succeeds
+test expression array subscripting multiple arrays negative subscript [[ abc[1][-2] ]] parse succeeds 
+test expression array subscripting boolean subscript [[ abc[true] ]] parse succeeds
+test expression array subscripting missing subscript [[ abc[] ]] parse fails
+
+
+
+//function calls
+test function call no parameters [[abc()]] parse succeeds
+test function call one parameter [[abc(a)]] parse succeeds
+test function call with more parameters [[abc(a,b,c)]] parse succeeds
+test function call with invalid separator [[abc(a;b,c)]] parse fails
+test function call with integer constant name [[1(a,c)]] parse succeeds
+test function call as parameters [[abc(a,f(3), f(er))]] parse succeeds
+
+//structure and union members
+test struct member id - id [[abc.a]] parse succeeds
+test struct member id - constant [[abc.43]] parse fails
+test struct member id - boolean [[abc.true]] parse fails
+test struct member function call - id [[abc().d]] parse succeeds
+test struct member array element - id [[ a[0].t]] parse succeeds
+test struct member increment - id [[a++.a]] parse succeeds
+test struct member id - increment [[a.a++]] parse succeeds	//TODO ambiguity tests 
+test struct member id - increment [[a.(a++)]] parse fails
+test struct member increment - id [[++a.b]] parse succeeds
+test struct member nested structs [[a.b.c]] parse succeeds
+test struct member nested structs with () [[(a.b).c]] parse succeeds
+
+test struct member pointer [[a->b]] parse succeeds
+test struct member pointer combined with static [[a->b.c]] parse succeeds	//TODO ambiguity tests
+test struct member pointer combined with static2 [[a.b->c]] parse succeeds
+test struct member pointer function call - id [[abc()->d]] parse succeeds
+test struct member pointer array element - id [[ a[0]->t]] parse succeeds
+test struct member pointer increment - id [[a++->a]] parse succeeds
+test struct member pointer id - increment [[a->a++]] parse succeeds	//TODO ambiguity tests 
+test struct member pointer id - increment [[a->(a++)]] parse fails
+test struct member pointer increment - id [[++a->b]] parse succeeds
+
+//compound literals
+test compound literals [[ (int[2]) {2,3}]] parse succeeds
+test compound literals 2 [[ (int[]) {2,3}]] parse succeeds 
+test compound literals void initialers [[ (int[2]) {}]] parse fails
+test compound literals mixed initializers [[ (int[2]) {"safsd",3,true}]] parse succeeds
+test compound literals with pointer [[ (int[2]) {*p} ]] parse succeeds
+test compound literals for struct [[ (struct point){.x=3, .y=4} ]] parse succeeds
+//more TODO and check if it's a priority
+
+//prefix increment
+test prefix increment [[ ++a ]] parse succeeds
+test prefix increment ambiguous [[ b+++a ]] parse succeeds
+test prefix increment with postfix increment [[++a--]] parse succeeds
+
+//sizeof
+test sizeof and prefix increment [[sizeof ++a ]] parse succeeds
+test sizeof identifier [[sizeof abc]] parse succeeds
+test sizeof function call [[sizeof abc()]] parse succeeds
+test sizeof pointer [[sizeof *p ]] parse succeeds
+test sizeof pointer [[sizeof a[7] ]] parse succeeds 
+
+//address and indirection operators
+//TODO static analysis and parse tests are more interesting
+test minus operator [[-++a]] parse succeeds
+test plus operator [[+++a]] parse succeeds
+test pointer address and derefrence [[*&a]] parse succeeds
+test pointer address and derefrence 2 [[&*a]] parse succeeds
+test pointer address twice [[&&a]] parse succeeds		//fails on static analysis check 
+test bit-wise negation [[~5]] parse succeeds
+test scalar negation on true [[!true]] parse succeeds
+test scalar negation on identifier [[!abc]] parse succeeds
+test scalar negation on constantc [[!"abc"]] parse succeeds
+
+//cast operations
+test cast expression [[(int8) 8]] parse succeeds
+test cast expression int8 on true [[(int8) true]] parse succeeds
+test cast expression int32 on pointers [[(int32) *p]] parse succeeds
+test cast expression pointer type on identifier [[(int8*) p]] parse succeeds
+
+//multiplication, addition, shift, relational, equality, &, ^, |, &&, ||
+//more interesting tests on parsing and disambiguization
+
+test operators combined [[a*b/0&j|0]] parse succeeds
+test operator add and minus [[ a + - b]] parse succeeds
+test operator add and minus with paranthesis [[a + (-b)]] parse succeeds
+
+//TODO - operations with pointers: + and - operators
+
+
+
+//if-expression ...:...?...
+test if-expression valid [[a<b?a:b]] parse succeeds
+test if-expression missing "else" [[a<b?a]] parse fails
+test if-expression missing "then" [[a<b:a]] parse fails
+
+
+//assignment expression
+test assignment expression [[++a = g]] parse succeeds
+test assignment expression 2 [[a *= 5]] parse succeeds
+
+//list of expressions
+test list of expressions [[a,b,c]] parse succeeds
+test list of assignment expressions [[a=5, c<3, b=4]] parse succeeds
+
+test true [[true]] parse succeeds
+test false [[false]] parse succeeds

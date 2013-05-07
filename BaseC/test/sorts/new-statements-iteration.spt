@@ -1,0 +1,55 @@
+module statements
+language metaC
+start symbol Stm
+
+
+// while (expression) statement 
+test while correct [[while (a<10) b=10;]] parse succeeds
+test while block correct [[while (a<10) {a=10;b=10;}]] parse succeeds
+test while no condition [[while () b=10;]] parse fails
+test while no statement [[while (a)]] parse fails
+test while no paranthesis [[while a b=10;]] parse fails
+test while multiple condition [[while (a;bb) b=10;]] parse fails
+test while multiple condition2 [[while (a,bb) b=10;]] parse succeeds
+
+test while condition is assignment [[while (a=b=9) b=10;]] parse succeeds
+test while condition is assignemnt [[while (a=8) b=10;]] parse succeeds
+test while condition is equals [[while (a==8) b=10;]] parse succeeds
+test while condition is varDecl [[while (boolean t) b=10;]] parse fails
+
+
+test while statement is Exp [[while (a) b]] parse fails
+test while statement is Exp2 [[while (a) true]] parse fails
+test while statement is varDecl [[while (a) int b;]] parse succeeds
+
+test while statement is block [[while (a) {
+									int b;
+									}]] parse succeeds
+
+test while true [[while (true) a++;]] parse succeeds								
+									
+//do statement while (expression);
+test do while correct [[do  b=10; while (a<10);]] parse succeeds
+test do while block correct [[do {a=10;b=10;} while (a<10);]] parse succeeds
+test do while no condition [[do b=10; while ();]] parse fails
+test do while no statement [[do while (a);]] parse fails
+test do while no statement [[do {} while (a);]] parse succeeds
+test do while no paranthesis [[do  b=10; while a;]] parse fails
+test do while multiple condition [[do  b=10; while (a;bb)]] parse fails
+test do while true [[do a++; while (true); ]] parse succeeds
+test do while condition is assignment [[do b=10; while (a=8);]] parse succeeds
+test do while condition is equals [[do  b=10; while (a==8);]] parse succeeds
+test do while condition is varDecl [[do b=10; while (boolean t);]] parse fails
+test do while statement is block [[do { int b; b++; } while (a);]] parse succeeds
+									
+									
+//for(exp;exp;exp) statement
+test for statement no expressions [[for (;;) a=10;]] parse succeeds
+test for statement no stop condition [[for (a=0;;a++) a=1;]] parse succeeds
+test for statement no body [[for (a=0;a<1;a++);]] parse succeeds
+test for statement no body2 [[for (a=0;a<1;a++) {}]] parse succeeds
+test for statement multiple initial [[for (a=0,b=1;a<1;a++) {}]] parse succeeds
+test for statement multiple stop [[for (a=0;a<1,b<5;a++) b=10;]] parse succeeds
+test for statement multiple update [[for (a=0;a<1;a++,i*=8) b=10;]] parse succeeds
+test for statement initial with initial declaration [[for (int a=0;a<1;a++);]] parse succeeds
+test for statement initial with update declaration [[for (int a=0;a<1;int a) {}]] parse fails 

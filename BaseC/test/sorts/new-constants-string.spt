@@ -1,0 +1,19 @@
+module constants-string
+language metac
+start symbol Constant
+
+//identifiers can be constants too -> from enumerations
+test constant identifier [[abc]] parse succeeds
+test constant identifier2 [[aB9c]] parse succeeds
+
+    
+test constant string valid [["abc f shga fsdjb"]] parse succeeds
+test constant string valid with prefix[[L"abc f shga fsdjb"]] parse succeeds
+test constant string valid 2 [["abc f \n shga \" 123 fsdjb"]] parse succeeds
+
+test constant invalid backslash [["ajhbdas\ "]] parse fails
+test constant invalid quotes [["ajhbdas" "]] parse fails
+
+test constant valid octal escape [["\123"]] parse succeeds
+test constant valid hexadecimal escape [["\x5A"]] parse succeeds
+

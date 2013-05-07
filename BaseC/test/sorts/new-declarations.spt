@@ -1,0 +1,33 @@
+module declarations
+language metaC
+start symbol Declaration
+
+test declarartions just specifiers [[typedef void;]] parse succeeds
+test declarartions just specifiers [[void;]] parse succeeds
+
+
+test declarations multiple identifiers [[ int8 a,b; ]] parse succeeds
+test declarations array [[ int8[9] a,b; ]] parse succeeds
+test declarations array not initialized [[ int8[] a,b; ]] parse succeeds
+
+test declarations with initializer for int8 [[int8 a=9;]] parse succeeds
+test declarations with initializer for array [[int8[] a=9;]] parse succeeds
+test declarations with initializer for array2 [[int8[] a={9,5,6};]] parse succeeds
+test declarations with initializer for array3 [[int8[][][] a={9,5,6};]] parse succeeds
+test declarations with initializer for array4 [[int8 a={9,5,6};]] parse succeeds
+
+//pointers
+test pointer declaration [[int8 *a;]] parse succeeds
+test pointer declaration missplaced * [[int8 a*; ]] parse fails
+test pointer declaration multiple pointers [[int8 *a,*b; ]] parse succeeds
+test pointer declaration multiple declarations [[int8 *a,b; ]] parse succeeds 	//only a is pointer
+
+//typedef
+test typedef [[typedef int8 integer;]] parse succeeds
+test typedef of a pointer[[typedef int8* pointerToInt8;]] parse succeeds
+test typedef struct pointer [[typedef struct {int8 a;}* pointerToStruct;]] parse succeeds
+test typedef struct [[typedef struct {int8 a;} structInt;]]
+
+
+
+
