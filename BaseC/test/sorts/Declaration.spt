@@ -53,3 +53,33 @@ test multi variable declaration	with initialisers	[[ int a=1, b=2, c=3; ]] 	pars
 
 test multi variable declaration forgot comma		[[ int a=1 b =2, c=3; ]]		parse fails
 
+test struct with var declaration
+[[
+	struct x{
+		int32 y;
+	} myVar;
+]] parse succeeds
+
+test struct with array declaration
+[[
+	struct x{
+		int32 y;
+	} myVar[10];
+]] parse succeeds
+
+test nested struct with var declaration
+[[
+	struct x{
+		int32 y;
+		struct o{
+			int32 u;
+		} y;
+	} myVar;
+]] parse succeeds
+
+test anonymous struct var declaration
+[[
+	struct{
+		int32 x;
+	} myVar;
+]] parse succeeds
