@@ -207,10 +207,11 @@ rules
    	where
    		StructType(Identifier(s)) := <type-of> e;
    		field := <index-lookup-children(|Field(), fieldId); Hd> s;
-   		type := <index-type-of> field <+
-   		StructType(Identifier(s)) := <type-of> e;
-   		field := <index-lookup-children(|Struct(), fieldId); Hd> s;
-   		type := <index-type-of> field
+   		type := <index-type-of> field //<+
+   		//type := <debug(!"5:"); index-type-of; debug(!"6:")> field //<+
+   		//StructType(Identifier(s)) := <type-of> e;
+   		//field := <index-lookup-children(|Struct(), fieldId); Hd> s;
+   		//type := <index-type-of> field
    		//type:= <debug(!"3ns: ")> StructType(Identifier(fieldId))
    		
    		

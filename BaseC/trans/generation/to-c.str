@@ -181,7 +181,7 @@ rules
 		    , []
 		    )
 	
-	to-c: NestedStruct(Struct(_, name, fields)) ->
+	to-c: NestedStruct(Struct(_, _, fields), name) ->
 			C-MemDecl(
 				C-TypeSpec(
 					[]
