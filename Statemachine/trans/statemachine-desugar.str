@@ -13,6 +13,7 @@ imports
 	
 rules
 	
-	desugar: Statemachine(statemachineID, init, components*) -> <map(desugar-all)> <to-basec> stmachine 
-		where
-			stmachine := Statemachine(statemachineID, init, components*)
+	//desugar: Statemachine(statemachineID, init, components*) -> <map(desugar-all)> <to-basec> stmachine 
+	//	where
+	//		stmachine := Statemachine(statemachineID, init, components*)
+	//desugar: Statemachine(statemachineID, init, components) -> <to-basec> Statemachine(statemachineID, init, components)

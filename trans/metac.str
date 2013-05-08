@@ -20,7 +20,7 @@ imports
   Statemachine/trans/statemachine-types
   Statemachine/trans/statemachine-desugar
   Statemachine/trans/Statemachine-mapping
-
+  Statemachine/trans/generation/builders
 rules // Analysis
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and
@@ -183,3 +183,4 @@ rules // Utility
     files -> None()
     with
       index-sequential-analyze-files(analyze)
+	

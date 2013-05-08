@@ -18,10 +18,10 @@ namespaces
 	Module
 
 rules
-	Module(Identifier(name), _, _):
-			scopes Statemachine
-	Function():
-			scopes Statemachine
+	//Module(Identifier(name), _, _):
+	//		scopes Statemachine
+	//Function():
+	//		scopes Statemachine
 	
 rules
 
