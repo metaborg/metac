@@ -1,0 +1,6 @@
+module signaturefixes
+
+signature constructors
+	
+	MListRef : Identifier -> MListRef
+	NoInit : Identifier * Decimal -> NoInit

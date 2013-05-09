@@ -47,6 +47,22 @@ rules
 		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
 */	
 	
+	/*desugar: For(
+			[Declaration(type, Init(varName, value))], 
+			cond, 
+			postIterInstr, 
+			loopBody) -> 
+					[Declaration(type, Init(varName, value)),
+					For(None(), cond, postIterInstr, loopBody)]
+	*/
+	desugar: For(
+			[Declaration(type, Init(varName, value))], 
+			cond, 
+			postIterInstr, 
+			loopBody) -> 
+					[Declaration(type, NoInit(varName)),
+					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)]
+			
 	/**
 	 * Expressions
 	 */

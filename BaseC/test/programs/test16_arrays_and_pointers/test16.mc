@@ -7,8 +7,8 @@ module test16 {
   	  	array[1] = 1;
   	  	for (i = 0; i < 12; i++)
   	  		array[i] = i;
-  	  	for (i = 0; i < 12; i++)
-  	  		printf("array[%d] = %d\n",array[i],i);
+  	  	for (int32 j = 0; j < 12; j++)
+  	  		printf("array[%d] = %d\n",array[j],j);
 	  	return 0;
 	} 
 }
