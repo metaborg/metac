@@ -1,3 +1,6 @@
+//not initialized before use
+
+
 module stmachine{
 
 	statemachine counter initial = start { 
@@ -27,4 +30,8 @@ module stmachine{
 	  }
 	   
 	}
+	
+	
+	
+	
 }

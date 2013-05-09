@@ -1,0 +1,21 @@
+module testcases
+language metaC
+start symbol Testcase
+
+test test case empty [[ exported test case testname {}]] parse succeeds
+test test case without name [[ exported test case {}]] parse fails
+test test case without exported [[ test case testname {}]] parse fails
+test test case without curly brackets [[ test case testname ()]] parse fails
+
+test test case with assert [[ exported test case testname {
+								 assert: true; 
+							  }]] parse succeeds
+
+test test case with multiple assert [[ exported test case testname {
+								 assert: true;
+								 assert: false;
+							  }]] parse succeeds
+							  
+test test case with void assert [[ exported test case testname {
+								 assert;
+							  }]] parse fails

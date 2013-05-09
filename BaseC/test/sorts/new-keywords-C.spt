@@ -1,0 +1,43 @@
+module keywords-C
+language metac
+start symbol ID
+
+//C99 keywords
+test id_auto [[auto]] parse fails
+test id_break [[break]] parse fails
+test id_case [[case]] parse fails
+test id_char [[char]] parse fails
+test id_const [[const]] parse fails
+test id_continue [[continue]] parse fails
+test id_default [[default]] parse fails
+test id_do [[do]] parse fails
+test id_double [[double]] parse fails
+test id_else [[else]] parse fails
+test id_enum [[enum]] parse fails
+test id_extern [[extern]] parse fails
+test id_float [[float]] parse fails
+test id_for [[for]] parse fails
+test id_goto [[goto]] parse fails
+test id_if [[if]] parse fails
+test id_inline [[inline]] parse fails
+test id_int [[int]] parse fails
+test id_long [[long]] parse fails
+test id_register [[register]] parse fails
+test id_restrict [[restrict]] parse fails
+test id_return [[return]]  parse fails
+test id_short [[short]] parse fails
+test id_signed [[signed]] parse fails
+test id_sizeof [[sizeof]] parse fails
+test id_static [[static]] parse fails
+test id_struct [[struct]] parse fails
+test id_switch [[switch]] parse fails
+test id_typedef [[typedef]] parse fails
+test id_union [[union]] parse fails
+test id_unsigned [[unsigned]] parse fails
+test id_void [[void]] parse fails
+test id_volatile [[volatile]] parse fails
+test id_while [[while]] parse fails
+//_Bool
+//_Complex
+//_Imaginary
+

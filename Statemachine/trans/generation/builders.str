@@ -1,0 +1,33 @@
+module Statemachine/trans/generation/builders
+
+imports
+	lib/analysis-library.generated
+	lib/analysis-library-internal.generated
+	lib/editor-common.generated
+	lib/index-library.generated
+	libstratego-gpp
+	libstratego-lib
+	lib/c/c
+	include/MetaC
+	baseC/trans/desugaring/desugar
+	baseC/trans/generation/generate
+	baseC/trans/generation/to-c
+	Statemachine/trans/Statemachine-mapping
+
+rules
+	editor-to-basec: (selected, position, ast, path, project-path) -> (filename, result)
+  	with
+		filename := <guarantee-extension(|"basec.aterm")> path;
+		(result,_) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path)
+		
+	editor-sm-to-c-ast-debug: (selected, position, ast, path, project-path) -> (filename, result)
+  	with
+		filename := <guarantee-extension(|"c.aterm")> path;
+		result := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all; topdown(try(to-c))> (selected, path, project-path)
+		//result:= <editor-to-c-ast-debug> (basecResult, position, ast, path, project-path)
+	
+	editor-sm-to-c: (selected, position, ast, path, project-path) -> (filename, result)
+	with
+		filename := <guarantee-extension(|"c")> path;
+		(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
+		result := <to-c; pp-c-string> basecAST

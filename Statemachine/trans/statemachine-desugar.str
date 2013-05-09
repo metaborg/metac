@@ -1,0 +1,19 @@
+module Statemachine/trans/statemachine-desugar
+
+imports
+	include/metaC
+	lib/nbl-library.generated
+	libstratego-lib
+	lib/editor-common.generated
+	lib/index-library.generated
+	lib/analysis-library.generated
+	lib/analysis-library-internal.generated
+	Statemachine/trans/Statemachine-mapping
+	BaseC/trans/desugaring/desugar
+	
+rules
+	
+	//desugar: Statemachine(statemachineID, init, components*) -> <map(desugar-all)> <to-basec> stmachine 
+	//	where
+	//		stmachine := Statemachine(statemachineID, init, components*)
+	//desugar: Statemachine(statemachineID, init, components) -> <to-basec> Statemachine(statemachineID, init, components)

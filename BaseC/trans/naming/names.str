@@ -19,18 +19,20 @@ signature
     CurrentFile : ImportAnno
 
   constructors
-    Module      : Namespace
-    Import      : Namespace
-    Function    : Namespace
-    Variable    : Namespace
-    Label       : Namespace
-    Field       : Namespace
-    Struct      : Namespace
-    Union       : Namespace
-    Enum        : Namespace
-    Enumlit     : Namespace
-    Messagelist : Namespace
-    Message     : Namespace
+    Module       : Namespace
+    Import       : Namespace
+    Function     : Namespace
+    Variable     : Namespace
+    Label        : Namespace
+    Field        : Namespace
+    Struct       : Namespace
+    Union        : Namespace
+    Enum         : Namespace
+    Enumlit      : Namespace
+    Messagelist  : Namespace
+    Message      : Namespace
+    TypeSynonym  : Namespace
+    Statemachine : Namespace
 
 
 rules
@@ -42,6 +44,8 @@ rules
                                       , Variable()
                                       , Union()
                                       , Messagelist()
+                                      , TypeSynonym()
+                                      , Statemachine()
                                       ]
 
   nam-get-definition-keys :
@@ -92,7 +96,7 @@ rules
 rules
 
   nam-get-scope-types :
-    FunDef(_, returnType, Identifier(name), params, _) -> [Variable()]
+    FunDef(_, returnType, Identifier(name), params, _) -> [Variable(), TypeSynonym()]
     where paramsTypes := <type-of> params
 
   nam-get-definition-keys :
@@ -245,6 +249,82 @@ rules
 
 rules
 
+  nam-get-definition-keys :
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> [name]
+
+  nam-get-definitions :
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <StructOrUnionInlineDecl(
+            Struct(id, Identifier(id), id)
+          , Identifier(nam-annotate-def(|path__))
+          )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <store__> DefData(
+                     [namespace__|path__]
+                   , Type()
+                   , StructType(Identifier(s))
+                   )
+
+  type-of :
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> StructType(Identifier(s))
+
+  nam-unique :
+    StructOrUnionInlineDecl(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    StructOrUnionInlineDecl(
+      Struct(_, None(), _)
+    , Identifier(name)
+    ) -> [name]
+
+  nam-get-definitions :
+    StructOrUnionInlineDecl(
+      Struct(_, None(), _)
+    , Identifier(name)
+    ) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    StructOrUnionInlineDecl(
+      Struct(_, None(), _)
+    , Identifier(name)
+    ) -> <StructOrUnionInlineDecl(
+            Struct(id, None(), id)
+          , Identifier(nam-annotate-def(|path__))
+          )>
+
+  nam-unique :
+    StructOrUnionInlineDecl(
+      Struct(_, None(), _)
+    , Identifier(name)
+    ) -> <id>
+
+
+rules
+
   nam-get-uses-keys :
     Var(Identifier(name)) -> [name]
 
@@ -311,16 +391,6 @@ rules
                                     , id
                                     )>
 
-  adjust-index-def-data(store__|namespace__, path__):
-    Struct(_, Identifier(s), _) -> <store__> DefData(
-                                               [namespace__|path__]
-                                             , Type()
-                                             , StructType(Identifier(s))
-                                             )
-
-  type-of :
-    Struct(_, Identifier(s), _) -> StructType(Identifier(s))
-
   nam-unique :
     Struct(_, Identifier(s), _) -> <id>
 
@@ -331,20 +401,26 @@ rules
     StructType(Identifier(s)) -> [s]
 
   nam-get-uses :
-    StructType(Identifier(s)) -> [ (Struct(), [s])
-                                 , (Union(), [s])
-                                 ]
+    StructType(Identifier(s)) -> [(Struct(), [s])]
 
   nam-annotate-names(|paths__, path__):
     StructType(Identifier(s)) -> <StructType(
                                     Identifier(nam-annotate-use(|paths__, Struct()))
                                   )>
 
-  adjust-index-lookup(target__|namespace__, path__, prefix__):
-    StructType(Identifier(s)) -> [ [Struct()|path__]
-                                 , [Union()|path__]
-                                 ]
-    where <target__> s
+
+rules
+
+  nam-get-uses-keys :
+    UnionType(Identifier(s)) -> [s]
+
+  nam-get-uses :
+    UnionType(Identifier(s)) -> [(Union(), [s])]
+
+  nam-annotate-names(|paths__, path__):
+    UnionType(Identifier(s)) -> <UnionType(
+                                   Identifier(nam-annotate-use(|paths__, Union()))
+                                 )>
 
 
 rules
@@ -374,14 +450,58 @@ rules
 
 rules
 
+  nam-get-definition-keys :
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> [name]
+
+  nam-get-definitions :
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> [(Field(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <NestedStruct(
+            Struct(id, Identifier(id), id)
+          , Identifier(nam-annotate-def(|path__))
+          )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <store__> DefData(
+                     [namespace__|path__]
+                   , Type()
+                   , StructType(Identifier(s))
+                   )
+
+  type-of :
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> StructType(Identifier(s))
+
+  nam-unique :
+    NestedStruct(
+      Struct(_, Identifier(s), _)
+    , Identifier(name)
+    ) -> <id>
+
+
+rules
+
   nam-get-uses-keys :
     Field(e, Identifier(field)) -> [field]
     where StructType(Identifier(s)) := <type-of> e
 
   nam-get-uses :
-    Field(e, Identifier(field)) -> [ (Field(), [field])
-                                   , (Struct(), [field])
-                                   ]
+    Field(e, Identifier(field)) -> [(Field(), [field])]
     where StructType(Identifier(s)) := <type-of> e
 
   nam-annotate-names(|paths__, path__):
@@ -391,9 +511,7 @@ rules
                                     )>
 
   adjust-index-lookup(target__|namespace__, path__, prefix__):
-    Field(e, Identifier(field)) -> <concat> [ <index-lookup-children(|Field(), prefix__)> s
-                                            , <index-lookup-children(|Struct(), prefix__)> s
-                                            ]
+    Field(e, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
     where <target__> field
     where StructType(Identifier(s)) := <type-of> e
 
@@ -418,6 +536,100 @@ rules
     FieldViaPointer(e, Identifier(field)) -> <index-lookup-children(|Field(), prefix__)> s
     where <target__> field
     where Pointer(StructType(Identifier(s))) := <type-of> e
+
+
+rules
+
+  nam-get-definition-keys :
+    TypedefDecl(type, Identifier(name)) -> [name]
+
+  nam-get-definitions :
+    TypedefDecl(type, Identifier(name)) -> [(TypeSynonym(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    TypedefDecl(type, Identifier(name)) -> <TypedefDecl(id, Identifier(nam-annotate-def(|path__)))>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    TypedefDecl(type, Identifier(name)) -> <store__> DefData(
+                                                       [namespace__|path__]
+                                                     , Type()
+                                                     , type
+                                                     )
+
+  type-of :
+    TypedefDecl(type, Identifier(name)) -> type
+
+  nam-unique :
+    TypedefDecl(type, Identifier(name)) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    TypeSynonym(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    TypeSynonym(Identifier(name)) -> [ (TypeSynonym(), [name])
+                                     , (Struct(), [name])
+                                     , (Union(), [name])
+                                     , (Enum(), [name])
+                                     ]
+
+  nam-annotate-names(|paths__, path__):
+    TypeSynonym(Identifier(name)) -> <TypeSynonym(
+                                        Identifier(nam-annotate-use(|paths__, TypeSynonym()))
+                                      )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    TypeSynonym(Identifier(name)) -> [ [TypeSynonym()|path__]
+                                     , [Struct()|path__]
+                                     , [Union()|path__]
+                                     , [Enum()|path__]
+                                     ]
+    where <target__> name
+
+
+rules
+
+  nam-get-definition-keys :
+    Enum(_, Identifier(name), _) -> [name]
+
+  nam-get-definitions :
+    Enum(_, Identifier(name), _) -> [(Enum(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Enum(_, Identifier(name), _) -> <Enum(
+                                       id
+                                     , Identifier(nam-annotate-def(|path__))
+                                     , id
+                                     )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Enum(_, Identifier(name), _) -> <store__> DefData(
+                                                [namespace__|path__]
+                                              , Type()
+                                              , BasicType("int8")
+                                              )
+
+  type-of :
+    Enum(_, Identifier(name), _) -> BasicType("int8")
+
+  nam-unique :
+    Enum(_, Identifier(name), _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    EnumType(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    EnumType(Identifier(name)) -> [(Enum(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    EnumType(Identifier(name)) -> <EnumType(
+                                     Identifier(nam-annotate-use(|paths__, Enum()))
+                                   )>
 
 
 rules

@@ -1,0 +1,31 @@
+module keywords-metaC-others
+language metac
+start symbol ID
+
+
+//module
+test id_module [[module]] parse fails
+test id_imports [[imports]] parse fails
+test id_external [[external]] parse fails
+
+
+//messagelist
+test id_messagelist [[messagelist]] parse fails
+test id_active [[active]] parse fails
+test id_inactive [[inactive]] parse fails
+test id_count [[count]] parse fails
+//ERROR, WARN and INFO
+
+
+//test cases
+test id_test [[test]] parse fails
+test id_case [[case]] parse fails
+test id_assert [[assert]] parse fails
+
+
+//others
+test id_exported [[exported]] parse fails
+test id_as [[as]] parse fails 			//in typedef
+test id_with [[with]] parse fails
+test id_label [[label]] parse fails
+test id_nothing [[nothing]] parse fails

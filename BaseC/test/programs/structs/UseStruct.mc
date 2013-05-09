@@ -5,7 +5,7 @@ module UseStruct {
 	    int32 ID;
 	    int32 Age;
 	    int32 Wage;
-	    Address *addr;
+	    struct Address *addr;
 	};
 	
 	struct Address{
@@ -15,9 +15,9 @@ module UseStruct {
 	
 	exported int32 main(int32 argc, string[] argv) { 
 		
-		Employee Joe;
-		Address JoeAddr;
-		Employee * JoePtr;
+		struct Employee Joe;
+		struct Address JoeAddr;
+		struct Employee * JoePtr;
 		
 		JoePtr = &Joe;
 		JoePtr->addr = &JoeAddr;

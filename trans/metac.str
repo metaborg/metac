@@ -16,7 +16,12 @@ imports
   BaseC/trans/generation/generate
   BaseC/trans/typing/types
   BaseC/trans/typing/constraints
+  Statemachine/trans/statemachine-names
   signaturefixes
+  Statemachine/trans/statemachine-types
+  Statemachine/trans/statemachine-desugar
+  Statemachine/trans/Statemachine-mapping
+  Statemachine/trans/generation/builders
 
 
 rules // Analysis
@@ -181,3 +186,4 @@ rules // Utility
     files -> None()
     with
       index-sequential-analyze-files(analyze)
+	

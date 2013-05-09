@@ -1,0 +1,85 @@
+module statemachine-names
+
+imports
+
+  BaseC/trans/naming/names
+  BaseC/trans/typing/types
+  Statemachine/trans/statemachine-types
+  include/MetaC
+  
+  //CompoundStatement is considered a namespace that scopes variables
+namespaces 
+	Statemachine 
+	State 
+	StateMachineVar 
+	InEvent 
+	OutEvent
+	Function
+	Module
+	Variable
+
+rules
+	//Module(_ , _, _):
+	//		scopes Statemachine
+	//Function():
+	//		scopes Statemachine
+	
+rules
+
+	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
+							scopes State, Variable, InEvent, OutEvent
+							refers to State state
+							
+	StatemachineType(Identifier(sm)) : refers to Statemachine sm
+	
+	StateMachineState(Identifier(state_name),_) : defines unique State state_name
+	
+	StateMachineInEvent(Identifier(event_name),_) : defines unique InEvent event_name
+				
+
+	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
+	
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique Variable name of type var_type
+	
+	//TODO - needs BaseC namebinding
+	Binding(Identifier(f)) : refers to Function f
+	
+	//field refence like struct or union
+/*	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
+							   		where 
+										var has type StatemachineType(Identifier(stm))
+*/	
+			
+	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : refers to InEvent event_name 
+											  refers to State state_name
+										
+	StateMachineInit(Identifier(sm_name)) : refers to Statemachine sm_name
+	
+	StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) : refers to Statemachine sm_name
+									refers to InEvent in_event
+									
+	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
+								  	refers to State state
+							    
+	  
+	//methods: sminit, smtrigger,smIsInState 
+ 
+//  a statemac; 
+//  stm2 second; 
+//  sminit(second); 
+//  sminit(statemac); 
+//  smtrigger(statemac, event(9)); 
+//  smIsInState(statemac, st); 
+//  statemac.variab = 5; 
+   
+ 
+   //Statemachine         : ID * ID * List(StateMachineComponent) -> Statemachine
+   //StateMachineState    : ID * List(StateBody) -> StateMachineComponent					
+   //StateMachineInEvent  : ID * ParamList -> StateMachineComponent
+   // StateMachineOutEvent : ID * ParamList * Option(StateMachineEventBinding) -> StateMachineComponent
+   // StateMachineVarDecl  : Option(StatemachineVarModifier) * Type * ID * Exp -> StateMachineComponent
+   // Binding              : ID -> StateMachineEventBinding
+   // Entry                : CompoundStatement -> StateBody
+   // Exit                 : CompoundStatement -> StateBody
+   // Transition           : ID * Option(Exp) * ID * Option(CompoundStatement) -> StateBody							
+	

@@ -1,0 +1,40 @@
+module constants-character
+language metac
+start symbol Constant
+
+//'a' + escape characters
+
+test character constant 'a' valid [['a']] parse succeeds
+test character constant 'a' caps valid [['A']] parse succeeds
+test character constant digit [['4']] parse succeeds
+
+//l L prefix
+test character constant with prefix l [[l'a']] parse fails
+test character constant with prefix L [[L'a']] parse succeeds
+test character constant with prefix L invalid [[L'ab']] parse fails
+
+test character constant number [['412']] parse fails
+test character constant multiple chars [['ab']] parse fails
+
+test character constant invalid character backslash [['\']] parse fails
+test character constant invalid character single quote [[''']] parse fails
+
+test character constant valid escaped quote [['\'']] parse succeeds
+test character constant valid escaped double quote [['\"']] parse succeeds
+test character constant valid escaped question mark [['\?']] parse succeeds
+test character constant valid escaped backslash [['\\']] parse succeeds
+test character constant valid escaped bell character [['\a']] parse succeeds
+test character constant valid escaped backspace [['\b']] parse succeeds
+test character constant valid escaped formfeed [['\f']] parse succeeds
+test character constant valid escaped new-line [['\n']] parse succeeds
+test character constant valid escaped carriage-return [['\r']] parse succeeds
+test character constant valid escaped tab [['\t']] parse succeeds
+test character constant valid escaped vertical tab [['\v']] parse succeeds
+test character constant valid escaped hexadecimal [['\x4D']] parse succeeds
+
+//these should pass in syntax testing, but fail static analysis tests
+test character constant valid escaped hexadecimal out of ASCII character range[['\x8D']] parse succeeds          
+test character constant valid escaped octal out of ASCII character range[['\256']] parse succeeds
+
+test character constant valid escaped hexadecimal out of ASCII character range[['\x8D']] parse fails
+test character constant valid escaped octal out of ASCII character range[['\256']] parse fails

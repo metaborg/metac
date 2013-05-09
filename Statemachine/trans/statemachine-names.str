@@ -1,0 +1,303 @@
+module statemachine-names
+
+imports
+  lib/analysis-library.generated
+  lib/analysis-library-internal.generated
+  lib/index-library.generated
+
+
+imports
+  BaseC/trans/naming/names
+  BaseC/trans/typing/types
+  Statemachine/trans/statemachine-types
+  include/MetaC
+
+
+signature
+  constructors
+    Type        : DefDataKind
+    Import      : DefDataKind
+    Transitive  : ImportAnno
+    CurrentFile : ImportAnno
+
+  constructors
+    Statemachine    : Namespace
+    State           : Namespace
+    StateMachineVar : Namespace
+    InEvent         : Namespace
+    OutEvent        : Namespace
+    Function        : Namespace
+    Module          : Namespace
+    Variable        : Namespace
+
+
+rules
+
+  nam-get-scope-types :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> [ State()
+         , Variable()
+         , InEvent()
+         , OutEvent()
+         ]
+
+  nam-get-definition-keys :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> [sm]
+
+  nam-get-definitions :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> [(Statemachine(), [sm])]
+
+  nam-get-uses-keys :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> [state]
+
+  nam-get-uses :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> [(State(), [state])]
+
+  nam-annotate-names(|paths__, path__):
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> <Statemachine(
+            Identifier(nam-annotate-def(|path__))
+          , Identifier(nam-annotate-use(|paths__, State()))
+          , id
+          )>
+
+  nam-unique :
+    Statemachine(
+      Identifier(sm)
+    , Identifier(state)
+    , _
+    ) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    StatemachineType(Identifier(sm)) -> [sm]
+
+  nam-get-uses :
+    StatemachineType(Identifier(sm)) -> [(Statemachine(), [sm])]
+
+  nam-annotate-names(|paths__, path__):
+    StatemachineType(Identifier(sm)) -> <StatemachineType(
+                                           Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                         )>
+
+
+rules
+
+  nam-get-definition-keys :
+    StateMachineState(Identifier(state_name), _) -> [state_name]
+
+  nam-get-definitions :
+    StateMachineState(Identifier(state_name), _) -> [(State(), [state_name])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineState(Identifier(state_name), _) -> <StateMachineState(Identifier(nam-annotate-def(|path__)), id)>
+
+  nam-unique :
+    StateMachineState(Identifier(state_name), _) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    StateMachineInEvent(Identifier(event_name), _) -> [event_name]
+
+  nam-get-definitions :
+    StateMachineInEvent(Identifier(event_name), _) -> [(InEvent(), [event_name])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineInEvent(Identifier(event_name), _) -> <StateMachineInEvent(Identifier(nam-annotate-def(|path__)), id)>
+
+  nam-unique :
+    StateMachineInEvent(Identifier(event_name), _) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    StateMachineOutEvent(Identifier(event_name), _, _) -> [event_name]
+
+  nam-get-definitions :
+    StateMachineOutEvent(Identifier(event_name), _, _) -> [(OutEvent(), [event_name])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineOutEvent(Identifier(event_name), _, _) -> <StateMachineOutEvent(
+                                                             Identifier(nam-annotate-def(|path__))
+                                                           , id
+                                                           , id
+                                                           )>
+
+  nam-unique :
+    StateMachineOutEvent(Identifier(event_name), _, _) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> [name]
+
+  nam-get-definitions :
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> [(Variable(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> <StateMachineVarDecl(
+                                                                id
+                                                              , id
+                                                              , Identifier(nam-annotate-def(|path__))
+                                                              , id
+                                                              )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> <store__> DefData(
+                                                                         [namespace__|path__]
+                                                                       , Type()
+                                                                       , var_type
+                                                                       )
+
+  type-of :
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> var_type
+
+  nam-unique :
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    Binding(Identifier(f)) -> [f]
+
+  nam-get-uses :
+    Binding(Identifier(f)) -> [(Function(), [f])]
+
+  nam-annotate-names(|paths__, path__):
+    Binding(Identifier(f)) -> <Binding(
+                                 Identifier(nam-annotate-use(|paths__, Function()))
+                               )>
+
+
+rules
+
+  nam-get-uses-keys :
+    StateTransition(
+      Identifier(event_name)
+    , _
+    , Identifier(state_name)
+    , _
+    ) -> [event_name, state_name]
+
+  nam-get-uses :
+    StateTransition(
+      Identifier(event_name)
+    , _
+    , Identifier(state_name)
+    , _
+    ) -> [ (InEvent(), [event_name])
+         , (State(), [state_name])
+         ]
+
+  nam-annotate-names(|paths__, path__):
+    StateTransition(
+      Identifier(event_name)
+    , _
+    , Identifier(state_name)
+    , _
+    ) -> <StateTransition(
+            Identifier(nam-annotate-use(|paths__, InEvent()))
+          , id
+          , Identifier(nam-annotate-use(|paths__, State()))
+          , id
+          )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    StateTransition(
+      Identifier(event_name)
+    , _
+    , Identifier(state_name)
+    , _
+    ) -> [ [InEvent()|path__]
+         , [State()|path__]
+         ]
+    where <target__> event_name
+
+
+rules
+
+  nam-get-uses-keys :
+    StateMachineInit(Identifier(sm_name)) -> [sm_name]
+
+  nam-get-uses :
+    StateMachineInit(Identifier(sm_name)) -> [(Statemachine(), [sm_name])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineInit(Identifier(sm_name)) -> <StateMachineInit(
+                                                Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                              )>
+
+
+rules
+
+  nam-get-uses-keys :
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [sm_name, in_event]
+
+  nam-get-uses :
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [ (Statemachine(), [sm_name])
+                                                                      , (InEvent(), [in_event])
+                                                                      ]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> <StateMachineTrigger(
+                                                                         Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                                                       , Identifier(nam-annotate-use(|paths__, InEvent()))
+                                                                       )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [ [Statemachine()|path__]
+                                                                      , [InEvent()|path__]
+                                                                      ]
+    where <target__> sm_name
+
+
+rules
+
+  nam-get-uses-keys :
+    StateMachineIsInState(Identifier(sm_name), Identifier(state)) -> [sm_name, state]
+
+  nam-get-uses :
+    StateMachineIsInState(Identifier(sm_name), Identifier(state)) -> [ (Statemachine(), [sm_name])
+                                                                     , (State(), [state])
+                                                                     ]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineIsInState(Identifier(sm_name), Identifier(state)) -> <StateMachineIsInState(
+                                                                        Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                                                      , Identifier(nam-annotate-use(|paths__, State()))
+                                                                      )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    StateMachineIsInState(Identifier(sm_name), Identifier(state)) -> [ [Statemachine()|path__]
+                                                                     , [State()|path__]
+                                                                     ]
+    where <target__> sm_name

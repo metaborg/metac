@@ -1,0 +1,38 @@
+module identifier
+language metac
+start symbol Identifier
+
+
+test id_lower_case [[abcd]] parse succeeds
+
+test id_upper_case [[VFG]] parse succeeds
+
+test id_mixed_case [[GniSrB]] parse succeeds
+
+test id_1letter_lower [[y]] parse succeeds
+
+test id_1letter_upper [[D]] parse succeeds
+
+test id_letter_number [[j5]] parse succeeds
+
+test id_letter_number_upper [[K43]] parse succeeds
+
+test id_all_mixed [[iF83ujD]] parse succeeds
+
+test id_underscore [[hygFr76_fg]] parse succeeds
+
+test id_underscore_end [[hygFr76_]] parse succeeds
+
+test id_underscore_begin [[_fH86g]] parse fails
+
+test id_only_underscore [[_]] parse fails
+
+test id_number_letter [[8gt]] parse fails
+
+test id_digits [[5264]] parse fails
+
+//TODO 
+//limit the length to 31
+//test id_31_characters [[abcdefghijklmnopqrstuvwxyz01234]] parse succeeds
+
+//test id_32_characters [[abcdefghijklmnopqrstuvwxyz012345]] parse fails

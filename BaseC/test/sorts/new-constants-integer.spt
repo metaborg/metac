@@ -1,0 +1,80 @@
+module constants-integer
+language metac
+start symbol Constant
+
+test integer_constant_correct [[124]] parse succeeds
+test integer_constant_zero [[0]] parse succeeds
+test negative_zero [[-0]] parse succeeds
+//test integer_constant_leading zero [[00245]] parse fails
+test negative_integer [[-256]] parse succeeds
+test integer_constant_try_hex [[85A84]] parse fails
+
+test integer_constant_with_suffix_u [[124u]] parse succeeds
+test integer_constant_with_suffix_U [[124U]] parse succeeds
+test integer_constant_with_suffix_l [[124l]] parse succeeds
+test integer_constant_with_suffix_L [[124L]] parse succeeds
+test integer_constant_with_suffix_ul [[124ul]] parse succeeds
+test integer_constant_with_suffix_UL [[124UL]] parse succeeds
+
+test integer_constant_with_suffix_other [[124d]] parse fails
+
+
+//octal
+test integer_octal_correct [[024506]] parse succeeds
+test integer_octal_correct_leading_zero [[00266]] parse succeeds
+test integer_octal_use_8 [[024806]] parse fails
+test integer_octal_use_9 [[24906]] parse fails
+test integer_octal_minus [[01-24506]] parse succeeds
+test integer_octal_add [[0245+06]] parse succeeds
+test integer_octal_subtract [[0245-060]] parse succeeds
+//TODO
+//multiply, divide and other operators
+
+test integer_octal_dot [[0245.06]] parse fails
+test integer_octal_comma_separator [[0245,106]] parse fails
+
+
+//hexadecimal
+test integer_hexal_correct [[0x24506]] parse succeeds
+test integer_hexal_correct_leading_zero [[0x0866]] parse succeeds
+test integer_hexal_accepts_A [[0x1A]] parse succeeds
+test integer_hexal_accepts_a [[0x1a]] parse succeeds
+test integer_hexal_accepts_B [[0x1B]] parse succeeds
+test integer_hexal_accepts_b [[0x1b]] parse succeeds
+test integer_hexal_accepts_C [[0x1C]] parse succeeds
+test integer_hexal_accepts_c [[0x1c]] parse succeeds
+test integer_hexal_accepts_D [[0x1D]] parse succeeds
+test integer_hexal_accepts_d [[0x1d]] parse succeeds
+test integer_hexal_accepts_E [[0x1E]] parse succeeds
+test integer_hexal_accepts_e [[0x1e]] parse succeeds
+test integer_hexal_accepts_F [[0x1F]] parse succeeds
+test integer_hexal_accepts_f [[0x1f]] parse succeeds
+test integer_hexal_accepts_other [[0x5g87]] parse fails
+test integer_hexal_correct_characters_smallcaps [[0x08af]] parse succeeds
+test integer_hexal_correct_characters_caps [[0x08BC]] parse succeeds
+test integer_hexal_correct_characters_combined [[0x08aF]] parse succeeds
+test integer_hexal_incorrect_characters [[0x24g]] parse fails
+test integer_hexal_incorrect_characters_caps [[0x14T6]] parse fails
+test integer_hexal_minus [[0x-2ba06]] parse fails
+test integer_hexal_add_between_<> [[0x24a+06]] parse fails
+test integer_hexal_subtract_between_<> [[0x245-b]] parse fails
+//TODO
+//multiply, divide and other operators
+test integer_hexal_dot_between_<> [[0x2a5.06]] parse fails
+test integer_hexal_comma_separator [[0x2a5,106]] parse fails
+
+
+//binary
+test integer_binary_correct [[0b100101]] parse succeeds
+test integer_binary_correct_leading_zero [[0b0011]] parse succeeds
+test integer_binary_use_2 [[0b01120]] parse fails
+test integer_binary_use_3 [[0b01130]] parse fails
+test integer_binary_use_4 [[0b1140]] parse fails
+test integer_binary_use_chars [[0b0111f0]] parse fails
+test integer_binary_minus [[0b-00101]] parse fails
+test integer_binary_add_between_<> [[0b101+010]] parse fails
+test integer_binary_subtract_between_<> [[0b101-010]] parse fails
+//TODO
+//multiply, divide and other operators
+test integer_binary_dot_between_<> [[0b101.010]] parse fails
+test integer_binary_comma_separator [[0b101,010] parse fails

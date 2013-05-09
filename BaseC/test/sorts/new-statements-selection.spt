@@ -1,0 +1,60 @@
+module statements
+language metaC
+start symbol Stm
+
+
+//selection statement
+//if
+test if statement correct [[if (a<10) b=10; else b=1;]] parse succeeds
+test if statement if branch block [[if (a<10) {b=10;a=19;} else b=1; ]] parse succeeds
+test if statement else branch block [[if (a<10) b=10; else {b=1;a=19;} ]] parse succeeds
+test if statement no if [[ else b=10; ]] parse fails
+test if statement no condition [[if () b=10; else b=1;]] parse fails
+test if statement no paranthesis [[if abc b=4; else c=10;]] parse fails
+test if statement no if branch [[if (a<10) else b=1;]] parse fails
+test if statement empty else branch [[if (a<10) b=10; else ; ]] parse succeeds
+test if statement no branches [[if (a<10);]] parse succeeds
+test if statement condition is not expression [[if (+) b=10; else b=1;]] parse fails
+test if statement condition is statement [[if (a=10;) b=10; else b=1;]] parse fails
+test if statement multiple condition [[if (a;bb) b=10; else b=1;]] parse fails
+test if statement multiple condition2 [[if (a,bb) b=10; else b=1;]] parse succeeds
+test if statement condition var is struct [[if (a.bb) b=10; else b=1;]] parse succeeds
+test if statement multiple condition4 [[if (a&&bb) b=10; else b=1;]] parse succeeds
+test if statement condition is assignment [[if (a=8) b=10; else b=1;]] parse succeeds
+
+test if statement condition is VarDecl [[if(int8 g) b=10; else b=1;]] parse fails
+test if statement condition is FuncDecl [[if (int g(){
+												return 1;
+											}) b=10; else b=1;]] parse fails
+
+test if statement if branch is VarDecl [[ if (a<10) int v; else b=1;]] parse succeeds
+test if statement if branch is FuncDecl [[ if (a<10) int g(){
+												return 1;
+											} else b=1;]] parse fails
+
+test if statement no else [[ if(a) c=10;]] parse succeeds
+test if statement no else2 [[ if(a) {c=10; a=10;}]] parse succeeds
+
+
+//switch (expression) statement
+test switch statement empty clauses [[ switch(a) {} ]] parse succeeds
+test switch statement condition is not expression [[ switch(+) {} ]] parse fails
+test switch statement condition is not expression2 [[ switch(int8 a;) {} ]] parse fails
+test switch statement statement is case [[ switch(a) 
+												case 3: a=9; ]] parse succeeds
+test switch statement statement is default [[ switch(a) 
+												   default: a=9; ]] parse succeeds
+test switch statement statement is if statement [[ switch(a) 
+														if (b) c=10; ]] parse succeeds
+test switch statement compound [[ switch(a) {
+										if(a=5)
+											c=19;				
+										case 5: c=0;				
+										} ]] parse succeeds
+test switch statement multiple case clauses [[ switch(a) {
+													case 0: {a=10; break;}
+													}]] parse succeeds
+test switch statement multiple case clauses2 [[ switch(a) {
+													case 0: a=10; break;}]] parse succeeds
+	
+										

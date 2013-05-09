@@ -27,6 +27,8 @@ rules
 	desugar: FieldDecl(type, vars) -> declarationList
 		where
 			declarationList := <map(fieldDecl-pairwith(|type))>vars
+	
+	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 			
 	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
 	
@@ -39,12 +41,11 @@ rules
 		<is-substring(!"long")> a;
 		<is-substring(!"double")> a
 		
-	desugar: amb([Exp(_), Declaration(Pointer(StructType(typeId)), init)]) -> Declaration(Pointer(StructType(typeId)),init)
+/*	desugar: amb([Exp(_), Declaration(Pointer(StructType(typeId)), init)]) -> Declaration(Pointer(StructType(typeId)),init)
 	where
-		Identifier(name) := typeId; 
+		Identifier(_) := typeId; 
 		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
-			
-	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
+*/	
 	
 	/*desugar: For(
 			[Declaration(type, Init(varName, value))], 
