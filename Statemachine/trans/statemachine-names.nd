@@ -16,9 +16,10 @@ namespaces
 	OutEvent
 	Function
 	Module
+	Variable
 
 rules
-	//Module(Identifier(name), _, _):
+	//Module(_ , _, _):
 	//		scopes Statemachine
 	//Function():
 	//		scopes Statemachine
@@ -26,7 +27,7 @@ rules
 rules
 
 	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
-							scopes State, StateMachineVar, InEvent, OutEvent
+							scopes State, Variable, InEvent, OutEvent
 							refers to State state
 							
 	StatemachineType(Identifier(sm)) : refers to Statemachine sm
@@ -38,16 +39,16 @@ rules
 
 	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
 	
-	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique StateMachineVar name of type var_type
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique Variable name of type var_type
 	
 	//TODO - needs BaseC namebinding
 	Binding(Identifier(f)) : refers to Function f
 	
 	//field refence like struct or union
-	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
+/*	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
 							   		where 
 										var has type StatemachineType(Identifier(stm))
-	
+*/	
 			
 	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : refers to InEvent event_name 
 											  refers to State state_name
