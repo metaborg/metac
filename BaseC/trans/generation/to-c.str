@@ -168,9 +168,9 @@ rules
 	// 	where
 	// 		declaration := C-Assign(<to-c>b, C-AssignEq(), <to-c>c)
 	
-	to-c: Switch(Var(name), block) -> 
+	to-c: Switch(exp, block) -> 
 			C-Switch(
-  				<to-c> name
+  				<to-c> exp
 			,	<to-c> block
   			)
 			
