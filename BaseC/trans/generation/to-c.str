@@ -151,6 +151,7 @@ rules
 	 * Statements
 	 */
 	to-c: Return(a) -> C-Return(<to-c>a)
+	to-c: None() -> C-EmptyExp()
 	to-c: Block(a) -> C-Compound([], <map(to-c)>a)
 	to-c: Exp(a) -> C-Stat(<to-c>a)
 	to-c: Assign(leftExp, assignOp, rightExp) ->
