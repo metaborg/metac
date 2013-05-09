@@ -168,6 +168,22 @@ rules
 	// 	where
 	// 		declaration := C-Assign(<to-c>b, C-AssignEq(), <to-c>c)
 	
+	to-c: Switch(Var(name), block) -> 
+			C-Switch(
+  				<to-c> name
+			,	<to-c> block
+  			)
+			
+	to-c: Case(val, statement) ->
+			C-Case(
+				<to-c> val
+			,	<to-c> statement	
+			)
+	
+	to-c: Break() -> C-Break()
+	
+	to-c: Default(statement) -> C-Default(<to-c> statement)
+	
 	/**
 	 * Structs
 	 */
