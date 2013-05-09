@@ -16,6 +16,8 @@ imports
   BaseC/trans/generation/generate
   BaseC/trans/typing/types
   BaseC/trans/typing/constraints
+  signaturefixes
+
 
 rules // Analysis
   

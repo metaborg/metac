@@ -77,10 +77,13 @@ rules
 	            ]
 	          )
 	*/          
-	to-c: Declaration(a, NoInit(b)) -> 
+	to-c: Declaration(a, NoInit(name)) -> 
 			  C-Declaration2(
 	            <to-c> typespec
-	          , [ C-IdDecl(plist, <to-c>b, None()) ]
+	          , [ C-IdDecl(plist
+	            , <to-c>name, 
+	              None()
+	              ) ]
 	          )
 	where
 		(typespec, plist):= <getTypeSpec(|[])> a
@@ -96,8 +99,18 @@ rules
 	          )          
 	where
 		(typespec, plist):= <getTypeSpec(|[])> a
-									
-	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist)
+
+	to-c: Declaration( type, NoInit((name, size))) ->
+			C-Declaration2(
+				<to-c>type
+				, C-IdDecl(
+				  	[]
+				  , <to-c>name
+				  , Some(C-ArrayDecl(None(), Some(<to-c>size)))
+				  )
+			)
+								
+	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist) 
 	where
 		(typespec, nlist):= <getTypeSpec(|list)> a; 
 		nnlist:= [C-PointerOf([])|nlist]	<+
@@ -147,6 +160,8 @@ rules
 	
 	to-c: FieldViaPointer(var, fieldId) -> C-DerefMember(<to-c> var, <to-c> fieldId)
 	
+	to-c: ArrayField(arrayName, index) -> C-ArrayIndex(<to-c>arrayName, <to-c>index)
+	
 	/**
 	 * Statements
 	 */
@@ -163,6 +178,9 @@ rules
 	to-c: If(t1, t2) -> C-If(<to-c>t1, <to-c>t2)
 	to-c: While(t1, t2) -> C-While(<to-c>t1, <to-c>t2)
 	to-c: DoWhile(t1, t2) -> C-DoWhile(<to-c>t1, <to-c>t2)
+	//to-c: For(t1, t2, t3, t4) -> C-For([], <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
+	//to-c: For(t1, t2, t3, t4) -> C-For(<to-c>t1, <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
+	to-c: None() -> []
 	to-c: For(t1, t2, t3, t4) -> C-For(<to-c>t1, <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
 	// to-c: For([Declaration(a,Init(b,c))], t2, t3, t4) -> C-For(declaration, <to-c>t2, <to-c>t3, <to-c>t4) //declaration for loop
 	// 	where
@@ -181,7 +199,7 @@ rules
 		    , []
 		    )
 	
-	to-c: NestedStruct(Struct(_, name, fields)) ->
+	to-c: NestedStruct(Struct(_, name, fields), _) ->
 			C-MemDecl(
 				C-TypeSpec(
 					[]
