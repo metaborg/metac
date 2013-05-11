@@ -20,7 +20,7 @@ rules
 	where
 		[_, _, parent | tail]:= <index-uri> smName
 	
-	to-basec: Statemachine(Identifier(statemachineID), _, components*) -> executeFunction //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	to-basec: Statemachine(Identifier(statemachineID), _, components*) -> initFunction //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
 	where
 		moduleName := <get-module> statemachineID;
 		<collect-components(|statemachineID)> components* => (states_out, events_out, vars_out)
@@ -230,9 +230,9 @@ rules
 	generate-sm-basec-init(|moduleName, statemachineID): varList -> initFunction
 	where
 		initBlock:=<map(generate-sm-basec-initStm)> varList;
-		functionName:= $[[moduleName]_sm_init_[statemachineID]];
-		paramList:= [Param(Identifier($[[moduleName]_sm_data_[statemachineID]]), "instance")];											//TODO change type to pointer
-		initFunction:= FunDef(None(), BasicType("int8"), functionName, paramList, Block(initBlock))													//TODO change type to void
+		functionName:= Identifier($[[moduleName]_sm_init_[statemachineID]]);
+		paramList:= [Param(Identifier($[[moduleName]_sm_data_[statemachineID]]), Identifier("instance"))];											//TODO change type to pointer
+		initFunction:= FunDef(None(), BasicType("int8"), functionName, ParamList(paramList), initBlock)													//TODO change type to void
 		
 	generate-sm-basec-initStm: StateMachineVarDecl(_, _, varName, initValue) -> initStatement
 	where
