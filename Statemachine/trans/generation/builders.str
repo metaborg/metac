@@ -31,3 +31,9 @@ rules
 		filename := <guarantee-extension(|"c")> path;
 		(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
 		result := <to-c; pp-c-string> basecAST
+		
+	editor-sm-generate: (selected, position, ast, path, project-path) -> None()//(filename, result)
+	with
+		//filename := <guarantee-extension(|"c")> path;
+		<desugar-all; analyze-top(|<language>); to-basec-all(|path)> (selected, path, project-path)
+		//result := <to-c; pp-c-string> basecAST
