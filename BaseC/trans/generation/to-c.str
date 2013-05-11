@@ -120,6 +120,7 @@ rules
 	
 	getTypeSpec(|list): StructType(a) -> (StructType(a), list)
 	
+	getTypeSpec(|list): EnumType(a) -> (EnumType(a), list)
 	
 	/**
 	 * Expressions
@@ -238,6 +239,27 @@ rules
     to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
 	
+	/**
+	 * Enum
+	 */
+	
+	to-c: Enum(_, name, list) -> 
+			C-Declaration2(
+      			C-TypeSpec(
+        			[]
+      			, 	C-Enum(
+          				<to-c> name
+        			, 	<map(to-c)> list
+        			)
+      			,	[]
+      			)
+    		, 	[]
+    		)
+	
+	to-c: EnumItem(name) -> C-Enumerator(<to-c>name, None())
+	
+	to-c: EnumType(name) -> C-TypeSpec([], C-EnumId(<to-c> name), [])
+	 
 	/**
 	 * FunDef
 	 */
