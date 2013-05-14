@@ -57,7 +57,7 @@ rules
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
 	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
 	 to-c: BasicType("string")->C-TypeSpec([], C-TypeId("string"), []) //TODO: fix, C doesnt know string
-
+	 to-c: BasicType("void") -> C-TypeSpec([], C-Void(), [])
 	
 	/**
 	 * Declarations
@@ -120,6 +120,7 @@ rules
 	
 	getTypeSpec(|list): StructType(a) -> (StructType(a), list)
 	
+	getTypeSpec(|list): EnumType(a) -> (EnumType(a), list)
 	
 	/**
 	 * Expressions
@@ -239,14 +240,37 @@ rules
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
 	
 	/**
+	 * Enum
+	 */
+	
+	to-c: Enum(_, name, list) -> 
+			C-Declaration2(
+      			C-TypeSpec(
+        			[]
+      			, 	C-Enum(
+          				<to-c> name
+        			, 	<map(to-c)> list
+        			)
+      			,	[]
+      			)
+    		, 	[]
+    		)
+	
+	to-c: EnumItem(name) -> C-Enumerator(<to-c>name, None())
+	
+	to-c: EnumType(name) -> C-TypeSpec([], C-EnumId(<to-c> name), [])
+	 
+	/**
 	 * FunDef
 	 */
 	to-c: Param(type, name) ->
 				  C-ParamDecl(
-                    <to-c>type
-                  , C-IdDecl([], <to-c>name, None())
+                    <to-c>typespec
+                  , C-IdDecl(plist, <to-c>name, None())
                   )
-    
+    where
+    	(typespec, plist):= <getTypeSpec(|[])> type
+    	
     //TODO: do somewhat nicer for string[] argv
     to-c: Param(Array(BasicType("string"), None()), name) ->
     			  C-ParamDecl(
@@ -262,15 +286,16 @@ rules
 
 	to-c: FunDef(_, returnType, name, params, statements) ->
 				  C-FunDef(
-				  	<to-c>returnType,
+				  	<to-c>typespec,
 				  	C-IdDecl(
-				      [],
+				      plist,
 				      <to-c>name,
 				      <to-c>params
 				    ),
 				    <to-c>Block(statements)
 				  )
-			 
+	where
+		(typespec, plist):= <getTypeSpec(|[])> returnType		 
 
 
 	/**
