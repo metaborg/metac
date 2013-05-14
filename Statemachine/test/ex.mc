@@ -1,5 +1,6 @@
 module stmtest {
 	int8 abc;
+	int8 current;
 statemachine counter initial = start { 
 	readable var int8 current = 0
   in reset() 
