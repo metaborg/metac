@@ -7,6 +7,8 @@ Decl = <<Decl> [<Constant>]>
 
 Initialization.NoInit = <<Decl>>
 Initialization.Init = <<Decl> = <Exp>>
+Initialization.Init = <<Decl> = <InitBlock>>
+InitBlock.InitBlock = < { <Exp+; separator = ","> } >
 InitializationList = <<Initialization+;separator=",">>
 
 Declaration.Declaration = <<Type> <InitializationList>;>
