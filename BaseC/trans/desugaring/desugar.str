@@ -55,14 +55,23 @@ rules
 					[Declaration(type, Init(varName, value)),
 					For(None(), cond, postIterInstr, loopBody)]
 	*/
-	desugar: For(
-			[Declaration(type, Init(varName, value))], 
+	/*desugar: For(
+			[Declaration(type, Init(Identifier(varName), value))], 
 			cond, 
 			postIterInstr, 
 			loopBody) -> 
-					[Declaration(type, NoInit(varName)),
-					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)]
-			
+					[Declaration(type, NoInit(newVarName)),
+					For(Assign(newVarName, Assign(), value), cond, postIterInstr, loopBody)]
+	where newVarName := <newname>varName
+	*/
+	desugar: For(
+		[Declaration(type, Init(varName, value))],
+		cond,
+		postIterInstr,
+		loopBody) ->
+				Block([Declaration(type, NoInit(varName)),
+					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)])
+	
 	/**
 	 * Expressions
 	 */
