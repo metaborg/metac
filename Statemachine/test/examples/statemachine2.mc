@@ -28,6 +28,5 @@ module statemachine2
 			on reset[] -> start
 		}
 	
-	
 	}	
 }
