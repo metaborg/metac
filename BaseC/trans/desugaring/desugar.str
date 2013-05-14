@@ -10,46 +10,46 @@ imports
 	lib/analysis-library-internal.generated
 	BaseC/trans/desugaring/constructors
 
-	
+
 rules
 	desugar-all = bottomup(try(desugar);try(flatten-list))
-	
+
 	//remove all the Some() constructors
 	desugar: Some(a) -> a
-	
+
 	//a single declaration that declares multiple variables to multiple declarations
 	desugar: Declaration(type, vars) -> declarationList
 		where
 			declarationList := <map(declaration-pairwith(|type))>vars
-	
+
 	declaration-pairwith(|type): var -> Declaration(type, var)
-	
+
 	desugar: FieldDecl(type, vars) -> declarationList
 		where
 			declarationList := <map(fieldDecl-pairwith(|type))>vars
-			
+
 	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
-	
+
 	desugar: Binary(val) -> Decimal(<bin-string-to-int> binval)			//needed because there is no def of binary in the c syntax
 	where
 		binval:= <ltrim-chars(?'0'); ltrim-chars(?'b')> val
-	
+
 	desugar: BasicType(a) -> BasicType("long double")
 	where
 		<is-substring(!"long")> a;
 		<is-substring(!"double")> a
-		
+
 	desugar: amb([Exp(_), Declaration(Pointer(StructType(typeId)), init)]) -> Declaration(Pointer(StructType(typeId)),init)
 	where
 		Identifier(name) := typeId; 
 		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
-			
+
 	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
-	
+
 	/**
 	 * Expressions
 	 */
-	
+
 /*	initial version
 	desugar: Subtraction(exp1, exp2) -> BinExp(MINUS(), exp1, exp2)
 	desugar: Addition(exp1, exp2) -> BinExp(PLUS(), exp1, exp2)
@@ -63,7 +63,7 @@ rules
 	desugar: Division(e1, e2) 			-> 	BinExp(Div(), e1, e2)
 	desugar: Modulo(e1, e2) 			-> 	BinExp(Mod(), e1, e2)
 	desugar: Multiplication(e1, e2) 	-> 	BinExp(Mul(), e1, e2)
-	
+
 	desugar: Or(e1, e2) 				-> 	BinExp(LogicOr(), e1, e2)
 	desugar: And(e1, e2) 				-> 	BinExp(LogicAnd(), e1, e2)
 
