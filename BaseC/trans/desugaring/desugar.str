@@ -9,6 +9,7 @@ imports
 	lib/analysis-library.generated
 	lib/analysis-library-internal.generated
 	BaseC/trans/desugaring/constructors
+	Statemachine/trans/statemachine-desugar
 
 	
 rules
