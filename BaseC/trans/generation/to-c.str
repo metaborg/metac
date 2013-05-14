@@ -99,16 +99,38 @@ rules
 	          )          
 	where
 		(typespec, plist):= <getTypeSpec(|[])> a
-
+	
+	to-c: Declaration(type, Init((name, size), init)) -> 							//aray init
+			  C-Declaration2(
+	            <to-c> typespec
+	          , [ C-DeclInit(
+	            	C-IdDecl(
+	            		plist
+	            	, 	<to-c>name
+	            	, 	Some(C-ArrayDecl(None(), Some(<to-c> size)))
+	            	)
+	              , <to-c> init
+	              )
+	            ]
+	          )          
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	
+	to-c: InitBlock(a) -> C-ArrayInit(<map(to-c-init)>a)
+	to-c-init: a -> C-AssignInit(<to-c> a)
+	
 	to-c: Declaration( type, NoInit((name, size))) ->
 			C-Declaration2(
-				<to-c>type
+				<to-c> typespec
 				, C-IdDecl(
-				  	[]
+				  	plist
 				  , <to-c>name
 				  , Some(C-ArrayDecl(None(), Some(<to-c>size)))
 				  )
 			)
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	
 								
 	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist) 
 	where
