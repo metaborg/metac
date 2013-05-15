@@ -249,9 +249,7 @@ rules
    	
    	type-of: MListRef(Identifier(x)) -> <index-type-of> x
    	
-   	type-of: TypeSynonym(Identifier(name)) -> <index-type-of; debug(!"typesynonym:")> name
-   			
-   	//type-of: Field(x,y) -> <nbl-get-type> y
+   	type-of: TypeSynonym(Identifier(name)) -> <index-type-of> name
    	
    	//dummy: remove
    	//type-of: (exp, _) -> <type-of> exp

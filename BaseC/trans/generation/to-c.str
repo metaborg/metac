@@ -57,7 +57,7 @@ rules
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
 	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
 	 to-c: BasicType("string")->C-TypeSpec([], C-TypeId("string"), []) //TODO: fix, C doesnt know string
-
+	 to-c: BasicType("void") -> C-TypeSpec([], C-Void(), [])
 	
 	/**
 	 * Declarations
@@ -77,10 +77,13 @@ rules
 	            ]
 	          )
 	*/          
-	to-c: Declaration(a, NoInit(b)) -> 
+	to-c: Declaration(a, NoInit(name)) -> 
 			  C-Declaration2(
 	            <to-c> typespec
-	          , [ C-IdDecl(plist, <to-c>b, None()) ]
+	          , [ C-IdDecl(plist
+	            , <to-c>name, 
+	              None()
+	              ) ]
 	          )
 	where
 		(typespec, plist):= <getTypeSpec(|[])> a
@@ -96,8 +99,40 @@ rules
 	          )          
 	where
 		(typespec, plist):= <getTypeSpec(|[])> a
-									
-	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist)
+	
+	to-c: Declaration(type, Init((name, size), init)) -> 							//aray init
+			  C-Declaration2(
+	            <to-c> typespec
+	          , [ C-DeclInit(
+	            	C-IdDecl(
+	            		plist
+	            	, 	<to-c>name
+	            	, 	Some(C-ArrayDecl(None(), Some(<to-c> size)))
+	            	)
+	              , <to-c> init
+	              )
+	            ]
+	          )          
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	
+	to-c: InitBlock(a) -> C-ArrayInit(<map(to-c-init)>a)
+	to-c-init: a -> C-AssignInit(<to-c> a)
+	
+	to-c: Declaration( type, NoInit((name, size))) ->
+			C-Declaration2(
+				<to-c> typespec
+				, C-IdDecl(
+				  	plist
+				  , <to-c>name
+				  , Some(C-ArrayDecl(None(), Some(<to-c>size)))
+				  )
+			)
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	
+								
+	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist) 
 	where
 		(typespec, nlist):= <getTypeSpec(|list)> a; 
 		nnlist:= [C-PointerOf([])|nlist]	<+
@@ -107,6 +142,7 @@ rules
 	
 	getTypeSpec(|list): StructType(a) -> (StructType(a), list)
 	
+	getTypeSpec(|list): EnumType(a) -> (EnumType(a), list)
 	
 	/**
 	 * Expressions
@@ -147,10 +183,13 @@ rules
 	
 	to-c: FieldViaPointer(var, fieldId) -> C-DerefMember(<to-c> var, <to-c> fieldId)
 	
+	to-c: ArrayField(arrayName, index) -> C-ArrayIndex(<to-c>arrayName, <to-c>index)
+	
 	/**
 	 * Statements
 	 */
 	to-c: Return(a) -> C-Return(<to-c>a)
+	to-c: None() -> C-EmptyExp()
 	to-c: Block(a) -> C-Compound([], <map(to-c)>a)
 	to-c: Exp(a) -> C-Stat(<to-c>a)
 	to-c: Assign(leftExp, assignOp, rightExp) ->
@@ -163,10 +202,29 @@ rules
 	to-c: If(t1, t2) -> C-If(<to-c>t1, <to-c>t2)
 	to-c: While(t1, t2) -> C-While(<to-c>t1, <to-c>t2)
 	to-c: DoWhile(t1, t2) -> C-DoWhile(<to-c>t1, <to-c>t2)
+	//to-c: For(t1, t2, t3, t4) -> C-For([], <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
+	//to-c: For(t1, t2, t3, t4) -> C-For(<to-c>t1, <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
+	to-c: None() -> []
 	to-c: For(t1, t2, t3, t4) -> C-For(<to-c>t1, <to-c>t2, <to-c>t3, <to-c>t4) //non declaration for loop
 	// to-c: For([Declaration(a,Init(b,c))], t2, t3, t4) -> C-For(declaration, <to-c>t2, <to-c>t3, <to-c>t4) //declaration for loop
 	// 	where
 	// 		declaration := C-Assign(<to-c>b, C-AssignEq(), <to-c>c)
+	
+	to-c: Switch(exp, block) -> 
+			C-Switch(
+  				<to-c> exp
+			,	<to-c> block
+  			)
+			
+	to-c: Case(val, statement) ->
+			C-Case(
+				<to-c> val
+			,	<to-c> statement	
+			)
+	
+	to-c: Break() -> C-Break()
+	
+	to-c: Default(statement) -> C-Default(<to-c> statement)
 	
 	/**
 	 * Structs
@@ -204,14 +262,37 @@ rules
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
 	
 	/**
+	 * Enum
+	 */
+	
+	to-c: Enum(_, name, list) -> 
+			C-Declaration2(
+      			C-TypeSpec(
+        			[]
+      			, 	C-Enum(
+          				<to-c> name
+        			, 	<map(to-c)> list
+        			)
+      			,	[]
+      			)
+    		, 	[]
+    		)
+	
+	to-c: EnumItem(name) -> C-Enumerator(<to-c>name, None())
+	
+	to-c: EnumType(name) -> C-TypeSpec([], C-EnumId(<to-c> name), [])
+	 
+	/**
 	 * FunDef
 	 */
 	to-c: Param(type, name) ->
 				  C-ParamDecl(
-                    <to-c>type
-                  , C-IdDecl([], <to-c>name, None())
+                    <to-c>typespec
+                  , C-IdDecl(plist, <to-c>name, None())
                   )
-    
+    where
+    	(typespec, plist):= <getTypeSpec(|[])> type
+    	
     //TODO: do somewhat nicer for string[] argv
     to-c: Param(Array(BasicType("string"), None()), name) ->
     			  C-ParamDecl(
@@ -227,15 +308,16 @@ rules
 
 	to-c: FunDef(_, returnType, name, params, statements) ->
 				  C-FunDef(
-				  	<to-c>returnType,
+				  	<to-c>typespec,
 				  	C-IdDecl(
-				      [],
+				      plist,
 				      <to-c>name,
 				      <to-c>params
 				    ),
 				    <to-c>Block(statements)
 				  )
-			 
+	where
+		(typespec, plist):= <getTypeSpec(|[])> returnType		 
 
 
 	/**

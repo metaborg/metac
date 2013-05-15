@@ -19,19 +19,20 @@ signature
     CurrentFile : ImportAnno
 
   constructors
-    Module      : Namespace
-    Import      : Namespace
-    Function    : Namespace
-    Variable    : Namespace
-    Label       : Namespace
-    Field       : Namespace
-    Struct      : Namespace
-    Union       : Namespace
-    Enum        : Namespace
-    Enumlit     : Namespace
-    Messagelist : Namespace
-    Message     : Namespace
-    TypeSynonym : Namespace
+    Module       : Namespace
+    Import       : Namespace
+    Function     : Namespace
+    Variable     : Namespace
+    Label        : Namespace
+    Field        : Namespace
+    Struct       : Namespace
+    Union        : Namespace
+    Enum         : Namespace
+    Enumlit      : Namespace
+    Messagelist  : Namespace
+    Message      : Namespace
+    TypeSynonym  : Namespace
+    Statemachine : Namespace
 
 
 rules
@@ -44,6 +45,7 @@ rules
                                       , Union()
                                       , Messagelist()
                                       , TypeSynonym()
+                                      , Statemachine()
                                       ]
 
   nam-get-definition-keys :
@@ -567,12 +569,69 @@ rules
     TypeSynonym(Identifier(name)) -> [name]
 
   nam-get-uses :
-    TypeSynonym(Identifier(name)) -> [(TypeSynonym(), [name])]
+    TypeSynonym(Identifier(name)) -> [ (TypeSynonym(), [name])
+                                     , (Struct(), [name])
+                                     , (Union(), [name])
+                                     , (Enum(), [name])
+                                     , (Statemachine(), [name])
+                                     ]
 
   nam-annotate-names(|paths__, path__):
     TypeSynonym(Identifier(name)) -> <TypeSynonym(
                                         Identifier(nam-annotate-use(|paths__, TypeSynonym()))
                                       )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    TypeSynonym(Identifier(name)) -> [ [TypeSynonym()|path__]
+                                     , [Struct()|path__]
+                                     , [Union()|path__]
+                                     , [Enum()|path__]
+                                     , [Statemachine()|path__]
+                                     ]
+    where <target__> name
+
+
+rules
+
+  nam-get-definition-keys :
+    Enum(_, Identifier(name), _) -> [name]
+
+  nam-get-definitions :
+    Enum(_, Identifier(name), _) -> [(Enum(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    Enum(_, Identifier(name), _) -> <Enum(
+                                       id
+                                     , Identifier(nam-annotate-def(|path__))
+                                     , id
+                                     )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Enum(_, Identifier(name), _) -> <store__> DefData(
+                                                [namespace__|path__]
+                                              , Type()
+                                              , BasicType("int8")
+                                              )
+
+  type-of :
+    Enum(_, Identifier(name), _) -> BasicType("int8")
+
+  nam-unique :
+    Enum(_, Identifier(name), _) -> <id>
+
+
+rules
+
+  nam-get-uses-keys :
+    EnumType(Identifier(name)) -> [name]
+
+  nam-get-uses :
+    EnumType(Identifier(name)) -> [(Enum(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    EnumType(Identifier(name)) -> <EnumType(
+                                     Identifier(nam-annotate-use(|paths__, Enum()))
+                                   )>
 
 
 rules

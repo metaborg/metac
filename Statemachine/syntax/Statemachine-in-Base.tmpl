@@ -6,27 +6,29 @@ Keywords = "statemachine"								//change Keyword sort name?
 templates
 
 StatemachineStm.StateMachineInit = <
-	sminit(<Identifier>) ;
+	sminit(<Exp>) ;
 	>
 
 StatemachineStm.StateMachineTrigger = <
-	smtrigger(<Identifier>, <Exp>);
+	smtrigger(<Exp>, <EventRef>);
 	>
  
 StatemachineStm.StateMachineIsInState = <
-	smIsInState(<Identifier>, <Identifier>);
+	smIsInState(<Exp>, <Identifier>);
 	>
 
 StatemachineStm.StateMachineSend = <
 	send <Identifier>(<Exp*; separator=", ">) 
 	>
 
-    
+Type.StatemachineType = <statemachine <Identifier>>
+
+EventRef.EventRef = <<Identifier> (<Exp*;separator=", ">) >
+
+
 context-free syntax
 
   Statemachine -> ModuleContent
   StatemachineStm -> Stm
   
-
-  //TODO add send, trigger statement to statemachine statements?
   

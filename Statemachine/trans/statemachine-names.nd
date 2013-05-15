@@ -16,9 +16,10 @@ namespaces
 	OutEvent
 	Function
 	Module
+	Variable
 
 rules
-	//Module(Identifier(name), _, _):
+	//Module(_ , _, _):
 	//		scopes Statemachine
 	//Function():
 	//		scopes Statemachine
@@ -26,7 +27,7 @@ rules
 rules
 
 	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
-							scopes State, StateMachineVar, InEvent, OutEvent
+							scopes State, Variable, InEvent, OutEvent
 							refers to State state
 							
 	StatemachineType(Identifier(sm)) : refers to Statemachine sm
@@ -38,27 +39,40 @@ rules
 
 	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
 	
-	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique StateMachineVar name of type var_type
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique Variable name of type var_type
 	
 	//TODO - needs BaseC namebinding
 	Binding(Identifier(f)) : refers to Function f
 	
 	//field refence like struct or union
-	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
+/*	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
 							   		where 
 										var has type StatemachineType(Identifier(stm))
-	
+*/	
 			
 	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : refers to InEvent event_name 
 											  refers to State state_name
 										
-	StateMachineInit(Identifier(sm_name)) : refers to Statemachine sm_name
+	StateMachineInit(e) :	
+		refers to Statemachine s
+		where
+			e has type StatemachineType(Identifier(s))
 	
-	StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) : refers to Statemachine sm_name
-									refers to InEvent in_event
+	StateMachineTrigger(e, EventRef(Identifier(in_event), _)) : //refers to Statemachine sm_name
+									//refers to InEvent in_event
+		refers to InEvent in_event in Statemachine s
+		where e has type StatemachineType(Identifier(s))
 									
 	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
 								  	refers to State state
+	
+	StatemachineType(Identifier(name)): 
+		refers to Statemachine name
+		
+	Field(e, Identifier(field)):  
+		refers to Variable field in Statemachine s
+		where 
+			e has type StatemachineType(Identifier(s))
 							    
 	  
 	//methods: sminit, smtrigger,smIsInState 

@@ -197,3 +197,8 @@ rules
 	pp-c-string =
 		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
 		box2text-string(|100)
+		
+	pp-mc-string = 
+		ast2abox(|[<import-term(include/MetaC.generated.pp.af)>]);
+		box2text-string(|100)
+		 

@@ -1,4 +1,12 @@
 module test21{
-	statemachine analyzeFlight initial = <no initial> {
+	
+	int8 abc(){
+		return 1+1;
+	}
+	
+	statemachine analyzeFlight initial = initial {
+		state initial {
+			
+		}
 	}
 }

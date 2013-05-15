@@ -18,13 +18,14 @@ namespaces
 	Messagelist
 	Message
 	TypeSynonym
+	Statemachine
 
 //TODO: fix namebinding, refers to doesnt work for variables and fields (it does work for functions)
 rules
 	// modules
 	Module(Identifier(name), _, _):
 		defines Module name
-		scopes Function, Struct, Enum, Variable, Union, Messagelist, TypeSynonym
+		scopes Function, Struct, Enum, Variable, Union, Messagelist, TypeSynonym, Statemachine
 		
 	Import(Identifier(name)):
 		//defines non-unique Import name
@@ -107,7 +108,16 @@ rules
 		
 	TypeSynonym(Identifier(name)):
 		refers to TypeSynonym name
+		refers to Struct name										//figure out another way?
+		refers to Union name
+		refers to Enum name
+		refers to Statemachine name
 		
+	Enum(_, Identifier(name), _):
+		defines Enum name of type BasicType("int8")					//modify to other types of int ?
+		
+	EnumType(Identifier(name)):
+		refers to Enum name
 	
 	// labels and gotos	
 	Label(l, _): 
