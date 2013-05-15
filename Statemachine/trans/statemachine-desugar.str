@@ -44,10 +44,10 @@ rules
 		not (<eq>(0, <length> smIds))	
 */
 
-	desugar: amb([Exp(_), StateMachineInit(name)]) -><debug(!"amb: ")> StateMachineInit(name)
+	desugar: amb([Exp(_), StateMachineInit(name)]) ->StateMachineInit(name)
 	
-	desugar: amb([StateMachineInit(name), Exp(_)]) -> <debug(!"amb: ")> StateMachineInit(name)
+	desugar: amb([StateMachineInit(name), Exp(_)]) ->StateMachineInit(name)
 	
-	desugar: amb([Exp(_), StateMachineTrigger(e1, e2)]) -><debug(!"amb: ")> StateMachineTrigger(e1, e2)
+	desugar: amb([Exp(_), StateMachineTrigger(e1, e2)]) ->StateMachineTrigger(e1, e2)
 	
-	desugar: amb([StateMachineTrigger(e1, e2), Exp(_)]) -><debug(!"amb: ")> StateMachineTrigger(e1, e2)
+	desugar: amb([StateMachineTrigger(e1, e2), Exp(_)]) ->StateMachineTrigger(e1, e2)

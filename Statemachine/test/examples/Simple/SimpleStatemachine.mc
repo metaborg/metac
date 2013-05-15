@@ -3,16 +3,17 @@ module SimpleStatemachine
 	statemachine counter initial = start { 
 	  readable var int8 current = 0
 	  in reset() 
-	  in increment()//int8 delta)  
+	  in increment(int8 delta)  
 	  state start { 
 	     
 	    entry { 
 	      current = 0;
+	      
 	    } 
 	    exit {
 	    	 printf("exit start\n"); 
 	   	}
-	    on increment[]-> increasing {current +=1;}
+	    on increment[]-> increasing {current +=delta;}
  
 	  }
 	  
@@ -20,8 +21,8 @@ module SimpleStatemachine
 	  	entry{
 	  		printf("in increasing: current: %d\n", current);
 	  	}
-	  	on reset[] -> start
-	  	on increment[]-> increasing {current +=1;}
+	  	on reset[] -> start {printf("statemachine reset\n");}
+	  	on increment[]-> increasing {current +=delta;}
 	  } 
 	}
 	
@@ -29,10 +30,11 @@ module SimpleStatemachine
 	  
 	  statemachine counter smvar;
 	  sminit(smvar);
-	  smtrigger(smvar, increment());
-	  smtrigger(smvar, increment());
-	  smtrigger(smvar, increment());
-	  
+	  smtrigger(smvar, increment(5));
+	  smtrigger(smvar, increment(3));
+	  smtrigger(smvar, increment(1));
+	  smtrigger(smvar, reset());
+	  smtrigger(smvar, increment(10));
 	  
 	  return 0;
 	} 

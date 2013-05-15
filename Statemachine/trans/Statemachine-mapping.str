@@ -166,10 +166,10 @@ rules
 	where
 	 	targetStateID := <expand-state-nameString(|statemachineID)> targetStateName;
 	 	//conditionStatement:= <debug(!"beforeTRANS:");get-transition-conditionStatement> condition;										//generate if condition
-	 	conditionStatement:= <debug(!"condition: ")>condition;
+	 	conditionStatement:= <debug(!"condition: ")>condition;								//TODO generate cast exp
 	 	exitStatements* := <mapconcat(try(get-sm-stateExit-statements(|currentStateID)))> statesList;			//generate exit from current state
 		//transitionStatements*:= <debug(!"beforeTRANS:");get-transitionStatements;debug(!"transitionSTM:")> transitionActions;									//generate transitionActions: 
-	 	transitionStatements* := [transitionActions];
+	 	transitionStatements* := [<topdown(try(to-basec(|eventID)))>transitionActions];
 	 	switchStateStatement*:= [Block([Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")),Identifier("__currentState")), Assign(), Var(Identifier(targetStateID)))))])];		//generate switchState
 	 	entryStatements*:= <mapconcat(try(get-sm-stateEntry-statements(|targetStateID)))> statesList;			//generate entry statements for targetState
 	 	//basecReturnStatement*:= [Block([Return(None())])];
@@ -236,7 +236,9 @@ rules
 	
 	//TODO to-basec statements and expressions
 	
-	stm-to-basec: anything -> anything
+	stm-to-basec: stmBlock -> basecBlock
+	where
+		basecBlock:= <topdown(try(to-basec(|None())))> stmBlock
 	
 	unbox-block: Block(statementList) -> statementList
 	unbox-block: None() -> []											 
@@ -245,12 +247,35 @@ rules
 	
 	//TODO event params desugar to arguments[index] in condition; statemachine variables desugar to varname in condition; global variables desugar to global varname
 	
-	to-basec: Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
+	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
 	where
+		not(<is-evtParam> (name, event));
 		[_ |parent-path] := <index-uri; index-uri-parent> name;
 		result:= <index-get-all> Def([Statemachine() | parent-path]);
 		not(<eq> (0, <length> result))
+	
+	to-basec(|event): Var(Identifier(name)) -> Dereference(TypeConversion(Pointer(paramType), ArrayField(Var(Identifier("arguments")), Decimal(index))))//cast expression:   (*((int8_t*)((arguments[0]))));
+	where
+		not(<eq>(event, None()));
+		paramType:= <index-get-data(|EvtParamList()); fetch-elem(get-evtParamType(|name))> event;
+		index:= <get-evtParamIndex> (name, event)
 		
+	get-evtParamType(|paramname): Param(type, Identifier(name)) -> type
+	where
+		<eq> (paramname, name) 	
+	
+	get-evtParamIndex: (name, event) -> index
+	where
+		evtParams:= <index-get-data(|EvtParamList()); map(get-evtParamName)> event;
+		index := <subt; debug(!"index: ")> (<get-index> (name, evtParams), 1)
+		
+	is-evtParam: (name, event) -> None()
+	where
+		not(<eq>(event, None()));
+		evtParams:= <index-get-data(|EvtParamList()); map(get-evtParamName)> event;
+		<member> (name, evtParams)
+		
+	get-evtParamName: Param(_, Identifier(name)) -> name//<strip-annos> name	
 		
 	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), paramList))
 	where
@@ -262,7 +287,7 @@ rules
 	where
 		evtParams:= <index-get-data(|EvtParamList())> ident;
 		constInit* := [<zip(generate-decl)> (evtParams, list)];	
-		evtIndex := <get-eventIndex> (ident, e);
+		//evtIndex := <get-eventIndex> (ident, e);
 		argsInit* := <generate-init> (evtParams, list);
 		StatemachineType(Identifier(name)) := <type-of> e;
 		funName:= $[[<get-module> name]_sm_execute_[name]];
@@ -306,7 +331,6 @@ rules
 	generate-sm-basec-init(|moduleName, statemachineID, initial): varList -> initFunction
 	where
 		initVars:=<map(generate-sm-basec-initStm)> varList;																
-		//add init for currentstate
 		initState:= <generate-sm-basec-initStm(|statemachineID)> initial;
 		initBlock:= [initState| initVars];
 		functionName:= Identifier($[[moduleName]_sm_init_[statemachineID]]);
