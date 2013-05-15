@@ -34,5 +34,6 @@ builders
   builder  : "Statemachine to C AST debug"		   = editor-sm-to-c-ast-debug (openeditor) (realtime) (meta) (source)
   builder  : "Statemachine to C"				   = editor-sm-to-c (openeditor) (realtime) (meta) (source)
   builder  : "Statemachine to C generate"		   = editor-sm-generate (meta) (source)
+  builder  : "Statemachine execute"  			   = editor-sm-execute (meta) (source)
   
   on save  : editor-compile-multiple
