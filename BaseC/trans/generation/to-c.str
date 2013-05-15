@@ -185,6 +185,23 @@ rules
 	
 	to-c: ArrayField(arrayName, index) -> C-ArrayIndex(<to-c>arrayName, <to-c>index)
 	
+	to-c: TypeConversion(type, var) -> 
+				C-TypeCast(
+					C-TypeName(
+						<to-c> typespec
+					,	<to-c-pointer> plist	
+					)
+				, 	<to-c> var)
+	where
+		(typespec, plist):= <getTypeSpec(|[])> type
+	
+	to-c-pointer: list -> term
+	where
+		not(<eq> (<length> list, 0));
+		term:= Some(C-Pointer(list, None()))
+		<+
+		term:= None()
+	
 	/**
 	 * Statements
 	 */
