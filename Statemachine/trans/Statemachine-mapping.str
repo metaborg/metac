@@ -166,7 +166,7 @@ rules
 	where
 	 	targetStateID := <expand-state-nameString(|statemachineID)> targetStateName;
 	 	//conditionStatement:= <debug(!"beforeTRANS:");get-transition-conditionStatement> condition;										//generate if condition
-	 	conditionStatement:= <debug(!"condition: ")>condition;								//TODO generate cast exp
+	 	conditionStatement:= <topdown(try(to-basec(|eventID)));debug(!"condition: ")>condition;								
 	 	exitStatements* := <mapconcat(try(get-sm-stateExit-statements(|currentStateID)))> statesList;			//generate exit from current state
 		//transitionStatements*:= <debug(!"beforeTRANS:");get-transitionStatements;debug(!"transitionSTM:")> transitionActions;									//generate transitionActions: 
 	 	transitionStatements* := [<topdown(try(to-basec(|eventID)))>transitionActions];
@@ -243,9 +243,7 @@ rules
 	unbox-block: Block(statementList) -> statementList
 	unbox-block: None() -> []											 
 	 
-	//TODO: smIsInState(statemachineID, stateID)
-	
-	//TODO event params desugar to arguments[index] in condition; statemachine variables desugar to varname in condition; global variables desugar to global varname
+	//TODO: smIsInState(statemachineID, stateID
 	
 	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
 	where
