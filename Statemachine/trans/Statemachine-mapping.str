@@ -19,6 +19,7 @@ signature constructors
 	SmParamDef : Type * String -> Param
 	SmEvtParamList : List(UriPart) * Param -> Param
 	EvtParamList : DefDataType
+	BoundFun : DefDataType
 	
 rules
 	
@@ -102,7 +103,7 @@ rules
 		structList2:= [FieldDecl(EnumType(Identifier(states_enumID)), Identifier("__currentState"))|structList];												
 		vars_struct2:= Struct(exported, Identifier(vars_structID), structList2);
 		
-		smFunctionPrototype := [];										//TODO
+		smFunctionPrototype := [];										//TODO if generating sm header
 		headerAST:= [events_enum, states_enum, vars_struct2]
 	
 		
@@ -166,7 +167,7 @@ rules
 	where
 	 	targetStateID := <expand-state-nameString(|statemachineID)> targetStateName;
 	 	//conditionStatement:= <debug(!"beforeTRANS:");get-transition-conditionStatement> condition;										//generate if condition
-	 	conditionStatement:= <debug(!"condition: ")>condition;								//TODO generate cast exp
+	 	conditionStatement:= <topdown(try(to-basec(|eventID)));debug(!"condition: ")>condition;								
 	 	exitStatements* := <mapconcat(try(get-sm-stateExit-statements(|currentStateID)))> statesList;			//generate exit from current state
 		//transitionStatements*:= <debug(!"beforeTRANS:");get-transitionStatements;debug(!"transitionSTM:")> transitionActions;									//generate transitionActions: 
 	 	transitionStatements* := [<topdown(try(to-basec(|eventID)))>transitionActions];
@@ -245,7 +246,9 @@ rules
 	 
 	//TODO: smIsInState(statemachineID, stateID)
 	
-	//TODO event params desugar to arguments[index] in condition; statemachine variables desugar to varname in condition; global variables desugar to global varname
+	to-basec: StateMachineSend(Identifier(evtName), params) -> Exp(FunctionCall(Identifier(boundFun), params))
+	where
+		 boundFun := <debug(!"send: ");index-get-data(|BoundFun()); debug(!"fun: ")> evtName
 	
 	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
 	where
@@ -292,7 +295,7 @@ rules
 		StatemachineType(Identifier(name)) := <type-of> e;
 		funName:= $[[<get-module> name]_sm_execute_[name]];
 		evtName:= $[[name]__event_[ident]];
-		paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]											//TODO: generate params (instance, event, args?) from event params
+		paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
 	
 	to-basec: Declaration(StatemachineType(Identifier(name)), init) -> Declaration(StructType(Identifier(structName)), init)
 	where
@@ -326,12 +329,8 @@ rules
 	
 	
 	adjust-index-def-data(store-results|namespace, path): StateMachineInEvent(_, list) -> <store-results> DefData([namespace|path], EvtParamList(), list)//<store-results> SmEvtParamList([namespace|path], list)//<store-results> Type([namespace|path], type)
-    //where
-    	//names := <debug(!"list: "); map(to-paramName(|namespace, path); debug(!"nameList: "))> list
-    	
-	//to-paramName(|namespace, path): Param(type, Identifier(name)) -> StmParamDef([namespace|path], type, name)
-	
-	//get-init: 
+    
+    adjust-index-def-data(store-results|namespace, path): StateMachineOutEvent(_, _, Binding(Identifier(functionId))) -> <store-results> DefData([namespace|path], BoundFun(), functionId) 
 	
 	generate-sm-basec-init(|moduleName, statemachineID, initial): varList -> initFunction
 	where
@@ -357,6 +356,4 @@ rules
 		varRef:= Var(Identifier($[[statemachineID]__state_[""]]));
 		initStatement:= Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")), Identifier("__currentState")), Assign(), varRef))) 
 	*/
-		
-	//TODO send event?
 	

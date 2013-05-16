@@ -58,6 +58,9 @@ rules
 		where
 			e has type StatemachineType(Identifier(s))
 	
+	StateMachineSend(Identifier(evt), list):
+		refers to OutEvent evt
+	
 	StateMachineTrigger(e, EventRef(Identifier(in_event), _)) : //refers to Statemachine sm_name
 									//refers to InEvent in_event
 		refers to InEvent in_event in Statemachine s
