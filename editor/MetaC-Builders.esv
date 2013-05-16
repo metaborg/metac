@@ -36,4 +36,4 @@ builders
   builder  : "Statemachine to C generate"		   = editor-sm-generate (meta) (source)
   builder  : "Statemachine execute"  			   = editor-sm-execute (meta) (source)
   
-  on save  : editor-compile-multiple
+  // on save  : editor-compile-multiple
