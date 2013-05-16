@@ -34,7 +34,15 @@ To check if it worked <filename>.tmpl should generate <filename>generated.sdf in
 
 ## Examples
 
-### Multiple files
+### Basic examples
+
+[metac/BaseC/test/programs](https://github.com/metaborg/metac/tree/master/BaseC/test/programs) contains a lot of test programs.
+The following list should work when calling the 'execute' builder from the transform menu:
+
+* test01 - test08b (hello world, basic math)
+* test10 - test20 (structs, nondecimal numbers, arrays and pointers)
+
+### Compiling multiple files (with imports)
 
 [metac/BaseC/test/programs/multiplefiles](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles) contains an example using multiple modules.
 
