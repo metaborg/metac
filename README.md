@@ -45,12 +45,14 @@ The following list of test programs works when calling the 'execute' builder fro
 
 ### Compiling multiple files (with imports)
 
-[metac/BaseC/test/programs/multiplefiles](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles) contains an example using multiple modules.
+* [metac/BaseC/test/programs/multiplefiles](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles) contains an example using multiple modules.
 
 Open the Main.mc, Other.mc and Other2.mc files.
 Open Main.mc and select the builder 'to-compiled-exe' from the transform menu to generate an executable.
 The 'execute' will directly generate the executable and run it.
 In this case the result of the calculation should be 18 and is visible in the console.
+
+[metac/BaseC/test/programs/multiplefiles_cycle](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles_cycle) contains an example using multiple modules with cyclic imports, this gives no errors.
 
 ### Statemachine DSL examples
 
