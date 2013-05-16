@@ -52,7 +52,7 @@ Open Main.mc and select the builder 'to-compiled-exe' from the transform menu to
 The 'execute' will directly generate the executable and run it.
 In this case the result of the calculation should be 18 and is visible in the console.
 
-[metac/BaseC/test/programs/multiplefiles_cycle](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles_cycle) contains an example using multiple modules with cyclic imports, this gives no errors.
+* [metac/BaseC/test/programs/multiplefiles_cycle](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles_cycle) contains an example using multiple modules with cyclic imports, this gives no errors.
 
 ### Statemachine DSL examples
 
