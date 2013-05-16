@@ -91,7 +91,9 @@ rules
 	c-h-makefile-to-compiledc:
 	    (selected, path, project-path) -> None()
 	    with
-			<try(call);debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]); //full path in quotes, in case of spaces
+			(<call;debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]) //full path in quotes, in case of spaces
+			<+
+			<call;debug> ("make", ["-C", $[[project-path]/[<dirname>path]]])); //full path without quotes, for linux/osx
 			<refresh-workspace-file><dirname>path
 	base-c-to-compiledc:
 		(selected, path, project-path) -> None()
@@ -102,7 +104,8 @@ rules
 		(selected, path, project-path) -> None()
 	    with
 			exepath := $["[project-path]/[<dirname>path]/[<module-name>selected]"];
-			<try(call)> (exepath, [])
+			exepath1 := $[[project-path]/[<dirname>path]/[<module-name>selected]];
+			(<call> (exepath, []) <+ <call> (exepath1, []))
 	basec-execute:
 		(selected, path, project-path) -> None()
 		with
