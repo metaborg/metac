@@ -66,9 +66,11 @@ rules
 		refers to InEvent in_event in Statemachine s
 		where e has type StatemachineType(Identifier(s))
 									
-	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
-								  	refers to State state
-	
+	StateMachineIsInState(e, Identifier(state)) : //refers to Statemachine name
+								  	refers to State state in Statemachine name
+								  	where 
+										e has type StatemachineType(Identifier(name))
+										
 	StatemachineType(Identifier(name)): 
 		refers to Statemachine name
 		

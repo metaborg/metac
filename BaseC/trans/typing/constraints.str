@@ -43,3 +43,27 @@ rules
  	 where
     	(et, _) := <type-of> op;
     	<filter(check-exp(eq))> [(exp, et)] => errors
+   
+   //TODO: show error on the problem parameters
+   //TODO: subtyping
+    	
+ /*   constraint-error: 
+ 		 FunctionCall(Identifier(funName), paramList) -> errors
+ 	 where
+    	FunType(paramType,_) := <index-type-of> funName
+    //	<check-list> (<type-of> paramList, paramType) => errors
+   
+    	
+    type-compat(|expected):  exp -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> exp].])
+    	where
+    		not (<eq> (<type-of> exp, expected))	
+		*/
+		
+	constraint-error: 
+ 		 FunctionCall(Identifier(funName), paramList) -> (funName, $[Parameter type mismatch. Expected type [<map(write-to-string)> paramType]; found type [<map(write-to-string)> params].])
+ 	 where
+    	FunType(paramType,_) := <index-type-of> funName; 
+    	params := <type-of> paramList;
+    	not(<eq> (params,paramType))
+  	
+   	
