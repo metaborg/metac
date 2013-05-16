@@ -120,6 +120,7 @@ rules
 		refers to Struct name										//figure out another way?
 		refers to Union name
 		refers to Enum name
+		refers to Statemachine name
 		
 	Enum(_, Identifier(name), _):
 		defines Enum name of type BasicType("int8")					//modify to other types of int ?

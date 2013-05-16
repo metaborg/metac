@@ -101,7 +101,7 @@ rules
 	compiledc-execute:
 		(selected, path, project-path) -> None()
 	    with
-			exepath := $["[project-path]/[<dirname>path]/[<module-name>selected].exe"];
+			exepath := $["[project-path]/[<dirname>path]/[<module-name>selected]"];
 			<try(call)> (exepath, [])
 	basec-execute:
 		(selected, path, project-path) -> None()

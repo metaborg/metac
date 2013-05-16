@@ -17,13 +17,11 @@ imports
   BaseC/trans/typing/types
   BaseC/trans/typing/constraints
   Statemachine/trans/statemachine-names
-  signaturefixes
   Statemachine/trans/statemachine-types
   Statemachine/trans/statemachine-desugar
   Statemachine/trans/Statemachine-mapping
   Statemachine/trans/generation/builders
-
-
+  
 rules // Analysis
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and

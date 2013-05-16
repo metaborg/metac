@@ -573,6 +573,7 @@ rules
                                      , (Struct(), [name])
                                      , (Union(), [name])
                                      , (Enum(), [name])
+                                     , (Statemachine(), [name])
                                      ]
 
   nam-annotate-names(|paths__, path__):
@@ -585,6 +586,7 @@ rules
                                      , [Struct()|path__]
                                      , [Union()|path__]
                                      , [Enum()|path__]
+                                     , [Statemachine()|path__]
                                      ]
     where <target__> name
 

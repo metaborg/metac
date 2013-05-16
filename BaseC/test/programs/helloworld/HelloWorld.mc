@@ -1,9 +1,10 @@
 module HelloWorld { 
   exported int32 main(int32 argc, string[] argv) { 
-	  report messages.HelloWorld(); 
+	  report m.Err(); 
 	  return 0;
 	}
-  messagelist messages { 
-    INFO HelloWorld() active: "Hello, World!" 
-  } 
+  messagelist m { 
+    INFO HelloWorld() inactive: "Hello, World!"
+    ERROR Err() active: "Error"
+  }
 }

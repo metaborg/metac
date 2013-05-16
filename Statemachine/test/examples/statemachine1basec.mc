@@ -1,6 +1,6 @@
 module statemachine1basec{
 
-	int8 MainModule_sm_execute_counter(MainModule_sm_data_counter instance, MainModule_sm_events_counter event, int8 arguments) 
+	int8 MainModule_sm_execute_counter(MainModule_sm_data_counter *instance, MainModule_sm_events_counter event, void ** arguments) 
 	{
 	  switch (instance->__currentState)
 	  {
@@ -11,6 +11,7 @@ module statemachine1basec{
 	          {
 	            // exit actions
 	            MainModule_print();
+	            int8* x;
 	            // switch state
 	            instance->__currentState = counter__state_start;
 	            // entry actions
