@@ -45,26 +45,6 @@ fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 	where
 		Identifier(_) := typeId; 
 		not(<index-is-unresolved(|typeId, <index-uri> typeId)> typeId)
-<<<<<<< .mine
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
 */	
 	
 	/*desugar: For(
@@ -82,8 +62,6 @@ fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 			loopBody) -> 
 					[Declaration(type, NoInit(varName)),
 					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)]
-			
->>>>>>> .theirs
 	
 	/**
 	 * Expressions

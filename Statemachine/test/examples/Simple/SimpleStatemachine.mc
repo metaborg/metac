@@ -1,13 +1,21 @@
 module SimpleStatemachine
 {
+	void print(int8 param)
+	{
+		printf("printing: %d\n", param);
+	}
+	
+	int8 global=0;
 	statemachine counter initial = start { 
 	  readable var int8 current = 0
-	  in reset() 
+	  in reset()
+	  out report(int8 x) => print 
 	  in increment(int8 delta)  
 	  state start { 
 	     
 	    entry { 
 	      current = 0;
+	      send report(current)
 	      
 	    } 
 	    exit {
