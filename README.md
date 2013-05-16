@@ -38,4 +38,8 @@ To check if it worked <filename>.tmpl should generate <filename>generated.sdf in
 
 [metac/BaseC/test/programs/multiplefiles](https://github.com/metaborg/metac/tree/master/BaseC/test/programs/multiplefiles) contains an example using multiple modules.
 
-Open the Main.mc file and select the builder 'to-compiled-exe' from the transform menu to generate an executable. The 'execute' will directly generate the executable and run it. In this case the result of the calculation should be 18 and is visible in the console.
+Open the Main.mc, Other.mc and Other2.mc files.
+Open Main.mc and select the builder 'to-compiled-exe' from the transform menu to generate an executable.
+The 'execute' will directly generate the executable and run it.
+In this case the result of the calculation should be 18 and is visible in the console.
+
