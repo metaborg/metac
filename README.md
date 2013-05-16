@@ -37,7 +37,7 @@ To check if it worked <filename>.tmpl should generate <filename>generated.sdf in
 ### Basic examples
 
 [metac/BaseC/test/programs](https://github.com/metaborg/metac/tree/master/BaseC/test/programs) contains a lot of test programs.
-The following list should work when calling the 'execute' builder from the transform menu:
+The following list of test programs works when calling the 'execute' builder from the transform menu:
 
 * test01 - test08b (hello world, basic math)
 * test10 - test20 (structs, nondecimal numbers, arrays and pointers)
