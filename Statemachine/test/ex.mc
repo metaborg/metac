@@ -29,12 +29,16 @@ module stmtest
 	
 	exported int8 main(int32 argc, string[] argv) {
 	  
+	  int8 y;
 	  int8 x = y+y;
 	  statemachine counter smvar;
 	  sminit(smvar);
 	  smvar.current = 1000;
 	  smtrigger(smvar, increment(x, x+y));
 	  
+	  if(smIsInState(smvar,start)){
+	  	y=9;
+	  }
 	  
 	  return 0;
 	} 
