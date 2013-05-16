@@ -19,8 +19,8 @@ namespaces
 	Variable
 
 rules
-	Module(_ , _, _):
-			scopes Statemachine
+	//Module(_ , _, _):
+	//		scopes Statemachine
 	//Function():
 	//		scopes Statemachine
 	
