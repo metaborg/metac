@@ -15,6 +15,8 @@ imports
 rules
 	to-c: Exp(None()) -> C-EmptyExp()
 	
+	to-c: Brackets(exp) -> C-DeclBracket(<to-c> exp)
+	
 	/**
 	 * Default BaseC to C conversion
 	 * TODO: enable (and debug)
@@ -55,6 +57,7 @@ rules
 	 * Types
 	 */
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
+	 to-c: BasicType("int16")->C-TypeSpec([], C-TypeId("int16_t"), [])
 	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
 	 to-c: BasicType("string")->C-TypeSpec([], C-TypeId("string"), []) //TODO: fix, C doesnt know string
 	 to-c: BasicType("void") -> C-TypeSpec([], C-Void(), [])

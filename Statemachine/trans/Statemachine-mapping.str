@@ -12,6 +12,7 @@ imports include/MetaC
 		libstratego-gpp
 		Statemachine/trans/statemachine-names
 		BaseC/trans/desugaring/desugar
+		BaseC/trans/desugaring/constructors
 		BaseC/trans/generation/to-c
 		BaseC/trans/generation/generate
 
@@ -148,11 +149,19 @@ rules
 	where
 		//case stateID
 		//switch event
-		eventCaseList:= <mapconcat(generate-sm-basec-eventCase(|statemachineID, statesList, stateID))> stateBody*;
+		transitionEvents:= <collect(get-sm-event-from-transition)> stateBody*;
+		//eventCaseList:= <mapconcat(generate-sm-basec-eventCase(|statemachineID, statesList, stateID))> stateBody*;				//can contain duplicates!!
+		eventCaseList:= <mapconcat(generate-sm-basec-eventCase(|statemachineID, statesList, stateID, stateBody*))> transitionEvents;
+		
 		eventSwitch:= Switch(Var(Identifier("event")), Block(eventCaseList));						
 		
 		stateCaseStatement := Case(Var(Identifier(stateID)), Block([eventSwitch, Break()]))			
 	
+	get-sm-event-from-transition: StateTransition(Identifier(eventID), _, _, _) -> eventID
+	
+	generate-sm-basec-eventCase(|statemachineID, statesList, currentStateID, stateBody*): eventID -> [Case(Var(Identifier(<expand-event-nameString(|statemachineID)>eventID)), Block([ifStatements, Break()]))]
+	where
+		ifStatements:= <mapconcat(generate-sm-basec-eventIf(|statemachineID, statesList, currentStateID, eventID)); flatten-list> stateBody* 
 	
 	/*	case eventID
 	 *	generate if condition
@@ -163,11 +172,13 @@ rules
 	 *	return;
 	*/
 	//TODO refactor: remove unbox mess
-	generate-sm-basec-eventCase(|statemachineID, statesList, currentStateID): StateTransition(Identifier(eventID), condition, Identifier(targetStateName), transitionActions) -> [eventCaseStatement]
+	generate-sm-basec-eventIf(|statemachineID, statesList, currentStateID, evt): StateTransition(Identifier(eventID), condition, Identifier(targetStateName), transitionActions) -> [ifStatement]//[eventCaseStatement]
 	where
+	 	//<debug(!"generate if:")> (evt, eventID);
+	 	<eq> (evt, eventID);
 	 	targetStateID := <expand-state-nameString(|statemachineID)> targetStateName;
 	 	//conditionStatement:= <debug(!"beforeTRANS:");get-transition-conditionStatement> condition;										//generate if condition
-	 	conditionStatement:= <topdown(try(to-basec(|eventID)));debug(!"condition: ")>condition;								
+	 	conditionStatement:= <topdown(try(to-basec(|eventID)))>condition;								
 	 	exitStatements* := <mapconcat(try(get-sm-stateExit-statements(|currentStateID)))> statesList;			//generate exit from current state
 		//transitionStatements*:= <debug(!"beforeTRANS:");get-transitionStatements;debug(!"transitionSTM:")> transitionActions;									//generate transitionActions: 
 	 	transitionStatements* := [<topdown(try(to-basec(|eventID)))>transitionActions];
@@ -177,13 +188,14 @@ rules
 	 	basecReturnStatement*:= [Block([Return(Decimal(-1))])];
 
 	 	ifBody:= <mapconcat(try(unbox-block))> [exitStatements*, transitionStatements*, switchStateStatement*, entryStatements*, basecReturnStatement*];
-	 	ifStatement:= <generate-sm-basec-ifStatement> (conditionStatement, ifBody);
-	 	
-	 	eventCaseStatement:= Case(Var(Identifier(<expand-event-nameString(|statemachineID)>eventID)), Block([ifStatement, Break()]))
+	 	ifStatement:= <generate-sm-basec-ifStatement> (conditionStatement, ifBody)
+	 	//;eventCaseStatement:= Case(Var(Identifier(<expand-event-nameString(|statemachineID)>eventID)), Block([ifStatement, Break()]))
+		<+ 
+		ifStatement:= []
 		
-	generate-sm-basec-eventCase(|statemachineID, statesList, currentStateID): StateEntry(_) -> []
+	generate-sm-basec-eventIf(|statemachineID, statesList, currentStateID, evt): StateEntry(_) -> []
 	
-	generate-sm-basec-eventCase(|statemachineID, statesList, currentStateID): StateExit(_) -> []
+	generate-sm-basec-eventIf(|statemachineID, statesList, currentStateID, evt): StateExit(_) -> []
 	
 	
 	get-sm-stateExit-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
@@ -248,7 +260,7 @@ rules
 	
 	to-basec: StateMachineSend(Identifier(evtName), params) -> Exp(FunctionCall(Identifier(boundFun), params))
 	where
-		 boundFun := <debug(!"send: ");index-get-data(|BoundFun()); debug(!"fun: ")> evtName
+		 boundFun := <index-get-data(|BoundFun())> evtName
 	
 	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
 	where
@@ -257,7 +269,7 @@ rules
 		result:= <index-get-all> Def([Statemachine() | parent-path]);
 		not(<eq> (0, <length> result))
 	
-	to-basec(|event): Var(Identifier(name)) -> Dereference(TypeConversion(Pointer(paramType), ArrayField(Var(Identifier("arguments")), Decimal(index))))//cast expression:   (*((int8_t*)((arguments[0]))));
+	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Pointer(paramType), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
 	where
 		not(<eq>(event, None()));
 		paramType:= <index-get-data(|EvtParamList()); fetch-elem(get-evtParamType(|name))> event;
@@ -270,7 +282,7 @@ rules
 	get-evtParamIndex: (name, event) -> index
 	where
 		evtParams:= <index-get-data(|EvtParamList()); map(get-evtParamName)> event;
-		index := <subt; debug(!"index: ")> (<get-index> (name, evtParams), 1)
+		index := <subt> (<get-index> (name, evtParams), 1)
 		
 	is-evtParam: (name, event) -> None()
 	where
