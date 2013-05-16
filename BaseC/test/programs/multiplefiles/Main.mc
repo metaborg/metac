@@ -3,7 +3,7 @@ module Main imports Other {
 		int32 a;
 		a = times3(times2(3));
 		//a = Other.times2(3);
-		printf("%d",a); // should print 6
+		printf("%d",a); // should print 18
 		return 0;
 	}
 }
