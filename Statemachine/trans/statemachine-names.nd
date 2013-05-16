@@ -35,6 +35,7 @@ rules
 	StateMachineState(Identifier(state_name),_) : defines unique State state_name
 	
 	StateMachineInEvent(Identifier(event_name),_) : defines unique InEvent event_name
+													//scopes Variable
 				
 
 	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
@@ -50,8 +51,10 @@ rules
 										var has type StatemachineType(Identifier(stm))
 */	
 			
-	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : refers to InEvent event_name 
-											  refers to State state_name
+	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : 
+		refers to InEvent event_name 
+		refers to State state_name
+		//imports Variable from InEvent event_name
 										
 	StateMachineInit(e) :	
 		refers to Statemachine s
