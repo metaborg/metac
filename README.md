@@ -41,6 +41,7 @@ The following list should work when calling the 'execute' builder from the trans
 
 * test01 - test08b (hello world, basic math)
 * test10 - test20 (structs, nondecimal numbers, arrays and pointers)
+* test33 - test34 (nested structs, enums)
 
 ### Compiling multiple files (with imports)
 
