@@ -28,7 +28,18 @@ signature
     OutEvent        : Namespace
     Function        : Namespace
     Module          : Namespace
-    Variable        : Namespace
+
+
+rules
+
+  nam-get-scope-types :
+    Module(Identifier(name), _, _) -> [Statemachine()]
+
+
+rules
+
+  nam-get-scope-types :
+    Function() -> [Statemachine()]
 
 
 rules
@@ -39,7 +50,7 @@ rules
     , Identifier(state)
     , _
     ) -> [ State()
-         , Variable()
+         , StateMachineVar()
          , InEvent()
          , OutEvent()
          ]
@@ -160,7 +171,7 @@ rules
     StateMachineVarDecl(_, var_type, Identifier(name), _) -> [name]
 
   nam-get-definitions :
-    StateMachineVarDecl(_, var_type, Identifier(name), _) -> [(Variable(), [name])]
+    StateMachineVarDecl(_, var_type, Identifier(name), _) -> [(StateMachineVar(), [name])]
 
   nam-annotate-names(|paths__, path__):
     StateMachineVarDecl(_, var_type, Identifier(name), _) -> <StateMachineVarDecl(
@@ -196,6 +207,28 @@ rules
     Binding(Identifier(f)) -> <Binding(
                                  Identifier(nam-annotate-use(|paths__, Function()))
                                )>
+
+
+rules
+
+  nam-get-uses-keys :
+    Field(var, Identifier(field)) -> [field]
+    where StatemachineType(Identifier(stm)) := <type-of> var
+
+  nam-get-uses :
+    Field(var, Identifier(field)) -> [(StateMachineVar(), [field])]
+    where StatemachineType(Identifier(stm)) := <type-of> var
+
+  nam-annotate-names(|paths__, path__):
+    Field(var, Identifier(field)) -> <Field(
+                                        id
+                                      , Identifier(nam-annotate-use(|paths__, StateMachineVar()))
+                                      )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    Field(var, Identifier(field)) -> <index-lookup-children(|StateMachineVar(), prefix__)> stm
+    where <target__> field
+    where StatemachineType(Identifier(stm)) := <type-of> var
 
 
 rules
@@ -246,52 +279,38 @@ rules
 rules
 
   nam-get-uses-keys :
-    StateMachineInit(e) -> [s]
-    where StatemachineType(Identifier(s)) := <type-of> e
+    StateMachineInit(Identifier(sm_name)) -> [sm_name]
 
   nam-get-uses :
-    StateMachineInit(e) -> [(Statemachine(), [s])]
-    where StatemachineType(Identifier(s)) := <type-of> e
+    StateMachineInit(Identifier(sm_name)) -> [(Statemachine(), [sm_name])]
 
   nam-annotate-names(|paths__, path__):
-    StateMachineInit(e) -> <StateMachineInit(id)>
+    StateMachineInit(Identifier(sm_name)) -> <StateMachineInit(
+                                                Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                              )>
 
 
 rules
 
   nam-get-uses-keys :
-    StateMachineTrigger(
-      e
-    , EventRef(Identifier(in_event), _)
-    ) -> [in_event]
-    where StatemachineType(Identifier(s)) := <type-of> e
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [sm_name, in_event]
 
   nam-get-uses :
-    StateMachineTrigger(
-      e
-    , EventRef(Identifier(in_event), _)
-    ) -> [(InEvent(), [in_event])]
-    where StatemachineType(Identifier(s)) := <type-of> e
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [ (Statemachine(), [sm_name])
+                                                                      , (InEvent(), [in_event])
+                                                                      ]
 
   nam-annotate-names(|paths__, path__):
-    StateMachineTrigger(
-      e
-    , EventRef(Identifier(in_event), _)
-    ) -> <StateMachineTrigger(
-            id
-          , EventRef(
-              Identifier(nam-annotate-use(|paths__, InEvent()))
-            , id
-            )
-          )>
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> <StateMachineTrigger(
+                                                                         Identifier(nam-annotate-use(|paths__, Statemachine()))
+                                                                       , Identifier(nam-annotate-use(|paths__, InEvent()))
+                                                                       )>
 
   adjust-index-lookup(target__|namespace__, path__, prefix__):
-    StateMachineTrigger(
-      e
-    , EventRef(Identifier(in_event), _)
-    ) -> <index-lookup-children(|InEvent(), prefix__)> s
-    where <target__> in_event
-    where StatemachineType(Identifier(s)) := <type-of> e
+    StateMachineTrigger(Identifier(sm_name), Identifier(in_event)) -> [ [Statemachine()|path__]
+                                                                      , [InEvent()|path__]
+                                                                      ]
+    where <target__> sm_name
 
 
 rules
@@ -315,39 +334,3 @@ rules
                                                                      , [State()|path__]
                                                                      ]
     where <target__> sm_name
-
-
-rules
-
-  nam-get-uses-keys :
-    StatemachineType(Identifier(name)) -> [name]
-
-  nam-get-uses :
-    StatemachineType(Identifier(name)) -> [(Statemachine(), [name])]
-
-  nam-annotate-names(|paths__, path__):
-    StatemachineType(Identifier(name)) -> <StatemachineType(
-                                             Identifier(nam-annotate-use(|paths__, Statemachine()))
-                                           )>
-
-
-rules
-
-  nam-get-uses-keys :
-    Field(e, Identifier(field)) -> [field]
-    where StatemachineType(Identifier(s)) := <type-of> e
-
-  nam-get-uses :
-    Field(e, Identifier(field)) -> [(Variable(), [field])]
-    where StatemachineType(Identifier(s)) := <type-of> e
-
-  nam-annotate-names(|paths__, path__):
-    Field(e, Identifier(field)) -> <Field(
-                                      id
-                                    , Identifier(nam-annotate-use(|paths__, Variable()))
-                                    )>
-
-  adjust-index-lookup(target__|namespace__, path__, prefix__):
-    Field(e, Identifier(field)) -> <index-lookup-children(|Variable(), prefix__)> s
-    where <target__> field
-    where StatemachineType(Identifier(s)) := <type-of> e
