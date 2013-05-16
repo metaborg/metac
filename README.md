@@ -23,13 +23,7 @@ Clone [this git repo](https://github.com/metaborg/metac.git) in Eclipse-Spoofax.
 
 ### First build
 
-The first build requires manually editing saving of all template files. After the first time the generation of files from the template files will be done automatically on build.
-
-Change, wait 1 second and hit save for the following files.
-To check if it worked <filename>.tmpl should generate <filename>generated.sdf in the same folder.
-
-* metac/BaseC/syntax/*.tmpl
-* metac/Statemachine/syntax/*.tmpl
+The first build is actually building the project. Everything should work out of the box, including the template language.
 
 
 ## Examples
