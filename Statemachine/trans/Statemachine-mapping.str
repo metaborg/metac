@@ -298,6 +298,11 @@ rules
 	where
 		structName:= $[[<get-module> name]_sm_data_[<strip-annos>name]]
 	
+	to-basec: StateMachineIsInState(sm, Identifier(st)) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(stateName)))
+	where
+		StatemachineType(Identifier(name)) := <type-of> sm;
+		stateName:= $[[name]_state_[st]]
+	
 	generate-init: (evtParams, list) -> declaration
 	where
 		<eq> (0, <length> list);
