@@ -52,3 +52,13 @@ Open Main.mc and select the builder 'to-compiled-exe' from the transform menu to
 The 'execute' will directly generate the executable and run it.
 In this case the result of the calculation should be 18 and is visible in the console.
 
+### Statemachine DSL examples
+
+[metac/Statemachine/test/programs](https://github.com/metaborg/statemachine/tree/master/BaseC/test/programs) contains the statemachine test programs.
+The following programs can be build and executed through the 'Statemachine execute' builder.
+
+* [metac/Statemachine/test/examples/Simple](https://github.com/metaborg/metac/blob/master/Statemachine/test/examples/Simple/SimpleStatemachine.mc)
+
+## Statemachine inner workings
+
+TODO write this.
