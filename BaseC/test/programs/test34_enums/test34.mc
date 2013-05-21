@@ -10,6 +10,10 @@ module test34 {
 	  enum list listvar;
 	  listvar = var1;
 	  printf("%d", listvar == var1);
+	  printf("%d", listvar == var2);
+	  listvar = var2;
+	  printf("%d", listvar == var1);
+	  printf("%d", listvar == var2);
 	  return 0;
 	} 
 

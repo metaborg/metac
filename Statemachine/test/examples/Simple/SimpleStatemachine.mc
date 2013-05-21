@@ -8,6 +8,8 @@ module SimpleStatemachine
 	int8 global=0;
 	statemachine counter initial = start { 
 	  readable var int8 current = 0
+	  //out report(int8 x) => print 
+	  in increment(int8 delta)  
 	  in reset()
 	  out report(int8 x) => print 
 	  in increment(int8 delta)  
@@ -21,8 +23,7 @@ module SimpleStatemachine
 	    exit {
 	    	 printf("exit start\n"); 
 	   	}
-	    on increment[]-> increasing {current +=delta;}
- 
+	    on increment[delta<15]-> increasing {current +=delta;}
 	  }
 	  
 	  state increasing {
@@ -30,7 +31,7 @@ module SimpleStatemachine
 	  		printf("in increasing: current: %d\n", current);
 	  	}
 	  	on reset[] -> start {printf("statemachine reset\n");}
-	  	on increment[]-> increasing {current +=delta;}
+	  	on increment[delta<15]-> increasing {current +=delta;}
 	  } 
 	}
 	
