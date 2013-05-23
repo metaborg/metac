@@ -26,7 +26,7 @@ rules
 	check-assign(str):
 		(expected, exp) -> (exp, $[Error: type [<write-to-string> expT] is not a subtype of [<write-to-string> expected].])
 	where <type-of> exp => expT
-	where not (<str> (expT, expected))
+	where not (<debug(!"types: ");str;debug(!"passed")> (expT, expected))
 
 	constraint-error: Assign(exp, op, exp2) -> errors
 	where
@@ -59,11 +59,21 @@ rules
     		not (<eq> (<type-of> exp, expected))	
 		*/
 		
-	constraint-error: 
+/*	constraint-error: 
  		 FunctionCall(Identifier(funName), paramList) -> (funName, $[Parameter type mismatch. Expected type [<map(write-to-string)> paramType]; found type [<map(write-to-string)> params].])
  	 where
     	FunType(paramType,_) := <index-type-of> funName; 
     	params := <type-of> paramList;
-    	not(<eq> (params,paramType))
+    	not(<subtype-of> (params,paramType))
+  	*/
   	
+  	constraint-error: 
+ 		 FunctionCall(Identifier(funName), paramList) -> errors //(funName, $[Parameter type mismatch. Expected type [<map(write-to-string)> paramType]; found type [<map(write-to-string)> params].])
+ 	 where
+    	FunType(paramType,_) := <index-type-of> funName; 
+    	params := <type-of> paramList;
+    	<filter(check-assign(subtype-of))> <debug(!"before zip:"); zip;debug(!"after zip:")> (paramType, paramList)  => errors
+    
+  	
+   	
    	

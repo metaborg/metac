@@ -37,7 +37,7 @@ module stmtest
 	exported int8 main(int32 argc, string[] argv) {
 	
 	  int8 y;
-	  int8 x = y+z;
+	  int8 x = 10000;
 	  int32 z;
 	  statemachine counter smvar;
 	  sminit(smvar);
@@ -48,8 +48,8 @@ module stmtest
 	  
 	  if(smIsInState(smvar,start)){
 	  	y=9;
-	  }
-	  
+	  } 
+	    
 	  print(3,4);	//fine
 	  print(x,y);	//fine
 	  print(x, smvar);	//error on smvar
