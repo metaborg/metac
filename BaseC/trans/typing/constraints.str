@@ -54,5 +54,5 @@ rules
   	constraint-error:
   		Init(Identifier(name),exp) -> errors
   	where
-  		<debug(!"got in");filter(check-assign(subtype-of));debug(!"after filter: ")> [(<index-type-of> name, exp)]  => errors
+  		<filter(check-assign(subtype-of))> [(<index-type-of> name, exp)]  => errors
    	
