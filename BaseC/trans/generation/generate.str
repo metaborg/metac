@@ -25,41 +25,48 @@ rules
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <desugar-all;to-c>selected
+			result   := <to-c>selected
 	editor-to-c-ast-debug:
 	    (selected, position, ast, path, project-path) -> (filename, result)
 	    with
 			filename := <guarantee-extension(|"c.aterm")> path;
-			result   := <desugar-all;topdown(try(to-c))>selected
+			result   := <topdown(try(to-c))>selected
 	
 	// real builders
 	editor-to-c:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<basec-to-c> (selected, path)
 	editor-to-h:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<basec-to-h> (selected, path)
 	editor-to-makefile:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<basec-to-makefile> (selected, path)
 	editor-compile:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 	    	<base-c-to-compiledc> (selected, path, project-path)
 	editor-execute:
 		(selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<basec-execute> (selected, path, project-path)
 	editor-compile-multiple:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<base-c-to-compiledc-multiple> (selected, path, project-path)
 	editor-execute-multiple:
 		(selected, position, ast, path, project-path) -> None()
 	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
 			<basec-execute-multiple> (selected, path, project-path)
 
 // rewriting single files
@@ -68,19 +75,19 @@ rules
 	    (selected, path) -> None()
 	    with
 			fileName := <guarantee-extension(|"c")> path;
-			result   := <desugar-all;to-c;pp-c-string>selected;
+			result   := <to-c;pp-c-string>selected;
 			<write-file> (fileName, result)
 	basec-to-h:
 	    (selected, path) -> None()
 	    with
 			fileName := <guarantee-extension(|"h")> path;
-			result   := <desugar-all;to-h;pp-c-string>selected;
+			result   := <to-h;pp-c-string>selected;
 			<write-file> (fileName, result)
 	basec-to-makefile:
 	    (selected, path) -> None()
 	    with
 			fileName := $[[<dirname>path]/Makefile];
-			result   := <desugar-all;to-makefile>selected;
+			result   := <to-makefile>selected;
 			<write-file> (fileName, result)
 	basec-to-c-h-makefile:
 		(selected, path) -> None()
@@ -94,7 +101,7 @@ rules
 			(<call;debug> ("make", ["-C", $["[project-path]/[<dirname>path]"]]) //full path in quotes, in case of spaces
 			<+
 			<call;debug> ("make", ["-C", $[[project-path]/[<dirname>path]]])); //full path without quotes, for linux/osx
-			<refresh-workspace-file><dirname>path
+			<refresh-workspace-file>$[[project-path]/[<dirname>path]]
 	base-c-to-compiledc:
 		(selected, path, project-path) -> None()
 		with
@@ -117,15 +124,15 @@ rules
 	basec-to-c-h-makefile-multiple:
 	    (selected, path, project-path) -> None()
 	    with
-	    	desugaredAst := <desugar-all> selected;
-	    	(analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
+	    	// desugaredAst := <desugar-all> selected;
+	    	// (analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
 
-			allAsts := <add-import-asts> [analyzedAst];
+			allAsts := <add-import-asts> [selected];
 
 			<map(\a->(a,<module-to-filename>a)\;basec-to-c)>allAsts;
 			<map(\a->(a,<module-to-filename>a)\;basec-to-h)>allAsts;
 			
-			makeFile := <to-makefile>(analyzedAst, <map(\Module(Identifier(name),_,_)->name\)>allAsts);
+			makeFile := <to-makefile>(selected, <map(\Module(Identifier(name),_,_)->name\)>allAsts);
 			makeFileName := $[[<dirname>path]/Makefile];
 			<write-file> (makeFileName, makeFile)
 
