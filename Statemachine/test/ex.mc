@@ -37,8 +37,8 @@ module stmtest
 	exported int8 main(int32 argc, string[] argv) {
 	
 	  int8 y;
-	  int8 x = 10000;
-	  int32 z;
+	  int8 x = 10000; //fail -> type incompatibility
+	  int32 z; 
 	  statemachine counter smvar;
 	  sminit(smvar);
 	  sminit(y);

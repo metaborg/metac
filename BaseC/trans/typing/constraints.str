@@ -26,7 +26,7 @@ rules
 	check-assign(str):
 		(expected, exp) -> (exp, $[Error: type [<write-to-string> expT] is not a subtype of [<write-to-string> expected].])
 	where <type-of> exp => expT
-	where not (<debug(!"types: ");str;debug(!"passed")> (expT, expected))
+	where not (<str> (expT, expected))
 
 	constraint-error: Assign(exp, op, exp2) -> errors
 	where
@@ -43,37 +43,16 @@ rules
  	 where
     	(et, _) := <type-of> op;
     	<filter(check-exp(eq))> [(exp, et)] => errors
-   
-   //TODO: show error on the problem parameters
-   //TODO: subtyping
     	
- /*   constraint-error: 
- 		 FunctionCall(Identifier(funName), paramList) -> errors
- 	 where
-    	FunType(paramType,_) := <index-type-of> funName
-    //	<check-list> (<type-of> paramList, paramType) => errors
-   
-    	
-    type-compat(|expected):  exp -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> exp].])
-    	where
-    		not (<eq> (<type-of> exp, expected))	
-		*/
-		
-/*	constraint-error: 
- 		 FunctionCall(Identifier(funName), paramList) -> (funName, $[Parameter type mismatch. Expected type [<map(write-to-string)> paramType]; found type [<map(write-to-string)> params].])
- 	 where
-    	FunType(paramType,_) := <index-type-of> funName; 
-    	params := <type-of> paramList;
-    	not(<subtype-of> (params,paramType))
-  	*/
-  	
   	constraint-error: 
- 		 FunctionCall(Identifier(funName), paramList) -> errors //(funName, $[Parameter type mismatch. Expected type [<map(write-to-string)> paramType]; found type [<map(write-to-string)> params].])
+ 		 FunctionCall(Identifier(funName), paramList) -> errors 
  	 where
     	FunType(paramType,_) := <index-type-of> funName; 
     	params := <type-of> paramList;
-    	<filter(check-assign(subtype-of))> <debug(!"before zip:"); zip;debug(!"after zip:")> (paramType, paramList)  => errors
+    	<filter(check-assign(subtype-of))> <zip> (paramType, paramList)  => errors
     
-  	
-   	
+  	constraint-error:
+  		Init(Identifier(name),exp) -> errors
+  	where
+  		<debug(!"got in");filter(check-assign(subtype-of));debug(!"after filter: ")> [(<index-type-of> name, exp)]  => errors
    	
