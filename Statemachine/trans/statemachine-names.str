@@ -308,21 +308,6 @@ rules
 rules
 
   nam-get-uses-keys :
-    StateMachineSend(Identifier(evt), list) -> [evt]
-
-  nam-get-uses :
-    StateMachineSend(Identifier(evt), list) -> [(OutEvent(), [evt])]
-
-  nam-annotate-names(|paths__, path__):
-    StateMachineSend(Identifier(evt), list) -> <StateMachineSend(
-                                                  Identifier(nam-annotate-use(|paths__, OutEvent()))
-                                                , id
-                                                )>
-
-
-rules
-
-  nam-get-uses-keys :
     StateMachineTrigger(
       e
     , EventRef(Identifier(in_event), _)

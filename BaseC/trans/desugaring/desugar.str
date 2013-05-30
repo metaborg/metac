@@ -60,8 +60,8 @@ fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
 			cond, 
 			postIterInstr, 
 			loopBody) -> 
-					[Declaration(type, NoInit(varName)),
-					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)]
+					Block([Declaration(type, NoInit(varName)),
+						   For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)])
 	
 	/**
 	 * Expressions
@@ -107,6 +107,5 @@ fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
  	desugar: IncrementPrefix(e1)		->  UnExp(IncPre(), e1)
  	desugar: DecrementPostfix(e1)		->  UnExp(DecPost(), e1)
  	desugar: IncrementPostfix(e1)		->  UnExp(IncPost(), e1)
-
 
 	//desugar: Field(e,f) -> Field(Var(e),f)
