@@ -24,7 +24,7 @@ signature constructors
 	
 rules
 	
-	to-basec-all = topdown(try(to-basec);try(flatten-list))
+	//to-basec-all = topdown(try(to-basec);try(flatten-list))
 	
 	to-basec-all(|path): ast -> ast												//generates .h file with C code statemachine functions, enums and structs.
 	where 
