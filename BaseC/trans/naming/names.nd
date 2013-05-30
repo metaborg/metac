@@ -1,6 +1,9 @@
 module BaseC/trans/naming/names
 
 imports
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
 	include/metaC
 	BaseC/trans/desugaring/constructors
 	BaseC/trans/typing/types
@@ -36,8 +39,7 @@ rules
 		defines Module name
 		scopes Function
 		
-	Import(Identifier(name), fakename):
-		defines non-unique Import fakename
+	Import(Identifier(name), _):
 		refers to Module name
 		imports Function from Module name
 		imports Struct from Module name

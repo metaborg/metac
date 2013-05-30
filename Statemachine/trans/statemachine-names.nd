@@ -1,7 +1,9 @@
 module statemachine-names
 
 imports
-
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
   BaseC/trans/naming/names
   BaseC/trans/typing/types
   Statemachine/trans/statemachine-types
