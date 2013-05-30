@@ -17,11 +17,6 @@ rules
 	//remove all the Some() constructors
 	desugar: Some(a) -> a
 	
-	desugar: 
-		Import(i) -> Import(i, name)
-		where
-			Identifier(name) := i
-	
 	//a single declaration that declares multiple variables to multiple declarations
 	desugar: Declaration(type, vars) -> declarationList
 		where

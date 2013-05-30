@@ -39,7 +39,7 @@ rules
 		defines Module name
 		scopes Function
 		
-	Import(Identifier(name), _):
+	Import(Identifier(name)):
 		refers to Module name
 		imports Function from Module name
 		imports Struct from Module name
