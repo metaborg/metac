@@ -259,6 +259,9 @@ rules
    		where
    			FunType(_,returnType) := <index-type-of> funName		
    	
+   	type-of: Return(a) -> <type-of> a 
+   	
+   	type-of: Return(None()) -> BasicType("void")
    	//dummy: remove
    	//type-of: (exp, _) -> <type-of> exp
    	

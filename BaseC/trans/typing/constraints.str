@@ -56,3 +56,28 @@ rules
   	where
   		<filter(check-assign(subtype-of))> [(<index-type-of> name, exp)]  => errors
    	
+	constraint-error:
+		FunDef(_,returnType,name,_,body) -> errors
+	where
+		<collect-all(isReturn)> body  => returns;
+		<filter(check-assign(subtype-of))> <cart(id)> ([returnType], returns) => subTypeErrors;
+		<check-hasReturn> (returns,returnType,name) => returnErrors;
+		<conc> (subTypeErrors, returnErrors) => errors 
+		
+	check-hasReturn: (returns, returnType, name) -> [(name,$[This function must return a result of type [<write-to-string> returnType]. ])]
+		where
+			not (<eq> (returnType,BasicType("void")));
+			<eq> (<length> returns,0)
+				
+	check-hasReturn: (returns, returnType,name) -> []
+		where		
+			<eq> (returnType,BasicType("void"))
+
+	check-hasReturn: (returns, returnType,name) -> []
+		where		
+			not(<eq> (returnType,BasicType("void")));
+			not(<eq> (<length> returns,0))
+						
+	isReturn: Return(v) -> Return(v)
+	
+ 			 		
