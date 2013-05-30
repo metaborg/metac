@@ -4,9 +4,3 @@ imports BaseC
 imports Statemachinegenerated
 imports Statemachine-in-Basegenerated
 imports Statemachine-Keywordsgenerated
-
-exports
-  
-  context-free start-symbols 
-  
-    Start
