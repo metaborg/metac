@@ -13,7 +13,8 @@ imports
   lib/nbl-library.generated
   BaseC/trans/naming/names
   BaseC/trans/desugaring/desugar
-  BaseC/trans/generation/generate
+  trans/builders/generate
+  BaseC/trans/desugaring/to-basec
   BaseC/trans/typing/types
   BaseC/trans/typing/constraints
   Statemachine/trans/statemachine-names

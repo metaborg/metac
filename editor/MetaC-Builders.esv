@@ -30,10 +30,10 @@ builders
   builder  : "to compiled exe"      			   = editor-compile-multiple (meta)
   builder  : "execute"  				           = editor-execute-multiple (meta)
 
-  builder  : "Statemachine to BaseC"			   = editor-to-basec (openeditor) (realtime) (meta)
+  builder  : "Statemachine to BaseC debug"		   = editor-to-basec (openeditor) (realtime) (meta)
   builder  : "Statemachine to C AST debug"		   = editor-sm-to-c-ast-debug (openeditor) (realtime) (meta)
-  builder  : "Statemachine to C"				   = editor-sm-to-c (openeditor) (realtime) (meta)
-  builder  : "Statemachine to C generate"		   = editor-sm-generate (meta)
-  builder  : "Statemachine execute"  			   = editor-sm-execute (meta)
+  // builder  : "Statemachine to C"				   = editor-sm-to-c (openeditor) (realtime) (meta)
+  // builder  : "Statemachine to C generate"		   = editor-sm-generate (meta)
+  // builder  : "Statemachine execute"  			   = editor-sm-execute (meta)
   
   on save  : editor-compile-multiple
