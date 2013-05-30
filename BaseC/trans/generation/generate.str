@@ -129,8 +129,8 @@ rules
 
 			allAsts := <add-import-asts> [selected];
 
-			<filter(\Module(a,b,c)->Module(a,b,c)\);map(\a->(a,<module-to-filename>a)\;debug;basec-to-c)>allAsts;
-			<map(\a->(a,<module-to-filename>a)\;debug;basec-to-h)>allAsts;
+			<filter(\Module(a,b,c)->Module(a,b,c)\);map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-c)>allAsts;
+			<map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-h)>allAsts;
 			
 			makeFile := <to-makefile>(selected, <filter(\Module(Identifier(name),_,_)->name\)>allAsts);
 			makeFileName := $[[<dirname>path]/Makefile];
@@ -186,6 +186,11 @@ rules
 	module-to-filename: ModuleExternal(Identifier(name{anon}),_,_) -> fileName
 		where [(fileName,[])] := <index-lookup;index-get-files-of>name{anon}
 	filename-to-ast: file -> <index-get-value> AST(("MetaC", file), ())
+	
+	rebase-filename(|path,project-path): origfilename -> newfilename
+		where
+			// <debug>["rebase-filename", origfilename, path,project-path];
+			newfilename := $[[project-path]/[<dirname>path]/[<base-filename>origfilename]]
 
 
 // helper rules

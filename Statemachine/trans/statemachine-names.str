@@ -278,6 +278,14 @@ rules
          ]
     where <target__> event_name
 
+  nam-unique :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> <id>
+
   adjust-index-def-data(store__|namespace__, path__):
     StateTransition(
       Identifier(event_name)

@@ -55,7 +55,7 @@ rules
 */	
 			
 	StateTransition(Identifier(event_name), cond, Identifier(state_name), block) : 
-		defines non-unique StateTransition block
+		defines StateTransition block
 		refers to InEvent event_name 
 		refers to State state_name
 		imports Variable from InEvent event_name
