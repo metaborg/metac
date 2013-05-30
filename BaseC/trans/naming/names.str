@@ -19,20 +19,21 @@ signature
     CurrentFile : ImportAnno
 
   constructors
-    Module       : Namespace
-    Import       : Namespace
-    Function     : Namespace
-    Variable     : Namespace
-    Label        : Namespace
-    Field        : Namespace
-    Struct       : Namespace
-    Union        : Namespace
-    Enum         : Namespace
-    Enumlit      : Namespace
-    Messagelist  : Namespace
-    Message      : Namespace
-    TypeSynonym  : Namespace
-    Statemachine : Namespace
+    Module         : Namespace
+    ModuleExternal : Namespace
+    Import         : Namespace
+    Function       : Namespace
+    Variable       : Namespace
+    Label          : Namespace
+    Field          : Namespace
+    Struct         : Namespace
+    Union          : Namespace
+    Enum           : Namespace
+    Enumlit        : Namespace
+    Messagelist    : Namespace
+    Message        : Namespace
+    TypeSynonym    : Namespace
+    Statemachine   : Namespace
 
 
 rules
@@ -63,6 +64,28 @@ rules
 
   nam-unique :
     Module(Identifier(name), _, _) -> <id>
+
+
+rules
+
+  nam-get-scope-types :
+    ModuleExternal(Identifier(name), _, _) -> [Function()]
+
+  nam-get-definition-keys :
+    ModuleExternal(Identifier(name), _, _) -> [name]
+
+  nam-get-definitions :
+    ModuleExternal(Identifier(name), _, _) -> [(Module(), [name])]
+
+  nam-annotate-names(|paths__, path__):
+    ModuleExternal(Identifier(name), _, _) -> <ModuleExternal(
+                                                 Identifier(nam-annotate-def(|path__))
+                                               , id
+                                               , id
+                                               )>
+
+  nam-unique :
+    ModuleExternal(Identifier(name), _, _) -> <id>
 
 
 rules
@@ -130,6 +153,44 @@ rules
 
   nam-unique :
     FunDef(_, returnType, Identifier(name), params, _) -> <id>
+    where paramsTypes := <type-of> params
+
+
+rules
+
+  nam-get-scope-types :
+    FunProto(returnType, Identifier(name), params) -> [Variable(), TypeSynonym()]
+    where paramsTypes := <type-of> params
+
+  nam-get-definition-keys :
+    FunProto(returnType, Identifier(name), params) -> [name]
+    where paramsTypes := <type-of> params
+
+  nam-get-definitions :
+    FunProto(returnType, Identifier(name), params) -> [(Function(), [name])]
+    where paramsTypes := <type-of> params
+
+  nam-annotate-names(|paths__, path__):
+    FunProto(returnType, Identifier(name), params) -> <FunProto(
+                                                         id
+                                                       , Identifier(nam-annotate-def(|path__))
+                                                       , id
+                                                       )>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    FunProto(returnType, Identifier(name), params) -> <store__> DefData(
+                                                                  [namespace__|path__]
+                                                                , Type()
+                                                                , FunType(paramsTypes, returnType)
+                                                                )
+    where paramsTypes := <type-of> params
+
+  type-of :
+    FunProto(returnType, Identifier(name), params) -> FunType(paramsTypes, returnType)
+    where paramsTypes := <type-of> params
+
+  nam-unique :
+    FunProto(returnType, Identifier(name), params) -> <id>
     where paramsTypes := <type-of> params
 
 

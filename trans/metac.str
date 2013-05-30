@@ -29,6 +29,7 @@ rules // Analysis
   analyze:
     (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
     with
+      debug(!"Analyzing: ");
       ast'                    := <desugar-all> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
@@ -50,7 +51,8 @@ rules // Analysis
   editor-analyze:
     files -> None()
     where
-      not(is-tuple)
+      not(is-tuple);
+      index-setup(|<language>, [<project-path>], ".")
     /*with
     	index-setup(|<language>, [<project-path>], ".");
       disable-commit-and-compile // Disable compilation during analysis.
@@ -128,7 +130,7 @@ rules // Debugging
     with
       editor-init;
       filename := <guarantee-extension(|"analyzed.mc.aterm")> path;
-      result   := <desugar-all;analyze-top(|<language>)> (selected, path, project-path)   
+      result   := ast  
       
   // Prints the entries in the index of the current file.
   debug-index-show-current-file:

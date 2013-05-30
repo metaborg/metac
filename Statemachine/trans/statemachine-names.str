@@ -29,6 +29,7 @@ signature
     Function        : Namespace
     Module          : Namespace
     Variable        : Namespace
+    StateTransition : Namespace
 
 
 rules
@@ -42,6 +43,7 @@ rules
          , Variable()
          , InEvent()
          , OutEvent()
+         , StateTransition()
          ]
 
   nam-get-definition-keys :
@@ -107,6 +109,13 @@ rules
 
 rules
 
+  nam-get-scope-types :
+    StateMachineState(Identifier(state_name), _) -> [ Variable()
+                                                    , StateTransition()
+                                                    , InEvent()
+                                                    , OutEvent()
+                                                    ]
+
   nam-get-definition-keys :
     StateMachineState(Identifier(state_name), _) -> [state_name]
 
@@ -121,6 +130,9 @@ rules
 
 
 rules
+
+  nam-get-scope-types :
+    StateMachineInEvent(Identifier(event_name), _) -> [Variable()]
 
   nam-get-definition-keys :
     StateMachineInEvent(Identifier(event_name), _) -> [event_name]
@@ -200,20 +212,44 @@ rules
 
 rules
 
+  nam-get-scope-types :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> [Variable()]
+
+  nam-get-definition-keys :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> [block]
+
+  nam-get-definitions :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> [(StateTransition(), [block])]
+
   nam-get-uses-keys :
     StateTransition(
       Identifier(event_name)
-    , _
+    , cond
     , Identifier(state_name)
-    , _
+    , block
     ) -> [event_name, state_name]
 
   nam-get-uses :
     StateTransition(
       Identifier(event_name)
-    , _
+    , cond
     , Identifier(state_name)
-    , _
+    , block
     ) -> [ (InEvent(), [event_name])
          , (State(), [state_name])
          ]
@@ -221,26 +257,46 @@ rules
   nam-annotate-names(|paths__, path__):
     StateTransition(
       Identifier(event_name)
-    , _
+    , cond
     , Identifier(state_name)
-    , _
+    , block
     ) -> <StateTransition(
             Identifier(nam-annotate-use(|paths__, InEvent()))
           , id
           , Identifier(nam-annotate-use(|paths__, State()))
-          , id
+          , nam-annotate-def(|path__)
           )>
 
   adjust-index-lookup(target__|namespace__, path__, prefix__):
     StateTransition(
       Identifier(event_name)
-    , _
+    , cond
     , Identifier(state_name)
-    , _
+    , block
     ) -> [ [InEvent()|path__]
          , [State()|path__]
          ]
     where <target__> event_name
+
+  nam-unique :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> <id>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> <store__> DefData(
+                     [Variable()|path__]
+                   , Import()
+                   , (event_name, [])
+                   )
 
 
 rules
@@ -255,6 +311,21 @@ rules
 
   nam-annotate-names(|paths__, path__):
     StateMachineInit(e) -> <StateMachineInit(id)>
+
+
+rules
+
+  nam-get-uses-keys :
+    StateMachineSend(Identifier(evt), list) -> [evt]
+
+  nam-get-uses :
+    StateMachineSend(Identifier(evt), list) -> [(OutEvent(), [evt])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineSend(Identifier(evt), list) -> <StateMachineSend(
+                                                  Identifier(nam-annotate-use(|paths__, OutEvent()))
+                                                , id
+                                                )>
 
 
 rules
