@@ -1,9 +1,9 @@
 module namebinding
 
 imports
-  lib/analysis-library.generated
-  lib/analysis-library-internal.generated
-  lib/index-library.generated
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
 
 
 imports

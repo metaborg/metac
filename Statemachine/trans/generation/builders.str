@@ -1,10 +1,10 @@
 module Statemachine/trans/generation/builders
 
 imports
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/analysis-library
+	lib/analysis-library-internal
 	lib/editor-common.generated
-	lib/index-library.generated
+	lib/index-library
 	libstratego-gpp
 	libstratego-lib
 	lib/c/c

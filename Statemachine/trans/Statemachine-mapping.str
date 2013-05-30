@@ -2,12 +2,12 @@ module Statemachine-mapping
 
 imports MetaC
 imports include/MetaC
-		lib/nbl-library.generated
+		lib/nbl-library
 		libstratego-lib
 		lib/editor-common.generated
-		lib/index-library.generated
-		lib/analysis-library.generated
-		lib/analysis-library-internal.generated
+		lib/index-library
+		lib/analysis-library
+		lib/analysis-library-internal
 		lib/c/c
 		libstratego-gpp
 		Statemachine/trans/statemachine-names

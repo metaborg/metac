@@ -3,11 +3,11 @@ module statemachine-error-report
 imports 
 	
 	lib/editor-common.generated
-  	lib/index-library.generated
-  	lib/analysis-library.generated
-  	lib/analysis-library-internal.generated
-  	lib/compilation-library.generated
-  	lib/nbl-library.generated
+  	lib/index-library
+  	lib/analysis-library
+  	lib/analysis-library-internal
+  	lib/compilation-library
+  	lib/nbl-library
 	
 rules
 
