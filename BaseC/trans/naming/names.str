@@ -1,12 +1,12 @@
 module BaseC/trans/naming/names
 
 imports
-  lib/analysis-library
-  lib/analysis-library-internal
-  lib/index-library
 
 
 imports
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
   include/metaC
   BaseC/trans/desugaring/constructors
   BaseC/trans/typing/types
@@ -97,37 +97,30 @@ rules
 
 rules
 
-  nam-get-definition-keys :
-    Import(Identifier(name), fakename) -> [fakename]
-
-  nam-get-definitions :
-    Import(Identifier(name), fakename) -> [(Import(), [fakename])]
-
   nam-get-uses-keys :
-    Import(Identifier(name), fakename) -> [name]
+    Import(Identifier(name)) -> [name]
 
   nam-get-uses :
-    Import(Identifier(name), fakename) -> [(Module(), [name])]
+    Import(Identifier(name)) -> [(Module(), [name])]
 
   nam-annotate-names(|paths__, path__):
-    Import(Identifier(name), fakename) -> <Import(
-                                             Identifier(nam-annotate-use(|paths__, Module()))
-                                           , nam-annotate-def(|path__)
-                                           )>
+    Import(Identifier(name)) -> <Import(
+                                   Identifier(nam-annotate-use(|paths__, Module()))
+                                 )>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Import(Identifier(name), fakename) -> <store__> DefData(
-                                                      [Function()|path__]
-                                                    , Import()
-                                                    , (name, [])
-                                                    )
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Function()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
 
   adjust-index-def-data(store__|namespace__, path__):
-    Import(Identifier(name), fakename) -> <store__> DefData(
-                                                      [Struct()|path__]
-                                                    , Import()
-                                                    , (name, [])
-                                                    )
+    Import(Identifier(name)) -> <store__> DefData(
+                                            [Struct()|path__]
+                                          , Import()
+                                          , (name, [])
+                                          )
 
 
 rules
@@ -775,28 +768,30 @@ rules
 rules
 
   nam-get-definition-keys :
-    Label(l, _) -> [l]
+    Label(Identifier(l), _) -> [l]
 
   nam-get-definitions :
-    Label(l, _) -> [(Label(), [l])]
+    Label(Identifier(l), _) -> [(Label(), [l])]
 
   nam-annotate-names(|paths__, path__):
-    Label(l, _) -> <Label(nam-annotate-def(|path__), id)>
+    Label(Identifier(l), _) -> <Label(Identifier(nam-annotate-def(|path__)), id)>
 
   nam-unique :
-    Label(l, _) -> <id>
+    Label(Identifier(l), _) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    Goto(l) -> [l]
+    Goto(Identifier(l)) -> [l]
 
   nam-get-uses :
-    Goto(l) -> [(Label(), [l])]
+    Goto(Identifier(l)) -> [(Label(), [l])]
 
   nam-annotate-names(|paths__, path__):
-    Goto(l) -> <Goto(nam-annotate-use(|paths__, Label()))>
+    Goto(Identifier(l)) -> <Goto(
+                              Identifier(nam-annotate-use(|paths__, Label()))
+                            )>
 
 
 rules

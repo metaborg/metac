@@ -142,9 +142,9 @@ rules
 		refers to Enum name
 	
 	// labels and gotos	
-	Label(l, _): 
+	Label(Identifier(l), _): 
 		defines Label l
-	Goto(l): 
+	Goto(Identifier(l)): 
 		refers to Label l
 
 
