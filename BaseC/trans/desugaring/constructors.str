@@ -6,6 +6,8 @@ imports
 signature constructors
 	amb: List(ModuleContent) -> ModuleContent
 	Brackets: Exp -> Exp
+	MsgText : DefDataType
+
 	
 	/**
 	 * Binary Operators

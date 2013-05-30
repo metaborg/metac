@@ -230,6 +230,5 @@
    String                                   -- _1,
    COMPLETION-Constant                      -- _1,
    Identifier                               -- _1,
-   COMPLETION-Identifier                    -- _1,
-   COMPLETION-Start                         -- _1
+   COMPLETION-Identifier                    -- _1
 ]

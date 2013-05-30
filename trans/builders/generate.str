@@ -13,7 +13,7 @@ imports
 	baseC/trans/generation/to-c
 	baseC/trans/generation/to-h
 	baseC/trans/generation/to-makefile
-	Statemachine/trans/Statemachine-mapping
+	baseC/trans/desugaring/to-basec
 	
 signature constructors
 
@@ -130,7 +130,7 @@ rules
 
 			allAstsIncludingStatemachines := <add-import-asts> [selected];
 			
-			allAsts := <map(to-basec-all)>allAstsIncludingStatemachines;
+			allAsts := <map(to-basec-all;desugar-all)>allAstsIncludingStatemachines;
 
 			<filter(\Module(a,b,c)->Module(a,b,c)\);map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-c)>allAsts;
 			<map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-h)>allAsts;
