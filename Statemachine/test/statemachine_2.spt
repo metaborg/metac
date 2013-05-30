@@ -1,6 +1,6 @@
 module statemachine_2
 language MetaC
-start symbol Start
+start symbol Statemachine
 
 test simple [[
 	statemachine stmname initial = a {
