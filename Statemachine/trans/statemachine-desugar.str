@@ -2,12 +2,12 @@ module Statemachine/trans/statemachine-desugar
 
 imports
 	include/metaC
-	lib/nbl-library.generated
+	lib/nbl-library
 	libstratego-lib
 	lib/editor-common.generated
-	lib/index-library.generated
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/index-library
+	lib/analysis-library
+	lib/analysis-library-internal
 	Statemachine/trans/Statemachine-mapping
 	BaseC/trans/desugaring/desugar
 	BaseC/trans/desugaring/constructors

@@ -1,13 +1,13 @@
 module BaseC/trans/desugaring/desugar
 
 imports
-	include/metaC
-	lib/nbl-library.generated
+	include/MetaC
+	lib/nbl-library
 	libstratego-lib
 	lib/editor-common.generated
-	lib/index-library.generated
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/index-library
+	lib/analysis-library
+	lib/analysis-library-internal
 	BaseC/trans/desugaring/constructors
 
 	

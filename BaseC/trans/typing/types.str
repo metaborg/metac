@@ -4,12 +4,12 @@ imports
 	include/metaC
 	BaseC/trans/desugaring/constructors
 	BaseC/trans/naming/names	
-	lib/nbl-library.generated
+	lib/nbl-library
 	libstratego-lib
 	lib/editor-common.generated
-	lib/index-library.generated
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/index-library
+	lib/analysis-library
+	lib/analysis-library-internal
 	
 signature constructors
 	FunType : List(Type) * Type -> Type

@@ -1,8 +1,8 @@
 module metaC/trans/generation/to-c
 
 imports
-	lib/analysis-library.generated
-	lib/index-library.generated
+	lib/analysis-library
+	lib/index-library
 	include/MetaC
 	lib/c/c
 	libstratego-gpp
