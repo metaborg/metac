@@ -251,14 +251,6 @@ rules
    	
    	type-of: TypeSynonym(Identifier(name)) -> <index-type-of> name
    	
-   	type-of: list -> <map(type-of)> list
-   		where
-   			<is-list> list
-   	
-   	type-of: FunctionCall(Identifier(funName),_) -> returnType
-   		where
-   			FunType(_,returnType) := <index-type-of> funName		
-   	
    	//dummy: remove
    	//type-of: (exp, _) -> <type-of> exp
    	

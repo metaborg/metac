@@ -1,48 +1,17 @@
 module statemachine-error-report
 
 imports 
-	include/MetaC
+	
 	lib/editor-common.generated
   	lib/index-library.generated
   	lib/analysis-library.generated
   	lib/analysis-library-internal.generated
   	lib/compilation-library.generated
   	lib/nbl-library.generated
-	Statemachine/trans/statemachine-names
-	BaseC/trans/typing/constraints
-	Statemachine/trans/Statemachine-mapping
 	
 rules
-	
-	constraint-error:
-		StateMachineInit(stmac) -> (stmac, $[Variable [stName] is not of a statemachine type. ])
-			where
-				Var(Identifier(stName)) := stmac;
-				not (StatemachineType(_) := <type-of> stmac)
-				
-	constraint-error:
-		StateMachineTrigger(stmac, _) -> (stmac, $[Variable [stName] is not of a statemachine type. ])
-			where
-				Var(Identifier(stName)) := stmac;
-				not (StatemachineType(_) := <type-of> stmac)
-	
-	constraint-error:
-		StateMachineIsInState(stmac, _) -> (stmac, $[Variable [stName] is not of a statemachine type. ])
-			where
-				Var(Identifier(stName)) := stmac;
-				not (StatemachineType(_) := <type-of> stmac)		
-	
-/*	constraint-warning:
-		StateMachineTrigger(stmac, EventRef(Identifier(ident), list)) -> (stmac, $[[<write-to-string> paramList]. ])
-			where
-				Var(Identifier(stName)) := stmac;
-				not (StatemachineType(_) := <type-of> stmac);
-				paramList := <index-get-data(|EvtParamList())> ident;
-				not (<eq> (<type-of> list,<type-of> paramList)) 
-	*/	
-	
+
+
 //TODO
 //errors on "readable" and "writable"
 // error on undefined initial state
-
-//EventRef(Identifier(ident), list) - parameters in list don't match

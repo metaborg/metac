@@ -55,7 +55,7 @@ rules
 */	
 			
 	StateTransition(Identifier(event_name), cond, Identifier(state_name), block) : 
-		defines non-unique StateTransition block
+		defines StateTransition block
 		refers to InEvent event_name 
 		refers to State state_name
 		imports Variable from InEvent event_name
@@ -74,11 +74,9 @@ rules
 		refers to InEvent in_event in Statemachine s
 		where e has type StatemachineType(Identifier(s))
 									
-	StateMachineIsInState(e, Identifier(state)) : //refers to Statemachine name
-								  	refers to State state in Statemachine name
-								  	where 
-										e has type StatemachineType(Identifier(name))
-										
+	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
+								  	refers to State state
+	
 	StatemachineType(Identifier(name)): 
 		refers to Statemachine name
 		

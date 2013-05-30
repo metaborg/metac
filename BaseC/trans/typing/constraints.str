@@ -43,16 +43,3 @@ rules
  	 where
     	(et, _) := <type-of> op;
     	<filter(check-exp(eq))> [(exp, et)] => errors
-    	
-  	constraint-error: 
- 		 FunctionCall(Identifier(funName), paramList) -> errors 
- 	 where
-    	FunType(paramType,_) := <index-type-of> funName; 
-    	params := <type-of> paramList;
-    	<filter(check-assign(subtype-of))> <zip> (paramType, paramList)  => errors
-    
-  	constraint-error:
-  		Init(Identifier(name),exp) -> errors
-  	where
-  		<filter(check-assign(subtype-of))> [(<index-type-of> name, exp)]  => errors
-   	

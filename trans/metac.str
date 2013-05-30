@@ -21,7 +21,6 @@ imports
   Statemachine/trans/statemachine-desugar
   Statemachine/trans/Statemachine-mapping
   Statemachine/trans/generation/builders
-  Statemachine/trans/statemachine-error-report
   
 rules // Analysis
   

@@ -6,8 +6,6 @@ imports
 signature constructors
 	amb: List(ModuleContent) -> ModuleContent
 	Brackets: Exp -> Exp
-	Header: Identifier -> Header
-	Resource: Header -> Resource
 	
 	/**
 	 * Binary Operators

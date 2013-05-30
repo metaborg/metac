@@ -278,6 +278,14 @@ rules
          ]
     where <target__> event_name
 
+  nam-unique :
+    StateTransition(
+      Identifier(event_name)
+    , cond
+    , Identifier(state_name)
+    , block
+    ) -> <id>
+
   adjust-index-def-data(store__|namespace__, path__):
     StateTransition(
       Identifier(event_name)
@@ -303,6 +311,21 @@ rules
 
   nam-annotate-names(|paths__, path__):
     StateMachineInit(e) -> <StateMachineInit(id)>
+
+
+rules
+
+  nam-get-uses-keys :
+    StateMachineSend(Identifier(evt), list) -> [evt]
+
+  nam-get-uses :
+    StateMachineSend(Identifier(evt), list) -> [(OutEvent(), [evt])]
+
+  nam-annotate-names(|paths__, path__):
+    StateMachineSend(Identifier(evt), list) -> <StateMachineSend(
+                                                  Identifier(nam-annotate-use(|paths__, OutEvent()))
+                                                , id
+                                                )>
 
 
 rules

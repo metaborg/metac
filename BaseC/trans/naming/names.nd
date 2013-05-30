@@ -19,12 +19,13 @@ namespaces
 	Messagelist
 	Message
 	TypeSynonym
-	Block
 	Statemachine
-	
 
 //TODO: fix namebinding, refers to doesnt work for variables and fields (it does work for functions)
 rules
+	Block(_):
+    	scopes Variable
+    	
 	// modules
 	Module(Identifier(name), _, _):
 		defines Module name
@@ -44,7 +45,7 @@ rules
 	// functions
 	FunDef(_,returnType, Identifier(name), params,_):
 		defines Function name of type FunType(paramsTypes,returnType)
-		scopes Variable, TypeSynonym, Block
+		scopes Variable, TypeSynonym
 		where
 			params has type paramsTypes
 	FunProto(returnType,  Identifier(name), params):
@@ -71,6 +72,9 @@ rules
 		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
 	//	where 
 	//		typ has type t
+	
+	Declaration(type, NoInit(Identifier(varName), size)):
+		defines Variable varName of type type
 		
 	StructOrUnionInlineDecl(Struct(_, Identifier(s), _), Identifier(name)):
 		defines Variable name of type StructType(Identifier(s))
@@ -79,6 +83,9 @@ rules
 		defines Variable name 													//TODO add type
 	
 	Var(Identifier(name)):
+		refers to Variable name
+
+	ArrayField(Var(Identifier(varName)), _):
 		refers to Variable name
 		
 	MListRef(Identifier(name)):
@@ -151,6 +158,4 @@ rules
  		where
  			var has type MsgListType(Identifier(mList))
 
-	//blocks
-	Block(_): 
-		scopes Variable  
+
