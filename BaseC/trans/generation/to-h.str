@@ -40,6 +40,8 @@ rules
 				     ];
 			includes := $[[<pp-c-string>c-ast];]
 
+	//TODO: generate a correct header file
+	to-h: ModuleExternal(_, _, _) -> []
 
 
 overlays
