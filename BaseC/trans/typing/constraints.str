@@ -4,12 +4,12 @@ imports
 	include/metaC
 	BaseC/trans/desugaring/constructors
 	BaseC/trans/typing/types
-	lib/nbl-library.generated
+	lib/nbl-library
 	libstratego-lib
 	lib/editor-common.generated
-	lib/index-library.generated
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/index-library
+	lib/analysis-library
+	lib/analysis-library-internal
 	
 	
 rules
@@ -80,4 +80,3 @@ rules
 						
 	isReturn: Return(v) -> Return(v)
 	
- 			 		
