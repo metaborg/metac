@@ -1,4 +1,4 @@
-module metaC/trans/generation/generate
+module trans/builders/generate
 
 imports
 	lib/analysis-library.generated
@@ -13,6 +13,7 @@ imports
 	baseC/trans/generation/to-c
 	baseC/trans/generation/to-h
 	baseC/trans/generation/to-makefile
+	Statemachine/trans/Statemachine-mapping
 	
 signature constructors
 
@@ -127,7 +128,9 @@ rules
 	    	// desugaredAst := <desugar-all> selected;
 	    	// (analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
 
-			allAsts := <add-import-asts> [selected];
+			allAstsIncludingStatemachines := <add-import-asts> [selected];
+			
+			allAsts := <map(to-basec-all)>allAstsIncludingStatemachines;
 
 			<filter(\Module(a,b,c)->Module(a,b,c)\);map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-c)>allAsts;
 			<map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-h)>allAsts;

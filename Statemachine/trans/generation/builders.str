@@ -10,7 +10,7 @@ imports
 	lib/c/c
 	include/MetaC
 	baseC/trans/desugaring/desugar
-	baseC/trans/generation/generate
+	trans/builders/generate
 	baseC/trans/generation/to-c
 	Statemachine/trans/Statemachine-mapping
 

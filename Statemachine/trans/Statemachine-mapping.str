@@ -14,7 +14,7 @@ imports include/MetaC
 		BaseC/trans/desugaring/desugar
 		BaseC/trans/desugaring/constructors
 		BaseC/trans/generation/to-c
-		BaseC/trans/generation/generate
+		trans/builders/generate
 
 signature constructors
 	SmParamDef : Type * String -> Param
