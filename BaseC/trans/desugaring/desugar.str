@@ -1,7 +1,7 @@
 module BaseC/trans/desugaring/desugar
 
 imports
-	include/metaC
+	include/MetaC
 	lib/nbl-library.generated
 	libstratego-lib
 	lib/editor-common.generated
@@ -16,6 +16,11 @@ rules
 	
 	//remove all the Some() constructors
 	desugar: Some(a) -> a
+	
+	desugar: 
+		Import(i) -> Import(i, name)
+		where
+			Identifier(name) := i
 	
 	//a single declaration that declares multiple variables to multiple declarations
 	desugar: Declaration(type, vars) -> declarationList

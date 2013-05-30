@@ -2,7 +2,8 @@ module BaseC/trans/naming/names
 
 imports
 	include/metaC
-	baseC/trans/typing/types
+	BaseC/trans/desugaring/constructors
+	BaseC/trans/typing/types
 	
 namespaces
 	Module
@@ -35,8 +36,8 @@ rules
 		defines Module name
 		scopes Function
 		
-	Import(Identifier(name)):
-		//defines non-unique Import name
+	Import(Identifier(name), fakename):
+		defines non-unique Import fakename
 		refers to Module name
 		imports Function from Module name
 		imports Struct from Module name
@@ -85,7 +86,7 @@ rules
 	Var(Identifier(name)):
 		refers to Variable name
 
-	ArrayField(Var(Identifier(varName)), _):
+	ArrayField(Var(Identifier(name)), _):
 		refers to Variable name
 		
 	MListRef(Identifier(name)):

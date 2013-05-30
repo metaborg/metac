@@ -7,6 +7,11 @@ signature constructors
 	amb: List(ModuleContent) -> ModuleContent
 	Brackets: Exp -> Exp
 	
+	Import: Identifier * Name -> Import
+	Import: Identifier -> Import
+	
+	NoInit: T * T -> NoInit
+	
 	/**
 	 * Binary Operators
 	 */
