@@ -3,6 +3,7 @@ module test42{
 		int32 x = 10;
 	haveFun:
 		x ++;
+		printf("%d\n",x);
 		if (x < 20)
 			goto haveFun;
 		return 0;		
