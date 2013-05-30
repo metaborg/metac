@@ -247,6 +247,12 @@ rules
 	to-c: Default(statement) -> C-Default(<to-c> statement)
 	
 	/**
+	 * Labels
+	 */
+	to-c: Label(name, statement) -> C-Label(<to-c>name, <to-c>statement)
+	to-c: Goto(name) -> C-Goto(<to-c>name)
+	
+	/**
 	 * Structs
 	 */
 	to-c: Struct(_, name, fields) -> 
