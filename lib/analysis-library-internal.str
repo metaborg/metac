@@ -291,7 +291,9 @@ rules // Analysis traversals
     tree -> data
     where
       set := <new-iset>;
-      <topdown(analyze-tree-data-part(|set))> tree;
+      {| DefData-Scope:
+      	<topdown(analyze-tree-data-part(|set))> tree
+      |};
       data := <iset-elements> set
       
   /** @internal */
@@ -299,10 +301,14 @@ rules // Analysis traversals
     tree -> tree
     where
       if def-term := <nam-get-definition-key> then
-        _{[namespace | path]} := def-term;
-        if result := <adjust-index-def-data(store-index-data-results(|set) |namespace, path)> tree then
-          <fatal-err(|"Unexpected result from adjust-index-def-data; should call <store-results>")> result
-        end
+      	rules(DefData-Scope := def-term)
+      end;
+      
+      if current-def-term := <DefData-Scope> then
+	      _{[namespace | path]} := current-def-term;
+	      if result := <adjust-index-def-data(store-index-data-results(|set)|namespace, path)> tree then
+	        <fatal-err(|"Unexpected result from adjust-index-def-data; should call <store-results>")> result
+	      end
       end
   
   /** @internal */
@@ -553,7 +559,7 @@ rules // Index lookup rules (that take into account adjust-index-lookup)
     <+
       adjust-import;
       adjusted := <index-do-adjust-import(|namespace, path)> x;
-      defs     := <index-get-adjust-import-results(adjust-lookup, get-defs, name-compare|adjusted, prefix)> x
+      defs     := <index-get-adjust-import-results(adjust-lookup, get-defs, name-compare|adjusted, namespace, prefix)> x
     <+
       defs     := <get-defs(name-compare|namespace, prefix)> [namespace | path]
       
@@ -566,12 +572,12 @@ rules // Index lookup rules (that take into account adjust-index-lookup)
     adjust-index-import(|namespace, path)
     
   /** @internal */
-  index-get-adjust-import-results(adjust-lookup, get-defs, name-compare|adjusted, prefix):
+  index-get-adjust-import-results(adjust-lookup, get-defs, name-compare|adjusted, namespace, prefix):
     x -> defs'
     with
       defs := 
         <mapconcat(
-             index-adjust-import-recurse(adjust-lookup, get-defs, name-compare|x, prefix)
+             index-adjust-import-recurse(adjust-lookup, get-defs, name-compare|x, namespace, prefix)
           <+ fatal-err(|"Unexpected result from adjust-index-import, should be a list of [namespace | path].")
         )> adjusted;
         if not(<elem> (StopLookup(), defs)) then
@@ -581,8 +587,8 @@ rules // Index lookup rules (that take into account adjust-index-lookup)
         end
         
   /** @internal */
-  index-adjust-import-recurse(adjust-lookup, get-defs, name-compare|x, prefix):
-    [namespace|path] -> results'
+  index-adjust-import-recurse(adjust-lookup, get-defs, name-compare|x, namespace, prefix):
+    [_|path] -> results'
     with
       results := <index-lookup-all-scoped-internal(fail, adjust-lookup, get-defs, name-compare|namespace, path, prefix)> x;
       if not(<is-list> results) then
