@@ -17,7 +17,7 @@ namespaces
 	Function
 	Module
 	Variable
-
+	StateTransition
 rules
 	//Module(_ , _, _):
 	//		scopes Statemachine
@@ -27,15 +27,18 @@ rules
 rules
 
 	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
-							scopes State, Variable, InEvent, OutEvent
+							scopes State, Variable, InEvent, OutEvent, StateTransition
 							refers to State state
+	
+	
 							
 	StatemachineType(Identifier(sm)) : refers to Statemachine sm
 	
 	StateMachineState(Identifier(state_name),_) : defines unique State state_name
+												scopes Variable, StateTransition, InEvent, OutEvent
 	
 	StateMachineInEvent(Identifier(event_name),_) : defines unique InEvent event_name
-													//scopes Variable
+													scopes Variable
 				
 
 	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
@@ -51,10 +54,12 @@ rules
 										var has type StatemachineType(Identifier(stm))
 */	
 			
-	StateTransition(Identifier(event_name), _, Identifier(state_name),_) : 
+	StateTransition(Identifier(event_name), cond, Identifier(state_name), block) : 
+		defines StateTransition block
 		refers to InEvent event_name 
 		refers to State state_name
-		//imports Variable from InEvent event_name
+		imports Variable from InEvent event_name
+		scopes Variable
 										
 	StateMachineInit(e) :	
 		refers to Statemachine s
