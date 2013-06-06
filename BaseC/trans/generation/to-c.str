@@ -173,8 +173,8 @@ rules
 	to-c: BinExp(BitshiftL(), e1, e2)	-> C-ShiftLeft(<to-c>e1, <to-c>e2)
  
  	to-c: UnExp(Size(), e1)				-> C-SizeofType(<to-c>e1)
- 	to-c: UnExp(Addr(), e1)				-> C-Address(<to-c>e1)
- 	to-c: UnExp(Deref(), e1)			-> C-Deref(<to-c>e1)
+ 	to-c: UnExp(Addr(), e1)				-> C-DeclBracket(C-Address(<to-c>e1))
+ 	to-c: UnExp(Deref(), e1)			-> C-DeclBracket(C-Deref(<to-c>e1))
  	to-c: UnExp(BWCompl(), e1)			-> C-Tilde(<to-c>e1)
  	to-c: UnExp(LogicalNot(), e1)		-> C-Negation(<to-c>e1)
  	to-c: UnExp(Neg(), e1)				-> C-Negative(<to-c>e1)

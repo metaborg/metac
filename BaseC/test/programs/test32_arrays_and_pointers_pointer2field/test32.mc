@@ -13,10 +13,9 @@ module test32 {
   		printf("ptr->myField = %d\n",ptr->myField);
   		
   		int32* ptrToField = &(ptr->myField);
-  		printf("Before: Address of field: ptrToField = %d\n", *ptrToField);
   		(*ptrToField)++;
   		printf("Value of field: *ptrToField = %d\n", *ptrToField);
-  		printf("Address of field: ptrToField = %d\n", *ptrToField);
+  		printf("Address of field: ptrToField = %d\n", ptrToField);
   		printf("Address of pointer to field: &ptrToField = %d\n", &ptrToField);
   		return 0;
 	} 
