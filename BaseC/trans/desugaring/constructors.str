@@ -8,6 +8,7 @@ signature constructors
 	Brackets: Exp -> Exp
 	MsgText : DefDataType
 	NoInit: T * T -> NoInit
+	Pointer: Pointer -> PureType
 	
 	/**
 	 * Binary Operators
