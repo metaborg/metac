@@ -1,16 +1,17 @@
 module Statemachine/trans/generation/builders
 
 imports
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
+	lib/analysis-library
+	lib/analysis-library-internal
 	lib/editor-common.generated
-	lib/index-library.generated
+	lib/index-library
 	libstratego-gpp
 	libstratego-lib
 	lib/c/c
 	include/MetaC
 	baseC/trans/desugaring/desugar
-	baseC/trans/generation/generate
+	trans/builders/generate
+	baseC/trans/desugaring/to-basec
 	baseC/trans/generation/to-c
 	Statemachine/trans/Statemachine-mapping
 
@@ -18,28 +19,37 @@ rules
 	editor-to-basec: (selected, position, ast, path, project-path) -> (filename, result)
   	with
 		filename := <guarantee-extension(|"basec.aterm")> path;
-		(result,_) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path)
+		index-setup(|<language>, [<project-path>], ".");
+		result:= <to-basec-all> selected
 		
 	editor-sm-to-c-ast-debug: (selected, position, ast, path, project-path) -> (filename, result)
   	with
 		filename := <guarantee-extension(|"c.aterm")> path;
-		result := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all; topdown(try(to-c))> (selected, path, project-path)
 		//result:= <editor-to-c-ast-debug> (basecResult, position, ast, path, project-path)
-	
+		index-setup(|<language>, [<project-path>], ".");
+		result:= <to-basec-all; desugar-all; topdown(try(to-c))> selected
+		
 	editor-sm-to-c: (selected, position, ast, path, project-path) -> (filename, result)
 	with
 		filename := <guarantee-extension(|"c")> path;
-		(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
+		//(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
+		index-setup(|<language>, [<project-path>], ".");
+		basecAST:= <to-basec-all; desugar-all> selected;
 		result := <to-c; pp-c-string> basecAST
 		
-	editor-sm-generate: (selected, position, ast, path, project-path) -> None()//(filename, result)
+	/*editor-sm-generate: (selected, position, ast, path, project-path) -> None()//(filename, result)
 	with
 		//filename := <guarantee-extension(|"c")> path;
 		<desugar-all; analyze-top(|<language>); to-basec-all(|path)> (selected, path, project-path)
 		//result := <to-c; pp-c-string> basecAST
+	*/
 	
 	editor-sm-execute: (selected, position, ast, path, project-path) -> None()
 	with
 		//(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
-		(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all> (selected, path, project-path);
+		//(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all> (selected, path, project-path);
+		index-setup(|<language>, [<project-path>], ".");
+		basecAST:= <to-basec-all; desugar-all> selected;
 		<basec-execute> (basecAST, path, project-path)
+		
+		

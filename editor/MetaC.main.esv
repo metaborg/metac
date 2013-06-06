@@ -13,4 +13,4 @@ language General properties
                   
   extensions    : mc
   table         : include/MetaC.tbl
-  start symbols : Start
+  start symbols : Module

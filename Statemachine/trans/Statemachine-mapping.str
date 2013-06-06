@@ -2,19 +2,19 @@ module Statemachine-mapping
 
 imports MetaC
 imports include/MetaC
-		lib/nbl-library.generated
+		lib/nbl-library
 		libstratego-lib
 		lib/editor-common.generated
-		lib/index-library.generated
-		lib/analysis-library.generated
-		lib/analysis-library-internal.generated
+		lib/index-library
+		lib/analysis-library
+		lib/analysis-library-internal
 		lib/c/c
 		libstratego-gpp
 		Statemachine/trans/statemachine-names
 		BaseC/trans/desugaring/desugar
 		BaseC/trans/desugaring/constructors
 		BaseC/trans/generation/to-c
-		BaseC/trans/generation/generate
+		trans/builders/generate
 
 signature constructors
 	SmParamDef : Type * String -> Param
@@ -24,7 +24,7 @@ signature constructors
 	
 rules
 	
-	to-basec-all = topdown(try(to-basec);try(flatten-list))
+	//to-basec-all = topdown(try(to-basec);try(flatten-list))
 	
 	to-basec-all(|path): ast -> ast												//generates .h file with C code statemachine functions, enums and structs.
 	where 
@@ -313,10 +313,10 @@ rules
 	where
 		structName:= $[[<get-module> name]_sm_data_[<strip-annos>name]]
 	
-	to-basec: StateMachineIsInState(sm, Identifier(st)) -> Equal(Field(sm, Identifier("__currentState")), Var(Identifier(stateName)))
+	to-basec: StateMachineIsInState(sm, Identifier(st)) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(stateName)))
 	where
 		StatemachineType(Identifier(name)) := <type-of> sm;
-		stateName := $[[name]_state_[st]]
+		stateName:= $[[name]_state_[st]]
 	
 	generate-init: (evtParams, list) -> declaration
 	where

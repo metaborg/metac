@@ -1,0 +1,24 @@
+module metaC/trans/generation/to-basec
+
+imports
+	lib/analysis-library
+	lib/index-library
+	include/MetaC
+	lib/c/C
+	libstratego-gpp
+	BaseC/trans/desugaring/desugar
+	BaseC/trans/desugaring/constructors
+	Statemachine/trans/Statemachine-mapping	
+
+rules
+	
+	to-basec-all = topdown(try(to-basec));topdown(try(flatten-list))
+	
+	to-basec: Report(MListRef(Identifier(msgList)), Identifier(msg)) -> Exp(FunctionCall(Identifier("printf"), param))
+	where
+		param := [<index-get-data(|MsgText())> msg]
+	
+	to-basec: MessageList(_, _, _) -> []
+	
+	
+	adjust-index-def-data(store-results|namespace, path): Message(_, _, _, string) -> <store-results> DefData([namespace|path], MsgText() , string)

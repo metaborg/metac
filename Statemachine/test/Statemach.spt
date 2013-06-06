@@ -1,6 +1,6 @@
 module Statemach
 language MetaC
-start symbol Start
+start symbol Statemachine
 
 
 test statemachine with states and variables [[

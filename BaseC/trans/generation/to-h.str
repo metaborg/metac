@@ -41,23 +41,7 @@ rules
 			includes := $[[<pp-c-string>c-ast];]
 
 	//TODO: generate a correct header file
-	to-h: ModuleExternal(_, resources, _) -> []
-		where
-			<eq>(resources,[])
-	to-h: ModuleExternal(Identifier(modulename), resources, _) -> headerfile
-		where
-			<not(eq)>(resources,[])
-		with
-			headerfile := $[
-			#ifndef [<upper-case>modulename]
-			#define [<upper-case>modulename]
-			
-			[<map(resource-header;pp-c-string);concat-strings>resources]
-			
-			#endif
-			]
-	
-	resource-header: Resource(Header(Identifier(name))) -> C-PpControl($[#include <[name].h>])
+	to-h: ModuleExternal(_, _, _) -> []
 
 
 overlays

@@ -6,14 +6,15 @@ imports
   libstratego-aterm
   include/MetaC
   lib/editor-common.generated
-  lib/index-library.generated
-  lib/analysis-library.generated
-  lib/analysis-library-internal.generated
-  lib/compilation-library.generated
-  lib/nbl-library.generated
+  lib/index-library
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/compilation-library
+  lib/nbl-library
   BaseC/trans/naming/names
   BaseC/trans/desugaring/desugar
-  BaseC/trans/generation/generate
+  trans/builders/generate
+  BaseC/trans/desugaring/to-basec
   BaseC/trans/typing/types
   BaseC/trans/typing/constraints
   Statemachine/trans/statemachine-names
@@ -21,7 +22,6 @@ imports
   Statemachine/trans/statemachine-desugar
   Statemachine/trans/Statemachine-mapping
   Statemachine/trans/generation/builders
-  Statemachine/trans/statemachine-error-report
   
 rules // Analysis
   

@@ -1,8 +1,8 @@
 module metaC/trans/generation/to-c
 
 imports
-	lib/analysis-library.generated
-	lib/index-library.generated
+	lib/analysis-library
+	lib/index-library
 	include/MetaC
 	lib/c/c
 	libstratego-gpp
@@ -245,6 +245,12 @@ rules
 	to-c: Break() -> C-Break()
 	
 	to-c: Default(statement) -> C-Default(<to-c> statement)
+	
+	/**
+	 * Labels
+	 */
+	to-c: Label(name, statement) -> C-Label(<to-c>name, <to-c>statement)
+	to-c: Goto(name) -> C-Goto(<to-c>name)
 	
 	/**
 	 * Structs

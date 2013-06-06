@@ -1,4 +1,4 @@
-module SimpleStatemachine
+module SimpleStatemachine2
 {
 	
 	statemachine counter initial = start { 
@@ -27,7 +27,7 @@ module SimpleStatemachine
 	  } 
 	}
 	
-	exported int8 main(int32 argc, string[] argv) {
+	exported int8 main2(int32 argc, string[] argv) {
 	  
 	  statemachine counter smvar;
 	  sminit(smvar);
