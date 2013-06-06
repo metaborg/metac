@@ -83,3 +83,8 @@ test anonymous struct var declaration
 		int32 x;
 	} myVar;
 ]] parse succeeds
+
+test static declaration [[ static int32 myVar; ]] parse succeeds
+test const declaration [[ const int32 myVar; ]] parse succeeds
+test static const declaration [[static const int32 myConst; ]] parse succeeds
+test volatile declaration [[ volatile int32 myAlwaysUpdatedVar; ]] parse succeeds
