@@ -56,13 +56,17 @@ rules
 	/**
 	 * Types
 	 */
-	 to-c: Type(_, type) -> <to-c>type
+	to-c: Type(modifiers, type) -> C-TypeSpec(<map(to-c)>modifiers,<to-c>type, [])
+	
+	to-c: BasicType("int32")->C-TypeId("int32_t")
+	to-c: BasicType("int16")->C-TypeId("int16_t")
+	to-c: BasicType("int8")->C-TypeId("int8_t")
+	to-c: BasicType("string")->C-TypeId("string") //TODO: fix, C doesnt know string
+	to-c: BasicType("void") -> C-Void()
 	 
-	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
-	 to-c: BasicType("int16")->C-TypeSpec([], C-TypeId("int16_t"), [])
-	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
-	 to-c: BasicType("string")->C-TypeSpec([], C-TypeId("string"), []) //TODO: fix, C doesnt know string
-	 to-c: BasicType("void") -> C-TypeSpec([], C-Void(), [])
+	to-c: Const() -> C-Const()
+	to-c: Volatile() -> C-Volatile()
+	to-c: Static() -> C-Static()
 	
 	/**
 	 * Declarations
@@ -136,18 +140,20 @@ rules
 	where
 		(typespec, plist):= <getTypeSpec(|[])> type
 	
-								
-	getTypeSpec(|list): Type(_, Pointer(a)) -> (typespec, nnlist) 
+	
+	//TODO: fix as below (return Type(...))							
+	getTypeSpec(|list): Type(modifiers, Pointer(a)) -> (typespec, nnlist) 
 	where
 		(typespec, nlist):= <getTypeSpec(|list)> a; 
-		nnlist:= [C-PointerOf([])|nlist]	<+
-		typespec:= a; nnlist:= [C-PointerOf([])|list]
+		nnlist:= [C-PointerOf(<map(to-c)>modifiers)|nlist]	<+
+		typespec:= a;nnlist:= [C-PointerOf(<map(to-c)>modifiers)|list]
 		
-	getTypeSpec(|list): Type(_, BasicType(a)) -> (BasicType(a), list)
+	getTypeSpec(|list): Type(modifiers, BasicType(a)) -> (Type(modifiers, BasicType(a)), list)
 	
-	getTypeSpec(|list): Type(_, StructType(a)) -> (StructType(a), list)
+	getTypeSpec(|list): Type(modifiers, StructType(a)) -> (Type(modifiers, StructType(a)), list)
 	
-	getTypeSpec(|list): Type(_, EnumType(a)) -> (EnumType(a), list)
+	getTypeSpec(|list): Type(modifiers, EnumType(a)) -> (Type(modifiers, EnumType(a)), list)
+	
 	
 	/**
 	 * Expressions
