@@ -56,6 +56,8 @@ rules
 	/**
 	 * Types
 	 */
+	 to-c: Type(_, type) -> <to-c>type
+	 
 	 to-c: BasicType("int32")->C-TypeSpec([], C-TypeId("int32_t"), [])
 	 to-c: BasicType("int16")->C-TypeSpec([], C-TypeId("int16_t"), [])
 	 to-c: BasicType("int8")->C-TypeSpec([], C-TypeId("int8_t"), [])
@@ -135,17 +137,17 @@ rules
 		(typespec, plist):= <getTypeSpec(|[])> type
 	
 								
-	getTypeSpec(|list): Pointer(a) -> (typespec, nnlist) 
+	getTypeSpec(|list): Type(_, Pointer(a)) -> (typespec, nnlist) 
 	where
 		(typespec, nlist):= <getTypeSpec(|list)> a; 
 		nnlist:= [C-PointerOf([])|nlist]	<+
 		typespec:= a; nnlist:= [C-PointerOf([])|list]
 		
-	getTypeSpec(|list): BasicType(a) -> (BasicType(a), list)
+	getTypeSpec(|list): Type(_, BasicType(a)) -> (BasicType(a), list)
 	
-	getTypeSpec(|list): StructType(a) -> (StructType(a), list)
+	getTypeSpec(|list): Type(_, StructType(a)) -> (StructType(a), list)
 	
-	getTypeSpec(|list): EnumType(a) -> (EnumType(a), list)
+	getTypeSpec(|list): Type(_, EnumType(a)) -> (EnumType(a), list)
 	
 	/**
 	 * Expressions
@@ -320,7 +322,7 @@ rules
     	(typespec, plist):= <getTypeSpec(|[])> type
     	
     //TODO: do somewhat nicer for string[] argv
-    to-c: Param(Array(BasicType("string"), None()), name) ->
+    to-c: Param(Type([],Array(Type([],BasicType("string")), None())), name) ->
     			  C-ParamDecl(
                     C-TypeSpec([], C-TypeId("int8_t"), [])
                   , C-IdDecl(
