@@ -29,11 +29,17 @@ lexical restrictions
 	BasicType -/- [a-zA-Z0-9\_]
 	
 templates
-	Type.BasicType = <<BasicType>>
-	Type.Array = <<Type> [ <Constant?> ]>
-	Type.StructType = <struct <Identifier>>		// structs
-	Type.UnionType = <union <Identifier>>		// unions
-	Type.EnumType = <enum <Identifier>>			// enum
-	Type.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
-	Type.Pointer = <<Type> * >
+	PureType.BasicType = <<BasicType>>
+	PureType.Array = <<Type> [ <Constant?> ]>
+	PureType.StructType = <struct <Identifier>>		// structs
+	PureType.UnionType = <union <Identifier>>		// unions
+	PureType.EnumType = <enum <Identifier>>			// enum
+	PureType.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
+	PureType.Pointer = <<PureType> *>				 //FIXME mircea: comment this
 	
+	Type.Type = <<TypeModifier*> <PureType>>
+	// Type.Pointer = <<Type> * <TypeModifier*>>     //FIXME mircea: uncomment this
+
+	TypeModifier.Static = <static>
+	TypeModifier.Const = <const>
+	TypeModifier.Volatile = <volatile>

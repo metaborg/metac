@@ -14,10 +14,3 @@ InitializationList = <<Initialization+;separator=",">>
 Declaration.Declaration = <<Type> <InitializationList>;>
 Declaration.StructOrUnionInlineDecl = <<StructOrUnion> <Decl>;>
 Declaration.TypedefDecl = < typedef <Type> <Decl>;>
-Declaration.StaticDec = < <Static> <Declaration> >
-Declaration.Const = < <Const> <Declaration> >
-Declaration.Volatile = < <Volatile> <Declaration> >
-
-Static = <static>
-Const = <const>
-Volatile = <volatile>
