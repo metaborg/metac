@@ -32,6 +32,6 @@ test Type double1 [[double1]] parse succeeds
 test Type doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [[doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]] parse succeeds
 
 test Type volatile int [[volatile int]] parse succeeds
-test Type volatile int pointer [[volatile int*]] parse succeeds
+test Type pointer to volatile int [[volatile int*]] parse succeeds
 test Type volatile pointer to int [[int* volatile]] parse succeeds
 test Type volatile pointer to volatile int [[volatile int* volatile]] parse succeeds
