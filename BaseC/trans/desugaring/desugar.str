@@ -41,6 +41,8 @@ rules
 		<is-substring(!"long")> a;
 		<is-substring(!"double")> a
 		
+	desugar: PointerType(type, modifiers) -> Type(modifiers, Pointer(type))
+		
 /*	desugar: amb([Exp(_), Declaration(Pointer(StructType(typeId)), init)]) -> Declaration(Pointer(StructType(typeId)),init)
 	where
 		Identifier(_) := typeId; 
