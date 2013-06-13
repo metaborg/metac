@@ -4,7 +4,7 @@ module AnalyzeFlight{
 	int8 TAKEOFF = 100;
 	int8 HIGH_SPEED = 10;
 	int8 VERY_HIGH_SPEED = 20;
-	int8 LANDING = 150;
+	int8 LANDING = 120;
 	
 	struct Trackpoint{
 		int16 id;
