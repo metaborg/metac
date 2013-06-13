@@ -35,10 +35,9 @@ templates
 	PureType.UnionType = <union <Identifier>>		// unions
 	PureType.EnumType = <enum <Identifier>>			// enum
 	PureType.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
-	PureType.Pointer = <<PureType> *>				 //FIXME mircea: comment this
 	
 	Type.Type = <<TypeModifier*> <PureType>>
-	// Type.Pointer = <<Type> * <TypeModifier*>>     //FIXME mircea: uncomment this
+	Type.PointerType = <<Type> * <TypeModifier*> >
 
 	TypeModifier.Static = <static>
 	TypeModifier.Const = <const>

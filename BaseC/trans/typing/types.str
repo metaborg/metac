@@ -33,9 +33,9 @@ rules
 	 *	Constants
 	 */
 	
-	type-of: BasicType(x) -> BasicType(x)
+	//type-of: BasicType(x) -> BasicType(x)
 	
-	type-of: StructType(x) -> StructType(x)
+	//type-of: StructType(x) -> StructType(x)
 	
 	//checks if val is in interval [-(posLimit+1), posLimit]; posLimit >=0
 	in-range(|posLimit): strVal -> "True"
@@ -46,10 +46,10 @@ rules
 	 
 	type-of: Decimal(val) -> type
 	where
-		<in-range(|127)> val;			type:= BasicType("int8")	<+
-		<in-range(|32767)> val;			type:= BasicType("int16")	<+
-		<in-range(|2147483647)> val; 	type:= BasicType("int32")	<+
-										type:= BasicType("int64")
+		<in-range(|127)> val;			type:= Type([], BasicType("int8"))	<+
+		<in-range(|32767)> val;			type:= Type([], BasicType("int16"))	<+
+		<in-range(|2147483647)> val; 	type:= Type([], BasicType("int32"))	<+
+										type:= Type([], BasicType("int64"))
 	
 	type-of: Hexadecimal(val)-> <type-of> Decimal(<hex-string-to-int> hexval)
 	where
@@ -61,7 +61,7 @@ rules
 	where
 		binval:= <ltrim-chars(?'0'); ltrim-chars(?'b')> val
 		
-	type-of: Float(a) -> BasicType("float")			//TODO: edit similar to decimal?
+	type-of: Float(a) -> Type([], BasicType("float"))			//TODO: edit similar to decimal to decide float/double?
 	
 	generictype-of: BasicType("int8") -> Int()
 	generictype-of: BasicType("int16") -> Int()
@@ -205,27 +205,20 @@ rules
    	type-of: Neg() -> (IntOrFlt(), IntOrFlt())
    	
    	
-   	//struct fields
-   	//type-of: Field(_, Identifier(fieldId)) -> <index-type-of> fieldId		//TODO: modify similar to FieldViaPointer for nested structs/unions
    	type-of: Field(e, Identifier(fieldId)) -> type
    	where
-   		StructType(Identifier(s)) := <type-of> e;
-   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
-   		type := <index-type-of> field //<+
-   		//type := <debug(!"5:"); index-type-of; debug(!"6:")> field //<+
-   		//StructType(Identifier(s)) := <type-of> e;
-   		//field := <index-lookup-children(|Struct(), fieldId); Hd> s;
-   		//type := <index-type-of> field
-   		//type:= <debug(!"3ns: ")> StructType(Identifier(fieldId))
-   		
-   		
+   		//Type(_, StructType(Identifier(s))) := <type-of> e;
+   		StructType(Identifier(s)) := <type-of; get-puretype> e;
+   		field := <index-lookup-children(|Field(), fieldId); filter(match-name(|fieldId)); Hd> s;
+   		type := <index-type-of> field 
+   
    		
    	type-of: FieldViaPointer(e, Identifier(fieldId)) -> type
    	where
-   		Pointer(StructType(Identifier(s))) := <type-of> e;
-   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		//Type(_, Pointer(Type(_, StructType(Identifier(s))))) := <type-of; debug(!"var typeof: ")> e;
+   		Pointer(Type(_, StructType(Identifier(s)))) := <type-of; get-puretype> e;
+   		field := <index-lookup-children(|Field(), fieldId); filter(match-name(|fieldId)); Hd> s;
    		type := <index-type-of> field
-   	
    	
    	debug2(s):
    		t -> t
@@ -239,10 +232,7 @@ rules
    	
    	type-of: Var(Identifier(x)) -> t
    	where
-   		//debug(!"1: "); 
-   		//uri := <index-uri; debug(!"URI: ")> x;
-   		//t := <index-get-data(|Type()); debug(!"Type: ")> Def(uri)
-   		TypeSynonym(Identifier(name)) := <index-type-of> x;
+   		Type(_, TypeSynonym(Identifier(name))) := <index-type-of> x;
    		t:= <type-of> Var(Identifier(name))						//make it recursive to get the basic type
    		<+
    		t := <index-type-of> x
@@ -261,8 +251,13 @@ rules
    	
    	type-of: Return(a) -> <type-of> a 
    	
-   	type-of: Return(None()) -> BasicType("void")
-
-   	//dummy: remove
-   	//type-of: (exp, _) -> <type-of> exp
+   	type-of: Return(None()) -> Type([], BasicType("void"))
    	
+   	get-puretype: Type(_, puretype) -> puretype
+   	
+   	puretype-of: Type(_, puretype) -> <type-of> puretype
+   	
+   	match-name(|name): Def(list) -> Def(list)
+   	where
+   		[_, defName | _] := list;
+   		<eq> (<strip-annos> name, defName)

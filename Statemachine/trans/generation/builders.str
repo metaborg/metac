@@ -20,7 +20,7 @@ rules
   	with
 		filename := <guarantee-extension(|"basec.aterm")> path;
 		index-setup(|<language>, [<project-path>], ".");
-		result:= <to-basec-all> selected
+		result:= <to-basec-all; desugar-all> selected
 		
 	editor-sm-to-c-ast-debug: (selected, position, ast, path, project-path) -> (filename, result)
   	with
