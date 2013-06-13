@@ -49,7 +49,7 @@ rules
  	 where
     	FunType(paramType,_) := <index-type-of> funName; 
     	params := <type-of> paramList;
-    	<filter(check-assign(subtype-of))> <zip> (paramType, paramList)  => errors
+    	<filter(check-assign(subtype-of))> <zip> (<get-puretype> paramType, paramList)  => errors
     
   	constraint-error:
   		Init(Identifier(name), exp) -> errors
@@ -66,7 +66,7 @@ rules
 		
 	check-hasReturn: (returns, returnType, name) -> [(name,$[This function must return a result of type [<write-to-string> returnType]. ])]
 		where
-			not (<eq> (returnType,BasicType("void")));
+			not (<eq> (<get-puretype> returnType,BasicType("void")));
 			<eq> (<length> returns,0)
 				
 	check-hasReturn: (returns, returnType,name) -> []

@@ -209,7 +209,7 @@ rules
    	where
    		//Type(_, StructType(Identifier(s))) := <type-of> e;
    		StructType(Identifier(s)) := <type-of; get-puretype> e;
-   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		field := <index-lookup-children(|Field(), fieldId); filter(match-name(|fieldId)); Hd> s;
    		type := <index-type-of> field 
    
    		
@@ -217,7 +217,7 @@ rules
    	where
    		//Type(_, Pointer(Type(_, StructType(Identifier(s))))) := <type-of; debug(!"var typeof: ")> e;
    		Pointer(Type(_, StructType(Identifier(s)))) := <type-of; get-puretype> e;
-   		field := <index-lookup-children(|Field(), fieldId); Hd> s;
+   		field := <index-lookup-children(|Field(), fieldId); filter(match-name(|fieldId)); Hd> s;
    		type := <index-type-of> field
    	
    	debug2(s):
@@ -257,3 +257,7 @@ rules
    	
    	puretype-of: Type(_, puretype) -> <type-of> puretype
    	
+   	match-name(|name): Def(list) -> Def(list)
+   	where
+   		[_, defName | _] := list;
+   		<eq> (<strip-annos> name, defName)
