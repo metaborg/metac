@@ -4,9 +4,9 @@ module test30 {
 	};
   exported int32 main(int32 argc, string[] argv) {
   		printf("software >> Are you ready for pointers?\n");
-  		myStruct x;
+  		struct myStruct x;
   		x.myField = 32;
-  		myStruct *ptr = &x;
+  		struct myStruct *ptr = &x;
   		return 0;
 	} 
 }
