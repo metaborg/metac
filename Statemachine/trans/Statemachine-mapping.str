@@ -101,7 +101,7 @@ rules
 		vars_struct:= <generate-sm-basec-struct(|statemachineID)> (vars_structID, vars);
 		
 		Struct(exported, _, structList):= vars_struct;
-		structList2:= [FieldDecl(EnumType(Identifier(states_enumID)), Identifier("__currentState"))|structList];												
+		structList2:= [FieldDecl(Type([], EnumType(Identifier(states_enumID))), Identifier("__currentState"))|structList];												
 		vars_struct2:= Struct(exported, Identifier(vars_structID), structList2);
 		
 		smFunctionPrototype := [];										//TODO if generating sm header
@@ -126,7 +126,6 @@ rules
 	generate-sm-basec-structElement(|statemachineID): StateMachineVarDecl(_, type, name, _) -> [element]
 	where
 		element:= FieldDecl(type, [name])
-		//////******
 		
 	generate-sm-basec-function(|moduleName, statemachineID): statesList -> smFunctionAST
 	where
@@ -136,13 +135,13 @@ rules
 		//smFunctionBlock:= Block([stateSwitch]);
 		smFunctionBlock := [stateSwitch];
 		smFunctionParams := <generate-sm-basec-function-params> (moduleName, statemachineID);			
-		smFunctionAST := FunDef(None(), BasicType("void"), Identifier(functionName), ParamList(smFunctionParams), smFunctionBlock)							
+		smFunctionAST := FunDef(None(), Type([], BasicType("void")), Identifier(functionName), ParamList(smFunctionParams), smFunctionBlock)							
 	
 	generate-sm-basec-function-params: (moduleName, statemachineID) -> paramList 
 	where
-		instance:= Param(Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]]))), Identifier("instance"));			
-		event:= Param(EnumType(Identifier($[[moduleName]_sm_events_[statemachineID]])), Identifier("event"));
-		arguments:= Param(Pointer(Pointer(BasicType("void"))), Identifier("arguments"));					
+		instance:= Param(Type([], Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]])))), Identifier("instance"));			
+		event:= Param(Type([], EnumType(Identifier($[[moduleName]_sm_events_[statemachineID]]))), Identifier("event"));
+		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], BasicType("void")))))), Identifier("arguments"));					
 		paramList:= [instance, event, arguments]
 	
 	generate-sm-basec-stateCase(|statemachineID, statesList): StateMachineState(stateID, stateBody*) -> stateCaseStatement
@@ -269,7 +268,7 @@ rules
 		result:= <index-get-all> Def([Statemachine() | parent-path]);
 		not(<eq> (0, <length> result))
 	
-	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Pointer(paramType), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
+	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Type([], Pointer(paramType)), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
 	where
 		not(<eq>(event, None()));
 		paramType:= <index-get-data(|EvtParamList()); fetch-elem(get-evtParamType(|name))> event;
@@ -294,7 +293,7 @@ rules
 		
 	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), paramList))
 	where
-		StatemachineType(Identifier(name)) := <type-of> e;
+		Type(_, StatemachineType(Identifier(name))) := <type-of> e;
 		funName:= $[[<get-module> name]_sm_init_[name]];
 		paramList:= [Address(e)] 
 		 
@@ -304,27 +303,27 @@ rules
 		constInit* := [<zip(generate-decl)> (evtParams, list)];	
 		//evtIndex := <get-eventIndex> (ident, e);
 		argsInit* := <generate-init> (evtParams, list);
-		StatemachineType(Identifier(name)) := <type-of> e;
+		Type(_, StatemachineType(Identifier(name))) := <type-of> e;
 		funName:= $[[<get-module> name]_sm_execute_[name]];
 		evtName:= $[[name]__event_[ident]];
 		paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
 	
-	to-basec: Declaration(StatemachineType(Identifier(name)), init) -> Declaration(StructType(Identifier(structName)), init)
+	to-basec: Declaration(Type(modifiers, StatemachineType(Identifier(name))), init) -> Declaration(Type(modifiers, StructType(Identifier(structName))), init)
 	where
 		structName:= $[[<get-module> name]_sm_data_[<strip-annos>name]]
 	
 	to-basec: StateMachineIsInState(sm, Identifier(st)) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(stateName)))
 	where
-		StatemachineType(Identifier(name)) := <type-of> sm;
+		Type(_, StatemachineType(Identifier(name))) := <type-of> sm;
 		stateName:= $[[name]_state_[st]]
 	
 	generate-init: (evtParams, list) -> declaration
 	where
 		<eq> (0, <length> list);
-		declaration := [Declaration(Pointer(BasicType("void")), [NoInit((Identifier("___args"), Decimal(<length> list)))])]	
+		declaration := [Declaration(Type([], Pointer(BasicType("void"))), [NoInit((Identifier("___args"), Decimal(<length> list)))])]	
 			<+
 		initBlock:= InitBlock(<map(generate-addr)> evtParams);
-		declaration := [Declaration(Pointer(BasicType("void")), [Init((Identifier("___args"), Decimal(<length> list)), initBlock)])]	
+		declaration := [Declaration(Type([], Pointer(BasicType("void"))), [Init((Identifier("___args"), Decimal(<length> list)), initBlock)])]	
 		
 	generate-decl: (Param(type, Identifier(name)), initExp) -> Declaration(type, Init(Identifier($[___[<strip-annos> name]]), initExp))
 	
@@ -350,8 +349,8 @@ rules
 		initState:= <generate-sm-basec-initStm(|statemachineID)> initial;
 		initBlock:= [initState| initVars];
 		functionName:= Identifier($[[moduleName]_sm_init_[statemachineID]]);
-		paramList:= [Param(Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]]))), Identifier("instance"))];				
-		initFunction:= FunDef(None(), BasicType("void"), functionName, ParamList(paramList), initBlock)									
+		paramList:= [Param(Type([], Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]])))), Identifier("instance"))];				
+		initFunction:= FunDef(None(), Type([], BasicType("void")), functionName, ParamList(paramList), initBlock)									
 		
 	generate-sm-basec-initStm: StateMachineVarDecl(_, _, varName, initValue) -> initStatement
 	where

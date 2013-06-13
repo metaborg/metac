@@ -66,7 +66,7 @@ rules
 	StateMachineInit(e) :	
 		refers to Statemachine s
 		where
-			e has type StatemachineType(Identifier(s))
+			e has type Type(_, StatemachineType(Identifier(s)))
 	
 	StateMachineSend(Identifier(evt), list):
 		refers to OutEvent evt
@@ -74,7 +74,7 @@ rules
 	StateMachineTrigger(e, EventRef(Identifier(in_event), _)) : //refers to Statemachine sm_name
 									//refers to InEvent in_event
 		refers to InEvent in_event in Statemachine s
-		where e has type StatemachineType(Identifier(s))
+		where e has type Type(_, StatemachineType(Identifier(s)))
 									
 	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
 								  	refers to State state
@@ -85,7 +85,7 @@ rules
 	Field(e, Identifier(field)):  
 		refers to Variable field in Statemachine s
 		where 
-			e has type StatemachineType(Identifier(s))
+			e has type Type(_, StatemachineType(Identifier(s)))
 							    
 	  
 	//methods: sminit, smtrigger,smIsInState 
