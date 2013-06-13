@@ -54,7 +54,7 @@ rules
   	constraint-error:
   		Init(Identifier(name), exp) -> errors
   	where
-  		<filter(check-assign(subtype-of))> [(<index-type-of> name, exp)]  => errors
+  		<filter(check-assign(subtype-of))> [(<index-type-of; get-puretype> name, exp)]  => errors
    	
 	constraint-error:
 		FunDef(_,returnType,name,_,body) -> errors
