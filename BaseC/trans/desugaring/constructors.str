@@ -9,6 +9,8 @@ signature constructors
 	MsgText : DefDataType
 	NoInit: T * T -> NoInit
 	Pointer: Pointer -> PureType
+	Resource: Resource -> Header
+	Header: Header -> Identifer
 	
 	/**
 	 * Binary Operators

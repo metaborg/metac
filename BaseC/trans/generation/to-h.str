@@ -41,7 +41,13 @@ rules
 			includes := $[[<pp-c-string>c-ast];]
 
 	//TODO: generate a correct header file
-	to-h: ModuleExternal(_, _, _) -> []
+	to-h: ModuleExternal(_, None(), _) -> []
+	
+	to-h: ModuleExternal(_, resources, _) -> <map(to-h);concat-strings>resources
+	
+	to-h: Resource(Header(Identifier(name))) -> 
+		$[#include <[name].h>
+		]
 
 
 overlays
