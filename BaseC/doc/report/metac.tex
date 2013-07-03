@@ -123,7 +123,7 @@ MetaC is BaseC plus extensions, and will be covered in the next chapters. In thi
 
 \section{Syntax}
 
-The top level concept in MetaC programs are modules. Modules act as namespaces and as the unit of encapsulation. The classical separation between .c and .h files doesn’t exists in MetaC. The code resides in .mc files that get transformed to .c and .h files during the generation phase. 
+The top level concept in MetaC programs are modules. Modules act as namespaces and as the unit of encapsulation. The classical separation between .c and .h files doesnâ€™t exists in MetaC. The code resides in .mc files that get transformed to .c and .h files during the generation phase. 
 A module can import other modules. The importing module can then access the exported contents of imported modules. Module contents can be exported using the keyword exported. All other syntax is simply C.
 
 A basic module is shown in code snippet below.
@@ -139,11 +139,11 @@ module HelloWorld {
 
 
 \section{Name binding and type checking}
-The namebinding for BaseC follows the same rules as basic C. However, the scope of entities declared inside modules without the “exported” specifier is limited and these entities are not visible outside the module.
+The namebinding for BaseC follows the same rules as basic C. However, the scope of entities declared inside modules without the â€œexportedâ€ specifier is limited and these entities are not visible outside the module.
 
 Unlike usual C IDEs, MetaC provides \textbf{type checking} during editing, and not only after an explicit compilation. The type checking is performed on statements, expressions and declarations with initialization, that include variables, numerals and function calls. Additionally, the return types and parameter types of function calls are also type checked.
 
-Like in C, \textbf{typedefs} define synonym types to already existing types. In BetaC, when the type checking encounters a synonym type, it recursively extracts the base type, which is then used in the type checking.
+Like in C, \textbf{typedefs} define synonym types to already existing types. In MetaC, when the type checking encounters a synonym type, it recursively extracts the base type, which is then used in the type checking.
  
 
 \section{Mapping to C and Building}
@@ -299,9 +299,9 @@ clean:
 
 }
 
-Note that all header files still include \emph{stdint.h} and that all .c files include \emph{stdlib.h} because these are needed for the test programs without external modules. In the future these should be removed.
+Note that all header files include \emph{stdint.h} and that all .c files include \emph{stdlib.h} because these are needed for the test programs without external modules. In the future these should be removed.
 
-\section{External: Standard C libraries}
+\section{External: standard C libraries}
 Standard C libraries can be included by using external modules. These external resources can be imported by using the resource keyword. External modules are not compiled themselves, only the libraries they reference are imported. The remainder of this section contains one example with the resulting c code showing how this works in practise.
 
 {\setlength{\parindent}{0cm}
@@ -424,31 +424,31 @@ printf("Hello, World!");
 \end{lstlisting}
 
 
-\chapter{Statemachine DSL}
+\chapter{State Machine DSL}
 
-The Statemachine DSL is the main C extension implemented for MetaC. This extension allows the definition and usage of statemachines inside regular MetaC code. The MetaC Statemachine DSL closely follows the mbeddr implementation of statemachines.
+The State Machine DSL is the main C extension implemented for MetaC. This extension allows the definition and usage of State Machines inside regular MetaC code. The MetaC State Machine DSL closely follows the mbeddr implementation of State Machines.
 
 \section{Syntax}
-The syntax for the Statemachine DSL follows the one used by mbeddr and can be divided into Statemachine definition syntax and Statemachine operation in BaseC syntax.
+The syntax for the State Machine DSL follows the one used by mbeddr and can be divided into State Machine definition syntax and State Machine operation in BaseC syntax.
 \subsection{Definition}
-A statemachine is defined by using the following construction. The statemachine name has to be a valid identifier according to BaseC, and the initial state must be defined as a state inside the statemachine.
+A State Machine is defined by using the following construction. The State Machine name has to be a valid identifier according to BaseC, and the initial state must be defined as a state inside the State Machine.
 
 \begin{lstlisting}
 statemachine statemachine_name initial = initial_state.
 \end{lstlisting}
 
-A statemachine has several components:
+{\setlength{\parindent}{0cm}
+A State Machine has several components:
+}
 \begin{itemize}
 \item \emph{inner variables}, declared using the keyword \textbf{var};
-\item \emph{statemachine states}, declared using the keyword \textbf{state};
+\item \emph{State Machine states}, declared using the keyword \textbf{state};
 \item \emph{transition triggering events}, declared using the keyword \textbf{in};
 \item \emph{outer events}, declared using the keyword \textbf{out};
 \end{itemize}
  
 In and out events must be declared before they can be used in states to describe transitions. Their declaration is the same as for function prototypes, except for the missing return type. In addition, the out events have to be bound to an external function, called when the outer events are triggered.
 
-Statemachine states have three elements, all of them optional.
- 
 \begin{lstlisting}
 state beforeFlight {
     entry { points = 0; }
@@ -458,10 +458,13 @@ state beforeFlight {
 }
 \end{lstlisting}
 
+{\setlength{\parindent}{0cm}
+State machine states have three elements, all of them optional.
+}
 \begin{itemize}
 \item \emph{entry} clause defines a block of instructions executed when entering the state;
 \item \emph{exit} clause defines a block of instructions executed before leaving the state;
-\item transitions, marked by the keyword on. In the general syntax for transitions, the transition condition is expressed between square brackets as a boolean expression, with the parameters of the transition triggering event, declared at the statemachine level. The instructions that need to be executed during the transition are listed in an optional block.
+\item transitions, marked by the keyword on. In the general syntax for transitions, the transition condition is expressed between square brackets as a boolean expression, with the parameters of the transition triggering event, declared at the State Machine level. The instructions that need to be executed during the transition are listed in an optional block.
 \end{itemize}
  
 \begin{lstlisting}
@@ -469,7 +472,7 @@ on <trigger_event> [ <condition> ] -> <target_state> <block?>
 \end{lstlisting}
 
 \subsection{Integration with BaseC}
-In BaseC, statemachines are defined inside modules, next to structs and functions. Similarly to structs, a statemachine definition generates a new type. Further, one can declare variables that have statemachine types previously defined.
+In BaseC, State Machines are defined inside modules, next to structs and functions. Similarly to structs, a State Machine definition generates a new type. Further, one can declare variables that have State Machine types previously defined.
 
 \begin{lstlisting}
 module AnalyzeFlight{
@@ -483,42 +486,45 @@ module AnalyzeFlight{
 }
 \end{lstlisting}
 
-Handling statemachine variables is done through three predefined functions: two translate into BaseC statements (sminit and smtrigger), and one into a BaseC expression (smIsInState).
+Handling State Machine variables is done through three predefined functions: two translate into BaseC statements (sminit and smtrigger), and one into a BaseC expression (smIsInState).
 
 \begin{itemize}
-\item \textbf{sminit(smvar);} initializes the internal variables of the statemachine and sets the initial state. The only parameter points to a variable of a statemachine type.
+\item \textbf{sminit(smvar);} initializes the internal variables of the State Machine and sets the initial state. The only parameter points to a variable of a State Machine type.
 
-\item \textbf{smtrigger(smvar, report());} sends an event to the statemachine. The two parameters point to the statemachine variable and the in event that needs to be analyzed.
+\item \textbf{smtrigger(smvar, report());} sends an event to the State Machine. The two parameters point to the State Machine variable and the in event that needs to be analyzed.
 
-\item \textbf{smIsInState(smvar, statename);} checks whether the statemachine’s current state is the one indicated by the second parameter. The \emph{statename} parameter is an identifier describing an existing state of the statemachine.
+\item \textbf{smIsInState(smvar, statename);} checks whether the State Machineâ€™s current state is the one indicated by the second parameter. The \emph{statename} parameter is an identifier describing an existing state of the State Machine.
 \end{itemize}
 
 \section{Type checking and name binding}
-Since the Statemachine DSL is built upon BaseC, most of the typechecking and name binding are inherited from BaseC. The additional name binding is related to states, events, inner variables and outer events to functions defined in BaseC. 
+Since the State Machine DSL is built upon BaseC, most of the typechecking and name binding are inherited from BaseC. The additional name binding is related to states, events, inner variables and outer events to functions defined in BaseC. 
 
-In the Statemachine definition, no additional type checking is needed, other than the one inherited from BaseC. However, type checking rules are necessary when the Statemachine DSL is integrated into BaseC. A statemachine definition generates a type, so it has to be integrated in the type system, similarly to structs. Further type checking is done on the call parameters of the predefined functions for statemachine handling.
+In the State Machine definition, no additional type checking is needed, other than the one inherited from BaseC. However, type checking rules are necessary when the State Machine DSL is integrated into BaseC. A State Machine definition generates a type, so it has to be integrated in the type system, similarly to structs. Further type checking is done on the call parameters of the predefined functions for State Machine handling.
 
 \section{Mapping to BaseC}
 
-The statemachine to BaseC mapping transforms the Statemachine constructor into a list consisting of headerAST, initFunction and executeFunction. 
+The State Machine to BaseC mapping transforms the State Machine constructor into a list consisting of headerAST, initFunction and executeFunction. 
 
 The \textbf{headerAST} contains:
 \begin{itemize}
-\item an enum that is used to store the states of the statemachine 
-\item an enum used to store the events that the statemachine can react to
-\item a struct that contains internal variables defined by the statemachine + a special field (\_\_currentState) that is used to store the current state of the statemachine
+\item an enum that is used to store the states of the State Machine 
+\item an enum used to store the events that the State Machine can react to
+\item a struct that contains internal variables defined by the State Machine + a special field (\_\_currentState) that is used to store the current state of the State Machine
 \end{itemize}
 
-The \textbf{initFunction} has the role of initializing the variables of the statemachine and the \_\_currentState variable to their default values. The function has one parameter: a pointer to the statemachine variable that needs to be (re-)initialized.
+The \textbf{initFunction} has the role of initializing the variables of the State Machine and the \_\_currentState variable to their default values. The function has one parameter: a pointer to the State Machine variable that needs to be (re-)initialized.
 
-The \textbf{executeFunction} is the ‘engine’ of the statemachine. It has 3 parameters:  a pointer to the statemachine variable, the name of the event and a (double) pointer to a void variable that is used to pass the event arguments to the statemachine.
+The \textbf{executeFunction} is the â€˜engineâ€™ of the State Machine. It has 3 parameters:  a pointer to the State Machine variable, the name of the event and a (double) pointer to a void variable that is used to pass the event arguments to the State Machine.
 The executeFunction is structured as nested switch-case statements.
-The outer switch statement checks the current state of the statemachine. Each case statement matches a particular state and has as a ‘body’ another switch statement that checks the current event. The case statements of the event switch match only the events  that can be received in that state and the body of these event case statements consists of the statements contained in the entry, exit and transition blocks of the state. First, the statements from the current state’s exit block are generated, followed by the statements from the appropriate transition block, a statement that changes the value of the current state variable to the corresponding next state and finally, the statements found in the next state’s entry block. 
+The outer switch statement checks the current state of the State Machine. Each case statement matches a particular state and has as a â€˜bodyâ€™ another switch statement that checks the current event. The case statements of the event switch match only the events  that can be received in that state and the body of these event case statements consists of the statements contained in the entry, exit and transition blocks of the state. First, the statements from the current stateâ€™s exit block are generated, followed by the statements from the appropriate transition block, a statement that changes the value of the current state variable to the corresponding next state and finally, the statements found in the next stateâ€™s entry block. 
 The transition from one state to another can also be controlled with a boolean condition. If this is the case, the statement described above are generated inside an if statement block which checks that condition.
 
 \newpage
 
 \subsection{Example}
+{\setlength{\parindent}{0cm}
+State Machine definition
+}
 
 \begin{lstlisting}
 statemachine counter initial = start { 
@@ -545,7 +551,9 @@ statemachine counter initial = start {
     } 
 }
 \end{lstlisting}
-
+{\setlength{\parindent}{0cm}
+headerAST
+}
 \begin{lstlisting}
 enum moduleName_sm_events_counter{
     counter__event_increment,
@@ -560,7 +568,9 @@ struct moduleName_sm_data_counter{
     int8_t current;
 };
 \end{lstlisting}   
-
+{\setlength{\parindent}{0cm}
+initFunction
+}
 \begin{lstlisting}
 void moduleName_sm_init_counter(
     struct moduleName_sm_data_counter * instance){
@@ -570,6 +580,9 @@ void moduleName_sm_init_counter(
 }
 \end{lstlisting}    
 \newpage
+{\setlength{\parindent}{0cm}
+executeFunction
+}
 \begin{lstlisting}
 void moduleName_sm_execute_counter(
     struct moduleName_sm_data_counter* instance, 
@@ -618,13 +631,11 @@ void moduleName_sm_execute_counter(
                         return(-1);
                     }break ;
                 }
-            }break;
-        }
-    }}
+            }break;   }}}
 \end{lstlisting}
 
 \chapter{Future work}
-MetaC is a solid base for future expansions. The language provides basic functionality with modules and has the reporting and statemachine DSLs. Suggested features for future work can be found on the issue tracker of MetaC \footnote{\url{http://yellowgrass.org/project/MetaC}}.
+MetaC is a solid base for future expansions. The language provides basic functionality with modules and has the reporting and State Machine DSLs. Some suggested features can be found on the issue tracker of MetaC \footnote{\url{http://yellowgrass.org/project/MetaC}}.
 
 \section{Import all std. C libraries automatically}
 One suggestion to improve MetaC is to automatically generate all external modules wrapping C standard libraries. The glibc is however full of macros, which make it non trivial to extract the external function definitions. Discussing this feature can be done on the issue tracker \footnote{\url{http://yellowgrass.org/issue/MetaC/39}}.
@@ -635,20 +646,16 @@ An important feature for MetaC is the use of external custom C libraries. This i
 \section{Variable argument function definitions}
 In order to support variable argument functions for standard C libraries these variable argument functions need to be supported in MetaC themselves \footnote{\url{http://yellowgrass.org/issue/MetaC/43}}. Since functions like printf are often used this would be a very appreciated improvement. For developers of embedded software this might be less important since embedded programming is usually conservative in use of features for performance and reliability.
 
-\section{Changing Synonym types}
-Currently, defining struct and statemachine variables is done by using unambiguous type names. For example:
+\section{Changing synonym types}
+Currently, defining struct and State Machine variables is done by using unambiguous type names. For example:
 \begin{lstlisting}
 struct Person john;
 statemachine counter varStatemachine;
 \end{lstlisting}
-An improvement would be to define struct and statemachine variables without using the \textbf{struct} and \textbf{statemachine} keywords. Currently, defining a variable in this way: 
-\begin{lstlisting}
-Person john;
-\end{lstlisting} 
-will define a variable 'john' with the type TypeSynonym(Identifier(Person)). This can be extended to check if any statemachines or structs have been defined with that name (Person) and change the type of the variable accordingly if this is true. This is an interesting problem because it is characteristic to text-based editors and is typically not encountered in projectional editors.
+An improvement would be to define struct and State Machine variables without using the \textbf{struct} and \textbf{statemachine} keywords. Currently, defining a variable in this way: \textbf{Person john;} will define a variable 'john' with the type \emph{TypeSynonym(Identifier(Person))}. This can be extended to check if any State Machines or structs have been defined with that name (Person) and change the type of the variable accordingly if this is true. This is an interesting problem because it is characteristic to text-based editors and is typically not encountered in projectional editors.
 
 \section{Configurable reporting DSL}
-Another possible improvement to MetaC would be to make the reporting DSL configurable. Currently, all report statements are translated into printf. However, in an embedded environment, reporting errors or creating logging information with printf does not make sense for a lot of applications. Thus, the reporting DSL should be extended to allow report statements to be translated into statements that set memory flags or update the contents of different registers.
+Another improvement to MetaC would be to make the reporting DSL configurable. Currently, all report statements are translated into printf. However, in an embedded environment, reporting errors or creating logging information with printf does not make sense for a lot of applications. Thus, the reporting DSL should be extended to translate report statements into statements that set memory flags or update  different registers.
 
 \section{Units}
 Implementing a DSL that attaches physical units to variables, as described in thee mbeddr userguide, is another interesting option for future work. Such a DSL would test the flexibility of the current typing and typechecking systems.
@@ -656,6 +663,7 @@ Implementing a DSL that attaches physical units to variables, as described in th
 \section{Making pointers safe}
 Another future improvement of MetaC would be making pointer operation safe. This could be implemented by disallowing pointer operations in the BaseC language and implementing them and related checks in a separate DSL that needs to be activated explicitly.
 
+\section{Conclusion}
 In conclusion, there are a lot of possible future improvements for MetaC, both by improving or extending existing systems and by implementing new features or extensions. Currently, mbeddr has a wide range of extensions available that can serve as inspiration. These include pre- and postconditions, support for requirement tracing and product line variablity. However, the focus should be on implementing extensions that offer real value to the general user, as the usability of these extensions varies based on the user's domain and interest.  
 
 
@@ -663,10 +671,11 @@ In conclusion, there are a lot of possible future improvements for MetaC, both b
 \bibliography{metac}
 
 \appendix
-\chapter{quick reference}
+\chapter{Quick reference}
 \section{Datatypes}
-In table X is reported a list of data types implemented in the syntax of MetaC, with reference to the equivalent standard C data type and size of the type
-
+In table below is reported a list of data types implemented in the syntax of MetaC, with reference to the equivalent standard C data type and size of the type.
+\begin{table}[ht!]
+\centering
 \begin{tabular}{|l|l|l|}
 \hline
 MetaC & Standard C & Size [bit] \\ \hline
@@ -684,17 +693,21 @@ double & double & 64 \\
 string & - & - \\
 \hline
 \end{tabular}
-
+\caption{MetaC and Standard C data types}
+\end{table}
 
 \section{Non-decimal numbers}
 There are three types of non decimal representation of numbers:
-\begin{enumerate}
+\begin{itemize}
 \item binary. Binary numbers can be expressed in the form \emph{[0][b][0-1]+}.
 \item Octal. Octal numbers can be expressed in the form \emph{[0][0-7]+}.
 \item Hexadecimal. Hex numbers can be epxressed in the form \emph{[0][xX][0-9a-fA-F]+}.
-\end{enumerate}
+\end{itemize}
 
 \chapter{Get up and running}
+
+The readme.md\footnote{\url{https://github.com/metaborg/metac}} file can be found on the github page of the project. It contains example files.
+
 \section{Get Spoofax}
 
 In order to build this project get Eclipse 3.7/3.8 and install Spoofax (http://metaborg.org/wiki/spoofax/download).
