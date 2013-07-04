@@ -74,7 +74,7 @@ Mircea \textsc{Voda}\\
 \begin{minipage}{0.4\textwidth}
 \begin{flushright} \large
 \emph{Professor:} \\
-Eelco \textsc{Visser}
+Dr. Eelco \textsc{Visser}
 \end{flushright}
 \end{minipage}
 
@@ -123,7 +123,7 @@ MetaC is BaseC plus extensions, and will be covered in the next chapters. In thi
 
 \section{Syntax}
 
-The top level concept in MetaC programs are modules. Modules act as namespaces and as the unit of encapsulation. The classical separation between .c and .h files doesnâ€™t exists in MetaC. The code resides in .mc files that get transformed to .c and .h files during the generation phase. 
+The top level concept in MetaC programs are modules. Modules act as namespaces and as the unit of encapsulation. The classical separation between .c and .h files doesn’t exists in MetaC. The code resides in .mc files that get transformed to .c and .h files during the generation phase. 
 A module can import other modules. The importing module can then access the exported contents of imported modules. Module contents can be exported using the keyword exported. All other syntax is simply C.
 
 A basic module is shown in code snippet below.
@@ -139,7 +139,7 @@ module HelloWorld {
 
 
 \section{Name binding and type checking}
-The namebinding for BaseC follows the same rules as basic C. However, the scope of entities declared inside modules without the â€œexportedâ€ specifier is limited and these entities are not visible outside the module.
+The namebinding for BaseC follows the same rules as basic C. However, the scope of entities declared inside modules without the “exported” specifier is limited and these entities are not visible outside the module.
 
 Unlike usual C IDEs, MetaC provides \textbf{type checking} during editing, and not only after an explicit compilation. The type checking is performed on statements, expressions and declarations with initialization, that include variables, numerals and function calls. Additionally, the return types and parameter types of function calls are also type checked.
 
@@ -493,7 +493,7 @@ Handling State Machine variables is done through three predefined functions: two
 
 \item \textbf{smtrigger(smvar, report());} sends an event to the State Machine. The two parameters point to the State Machine variable and the in event that needs to be analyzed.
 
-\item \textbf{smIsInState(smvar, statename);} checks whether the State Machineâ€™s current state is the one indicated by the second parameter. The \emph{statename} parameter is an identifier describing an existing state of the State Machine.
+\item \textbf{smIsInState(smvar, statename);} checks whether the State Machine’s current state is the one indicated by the second parameter. The \emph{statename} parameter is an identifier describing an existing state of the State Machine.
 \end{itemize}
 
 \section{Type checking and name binding}
@@ -514,9 +514,9 @@ The \textbf{headerAST} contains:
 
 The \textbf{initFunction} has the role of initializing the variables of the State Machine and the \_\_currentState variable to their default values. The function has one parameter: a pointer to the State Machine variable that needs to be (re-)initialized.
 
-The \textbf{executeFunction} is the â€˜engineâ€™ of the State Machine. It has 3 parameters:  a pointer to the State Machine variable, the name of the event and a (double) pointer to a void variable that is used to pass the event arguments to the State Machine.
+The \textbf{executeFunction} is the ‘engine’ of the State Machine. It has 3 parameters:  a pointer to the State Machine variable, the name of the event and a (double) pointer to a void variable that is used to pass the event arguments to the State Machine.
 The executeFunction is structured as nested switch-case statements.
-The outer switch statement checks the current state of the State Machine. Each case statement matches a particular state and has as a â€˜bodyâ€™ another switch statement that checks the current event. The case statements of the event switch match only the events  that can be received in that state and the body of these event case statements consists of the statements contained in the entry, exit and transition blocks of the state. First, the statements from the current stateâ€™s exit block are generated, followed by the statements from the appropriate transition block, a statement that changes the value of the current state variable to the corresponding next state and finally, the statements found in the next stateâ€™s entry block. 
+The outer switch statement checks the current state of the State Machine. Each case statement matches a particular state and has as a ‘body’ another switch statement that checks the current event. The case statements of the event switch match only the events  that can be received in that state and the body of these event case statements consists of the statements contained in the entry, exit and transition blocks of the state. First, the statements from the current state’s exit block are generated, followed by the statements from the appropriate transition block, a statement that changes the value of the current state variable to the corresponding next state and finally, the statements found in the next state’s entry block. 
 The transition from one state to another can also be controlled with a boolean condition. If this is the case, the statement described above are generated inside an if statement block which checks that condition.
 
 \newpage
