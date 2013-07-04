@@ -6,6 +6,8 @@ A safe/clean version of the C language with domain-specific extensions. Sub-lang
 - BaseC: definition of the base language 
 - Statemachine: a language for defining statemachines
 
+You can get up to speed by working through this tutorial or by reading the [user guide](MetaC_User_Guide.pdf?raw=true).
+
 ## Get up and running
 
 
