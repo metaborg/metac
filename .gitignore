@@ -15,22 +15,13 @@ include/metac.ctree.dep
 include/metac.jar
 include/metac-java.jar
 editor/java/trans
-editor/MetaC-*.generated.esv
+editor/MetaC-*.generated.*
 syntax/MetaC*.generated.esv
+syntax/MetaC.generated.pp
 .settings/org.eclipse.jdt.core.prefs
 utils
+lib/runtime
 lib/*.generated.str
 lib-refactoring/*.generated.str
-trans/names.str
-.spxcache
-.spxindex
-
-#Files generated from tmpl
-*.generated.esv
-*.generated.str
-*generated.sdf
-/editor/java/metac/Activator.java
-/editor/java/metac/MetaCParseController.java
-/editor/java/metac/MetaCParseControllerGenerated.java
-/editor/java/metac/MetaCValidator.java
-/include
+trans/*.pp.generated.str
+editor/*.generated.esv
