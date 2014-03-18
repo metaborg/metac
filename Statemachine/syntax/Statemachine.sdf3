@@ -1,3 +1,15 @@
+module Statemachine
+
+imports
+	BaseC-Identifiers
+	BaseC-FunDef
+	BaseC-Types
+	BaseC-Statements
+	BaseC-Expressions
+	
+	Statemachine-Keywords
+	Statemachine-in-BaseC
+
 context-free start-symbols
 
 Statemachine

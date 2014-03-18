@@ -1,3 +1,5 @@
+module Statemachine-Keywords
+
 lexical syntax
 	
 	Keyword =     "statemachine"         
