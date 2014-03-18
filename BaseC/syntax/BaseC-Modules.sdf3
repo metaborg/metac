@@ -1,3 +1,14 @@
+module BaseC-Modules
+
+imports 
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-Declaration
+	BaseC-FunDef
+	BaseC-StructsAndUnions
+	BaseC-Enums
+	BaseC-Component
+
 templates
 
 Module.Module = <

@@ -1,4 +1,7 @@
+module BaseC-Keywords
 
+imports 
+	BaseC-Types
 
 lexical syntax
 	Keyword = BasicType

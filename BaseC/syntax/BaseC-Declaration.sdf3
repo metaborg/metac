@@ -1,3 +1,11 @@
+module BaseC-Declaration
+
+imports 
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-Types
+	BaseC-StructsAndUnions
+	BaseC-Expressions
 
 templates
 

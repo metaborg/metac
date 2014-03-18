@@ -1,3 +1,9 @@
+module BaseC-StructsAndUnions 
+
+imports 
+	BaseC-Identifiers
+	BaseC-Types
+	BaseC-FunDef
  
 templates
 	FieldDecl.FieldDecl =<<Type> <Identifier*;separator=",">;>

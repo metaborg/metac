@@ -1,4 +1,7 @@
+module BaseC-Identifiers
 
+imports
+	BaseC-Keywords
 
 lexical syntax
 	ID = [a-zA-Z\_][0-9a-zA-Z\_]*

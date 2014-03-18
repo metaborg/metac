@@ -1,3 +1,9 @@
+module BaseC-Types
+
+imports 
+	BaseC-Constants
+	BaseC-Identifiers
+		
 
 //TODO: move these to keywords + specify these in template language to have contructors for all diff types.
 lexical syntax

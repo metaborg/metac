@@ -1,3 +1,9 @@
+module BaseC-Enums
+
+imports
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-FunDef
 
 templates
 
