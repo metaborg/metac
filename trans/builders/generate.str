@@ -1,19 +1,21 @@
 module trans/builders/generate
 
 imports
-	lib/analysis-library
-	lib/analysis-library-internal
+	lib/analysis/-
 	lib/editor-common.generated
-	lib/index-library
+	lib/index/-
+	lib/nabl/-
+	lib/task/-
 	libstratego-gpp
 	libstratego-lib
-	lib/c/c
+	lib/c/C
 	include/MetaC
-	baseC/trans/desugaring/desugar
-	baseC/trans/generation/to-c
-	baseC/trans/generation/to-h
-	baseC/trans/generation/to-makefile
-	baseC/trans/desugaring/to-basec
+	BaseC/trans/analysis/desugar/-
+	BaseC/trans/generation/to-c
+	BaseC/trans/generation/to-h
+	BaseC/trans/generation/to-makefile
+	BaseC/trans/generation/to-basec
+	BaseC/trans/naming/modules
 	
 signature constructors
 
@@ -68,6 +70,7 @@ rules
 		(selected, position, ast, path, project-path) -> None()
 	    with
 	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+			task-setup(|project-path);
 			<basec-execute-multiple> (selected, path, project-path)
 
 // rewriting single files
@@ -125,13 +128,9 @@ rules
 	basec-to-c-h-makefile-multiple:
 	    (selected, path, project-path) -> None()
 	    with
-	    	// desugaredAst := <desugar-all> selected;
-	    	// (analyzedAst, _) := <analyze-top(|<language>)> (desugaredAst, path, project-path);
-
 			allAstsIncludingStatemachines := <add-import-asts> [selected];
-			
 			allAsts := <map(to-basec-all;desugar-all)>allAstsIncludingStatemachines;
-
+			
 			<filter(\Module(a,b,c)->Module(a,b,c)\);map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-c)>allAsts;
 			<map(\a->(a,<module-to-filename;rebase-filename(|path,project-path)>a)\;basec-to-h)>allAsts;
 			
@@ -161,20 +160,23 @@ rules
 			<not(eq)> (newIds, []);
 	    	importFiles := <ids-to-filenames> newIds; // also filters duplicates
 			importAsts := <map(filename-to-ast)> importFiles;
-			moreAsts := <conc>(asts, importAsts);
-			allAsts := <add-import-asts>moreAsts
+			moreAsts := <conc> (asts, importAsts);
+			allAsts := <add-import-asts> moreAsts
 			
 	add-import-asts: asts -> asts //no new identifiers found in imports, return
 		where
 			newIds := <new-import-ids> asts;
 			// <debug>["add-import-asts2",newIds];
-			<eq> (newIds, [])
+			<eq> (newIds, []) 
 
 	new-import-ids: asts -> newIds
 		where
 			astIds := <map(module-id)>asts;
-			importIds := <mapconcat(import-ids)>asts;
-			newIds := <remove-all(\ident-><elem>(ident,astIds)\)> importIds //filter ids that we already have
+			importIds := <mapconcat(import-ids); make-set>asts;
+			newIds := <remove-all(\ident-><elem(no-annos-eq)>(ident,astIds)\)> importIds //filter ids that we already have
+	
+	no-annos-eq: (a, b) -> <eq> (<strip-annos>a, <strip-annos> b)
+
 
 	module-id: Module(ident, _, _) -> ident
 	module-id: ModuleExternal(ident, _, _) -> ident
@@ -183,12 +185,38 @@ rules
 	import-ids: Module(_, None(), _) -> []
 	import-ids: ModuleExternal(_,_,_) -> []
 	import-to-id: Import(identifier) -> identifier
-	ids-to-filenames: ids -> <filter(\Identifier(name) -> <index-lookup; index-get-files-of; map(Fst)> name\); concat; make-set> ids
-	module-to-filename: Module(Identifier(name{anon}),_,_) -> fileName
-		where [(fileName,[])] := <index-lookup;index-get-files-of>name{anon}
-	module-to-filename: ModuleExternal(Identifier(name{anon}),_,_) -> fileName
-		where [(fileName,[])] := <index-lookup;index-get-files-of>name{anon}
-	filename-to-ast: file -> <index-get-value> AST(("MetaC", file), ())
+	
+	identifier-to-filename: Identifier(name) -> <nabl-get-all-definitions; Hd; origin-file> name	
+	
+	ids-to-filenames: ids -> <filter(?Identifier(_)); map(identifier-to-filename)> ids
+	
+	//module-to-filename: Module(Identifier(name{anon}),_,_) -> fileName
+		//where [(fileName,[])] := <index-lookup; index-get-files-of>name{anon}
+	
+	module-to-filename: Module(Identifier(name),_,_) -> fileName	
+		where fileName := <origin-file> name													//TODO test
+	//module-to-filename: ModuleExternal(Identifier(name{anon}),_,_) -> fileName
+	 	//where [(fileName,[])] := <index-lookup; index-get-files-of>name{anon}
+	module-to-filename: ModuleExternal(Identifier(name),_,_) -> fileName
+	 	where fileName := <origin-file> name													//TODO test
+	
+	remove-chars(|charlist): string -> newstring
+		where
+			if <eq> (charlist, []) 
+			then newstring := string
+			else 
+			[currentchar | tail] := charlist;
+			tempstring := <ltrim-chars(?currentchar)> string;
+			newstring := <remove-chars(|tail)> tempstring
+			end
+	
+	filename-to-ast: fileName -> ast
+		where
+			proj-path := <project-path>;
+			path:= <remove-chars(| <explode-string> proj-path); remove-chars(| ['/'])> fileName;
+			selection := <parse-file> fileName;
+			(ast, _, _, _) := <analysis-single-default-interface> (<parse-file> fileName, path , proj-path)
+				
 	
 	rebase-filename(|path,project-path): origfilename -> newfilename
 		where
@@ -225,4 +253,12 @@ rules
 	pp-mc-string = 
 		ast2abox(|[<import-term(include/MetaC.generated.pp.af)>]);
 		box2text-string(|100)
+		
+		
+rules
+	debug-show-ast-after-imports: 
+		(selected, position, ast, path, project-path) -> (filename, result)
+	where
+		filename := <guarantee-extension(|"c.imports.aterm")> path;
+		result   := <new-import-ids> [ast]
 		 
