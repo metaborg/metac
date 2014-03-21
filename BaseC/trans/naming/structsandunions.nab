@@ -1,0 +1,45 @@
+module BaseC/trans/naming/structsandunions
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/names
+
+namespaces 
+	Struct
+	Union
+	Field
+
+binding rules
+
+	Union(_, Identifier(u), _):
+		defines unique Union u 
+		scopes Field
+		
+	Struct(_, Identifier(s), _):
+		defines unique Struct s //of type StructType(Identifier(s))		//remove later?
+		scopes Field, Struct
+	
+	StructType(Identifier(s)):
+		refers to Struct s
+		
+	UnionType(Identifier(s)):
+		refers to Union s
+	
+	FieldDecl(t, Identifier(i)):
+		defines Field i of type t
+		
+	NestedStruct(Struct(_, Identifier(s), _), Identifier(name)):
+		defines Field name of type StructType(Identifier(s))
+	
+	Field(e, Identifier(field)):  
+		refers to Field field in Union s
+		where 
+			e has type Type(_, StructType(Identifier(s)))
+	
+	FieldViaPointer(e, Identifier(field)):
+		refers to Field field in Union s
+		where
+			e has type Type(_, Pointer(Type(_, StructType(Identifier(s)))))

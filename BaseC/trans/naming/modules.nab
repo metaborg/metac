@@ -1,0 +1,39 @@
+module BaseC/trans/naming/modules
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/names
+  	BaseC/trans/naming/variables
+  	BaseC/trans/naming/structsandunions
+  	BaseC/trans/naming/typedefs
+  	BaseC/trans/naming/enums
+  	BaseC/trans/naming/functions
+  	BaseC/trans/naming/messages
+  	
+namespaces
+	Module
+	ModuleExternal
+	Import
+	
+binding rules
+
+	Module(Identifier(name), _, _):
+		defines Module name
+		scopes Function, 
+				Struct, 
+				Enum, 
+				Variable, 
+				Union, 
+				Messagelist, 
+				TypeSynonym, 
+				Statemachine
+	ModuleExternal(Identifier(name), _, _):
+		defines Module name
+		scopes Function	
+		
+	Import(Identifier(name)):
+		refers to Module name
+		imports Function, Struct from Module name	

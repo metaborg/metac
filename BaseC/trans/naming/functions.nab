@@ -1,0 +1,28 @@
+module BaseC/trans/naming/functions
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/typing/constructors
+  	BaseC/trans/naming/names
+  	BaseC/trans/naming/variables
+  	BaseC/trans/naming/typedefs
+
+namespaces 
+	Function
+
+binding rules
+	FunDef(_, returnType, Identifier(name), params, _):
+		scopes Variable, TypeSynonym
+		defines Function name of type FunType( paramsTypes, returnType)
+		where params has type paramsTypes
+	
+	FunProto(returnType,  Identifier(name), params):
+		scopes Variable, TypeSynonym
+		defines Function name of type FunType(paramsTypes, returnType)
+		where params has type paramsTypes
+	
+	FunctionCall(Identifier(f), _): 
+		refers to Function f

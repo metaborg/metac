@@ -1,0 +1,17 @@
+module BaseC/trans/naming/labels
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/names
+
+namespaces 
+	Label
+
+binding rules
+	Label(Identifier(l), _): 
+		defines Label l
+	Goto(Identifier(l)): 
+		refers to Label l
