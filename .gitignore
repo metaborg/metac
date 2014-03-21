@@ -22,6 +22,15 @@ syntax/MetaC.generated.pp
 utils
 lib/runtime
 lib/*.generated.str
+lib/analysis
+lib/editor
+lib/index
+lib/nabl
+lib/properties
+lib/relations
+lib/task
+lib/tmpl
+lib/types
 lib-refactoring/*.generated.str
 trans/*.pp.generated.str
 editor/*.generated.esv
