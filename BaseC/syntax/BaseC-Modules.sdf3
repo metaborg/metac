@@ -51,7 +51,7 @@ external module <Identifier> <ModuleResources?> {
 
 ExternalModuleContent = <<FunProto>>
 
-ModuleResources = <resources <Resource*; separator=",">> 
+ModuleResources.ModuleResources = <resources <Resource*; separator=",">> 
 Resource.Resource = <<Header>>
 
 Header.Header = <<Identifier><>.h>
