@@ -25,7 +25,7 @@ binding rules
 	//	where 
 	//		typ has type t
 	
-	Declaration( type, NoInit(Identifier(varName), size) ):
+	Declaration( type, NoInit((Identifier(varName), size)) ):
 		defines Variable varName of type type
 	
 	Param( type, Identifier(name) ):
