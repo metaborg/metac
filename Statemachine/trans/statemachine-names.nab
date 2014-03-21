@@ -1,11 +1,10 @@
 module statemachine-names
 
 imports
-  lib/analysis-library
-  lib/analysis-library-internal
-  lib/index-library
+  lib/analysis/-
+  lib/index/-
   BaseC/trans/naming/names
-  BaseC/trans/typing/types
+  BaseC/trans/typing/types.generated
   Statemachine/trans/statemachine-types
   include/MetaC
   
@@ -20,13 +19,13 @@ namespaces
 	Module
 	Variable
 	StateTransition
-rules
+//rules
 	//Module(_ , _, _):
 	//		scopes Statemachine
 	//Function():
 	//		scopes Statemachine
 	
-rules
+binding rules
 
 	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
 							scopes State, Variable, InEvent, OutEvent, StateTransition
