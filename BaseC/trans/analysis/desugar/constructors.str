@@ -1,0 +1,103 @@
+module BaseC/trans/analysis/desugar/constructors
+
+imports
+	include/MetaC
+	
+signature constructors
+	amb: List(ModuleContent) -> ModuleContent
+	Brackets: Exp -> Exp
+	MsgText : DefDataType
+	NoInit: T * T -> NoInit
+	Pointer: Pointer -> PureType
+	Resource: Resource -> Header
+	DefData : List * DefDataType * Constant -> DefData
+	
+	/**
+	 * Binary Operators
+	 */
+	
+	// add struct.field and struct->field ?
+	/*	initial version
+	SUBSCRIPT: BinOp
+	
+	PLUS: BinOp
+	MINUS: BinOp
+	MUL: BinOp
+	DIV: BinOP
+	MOD: BinOp
+	
+	LT: BinOp
+	LTEQ: BinOp
+	GT: BinOp
+	GTEQ: BinOp
+	EQ: BinOp
+	NEQ: BinOp
+	
+	BITAND: BinOp
+	BITOR: BinOp
+	BITXOR: BinOp
+	LSHIFT: BinOp
+	RSHIFT: BinOP
+	
+	AND: BinOp
+	OR: BinOp
+	
+	//	COND: BinOp	//ternary							
+	*/
+	
+	Plus		: 	BinOp
+  	Minus		: 	BinOp
+	Div			:	BinOp	
+  	Mod			:	BinOp
+  	Mul			:	BinOp
+	LogicOr		:	BinOp
+	LogicAnd	:	BinOp
+	BWAnd		:	BinOp
+	BWOr		:	BinOp
+	BWXor		:	BinOp
+	Eq			:	BinOp
+	NotEq		:	BinOp
+	GTE			:	BinOp
+	GT			:	BinOp
+	LTE			:	BinOp
+	LT			:	BinOp
+	BitshiftR	:	BinOp
+	BitshiftL	:	BinOp
+	
+	/**
+	 * Unary Operators
+	 */
+	
+	//type conversion?
+	
+	/*initial version
+	UMINUS: UnOp
+	UPLUS: UnOp
+	NOT: UnOp
+	PREINC: UnOp
+	INC: UnOp
+	PREDEC: UnOp
+	DEC: UnOp
+	COMPLEMENT: UnOp
+	ADDR: UnOp
+	DEREF: UnOp
+	SIZEOF: UnOp
+	
+	UnExp: UnOp * Exp -> Exp
+	BinExp: BinOp * Exp * Exp -> Exp
+	*/
+	
+    Size	    :	UnOp
+    Addr	    :	UnOp
+    Deref       :	UnOp
+    BWCompl		:	UnOp
+    LogicalNot  :	UnOp
+    Neg         :	UnOp
+    Pos         :	UnOp
+    DecPre		:	UnOp	
+    IncPre		:	UnOp
+    DecPost		:	UnOp
+    IncPost		:	UnOp 	
+  	
+  	BinExp 		: 	Exp * BinOp * Exp -> Exp
+  	UnExp  		: 	Exp * UnOp -> Exp
