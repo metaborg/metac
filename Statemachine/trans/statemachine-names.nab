@@ -56,6 +56,9 @@ binding rules
 							   		where 
 										var has type StatemachineType(Identifier(stm))
 */	
+	StateMachineIsInState(e, state): refers to State state in Statemachine s
+		 where
+		 	e has type Type(_, StatemachineType(s)) 
 
 	StateTransition(InEventRef(name), cond, _, block) : 
 		defines StateTransition block
@@ -75,7 +78,7 @@ binding rules
 	Field(e, Identifier(field)):  
 		refers to Variable field in Statemachine s
 		where 
-			e has type Type(_, StatemachineType(Identifier(s)))
+			e has type Type(_, StatemachineType(s))
 							    
 	  
 	//methods: sminit, smtrigger,smIsInState 
