@@ -35,3 +35,4 @@ lib-refactoring/*.generated.str
 trans/*.pp.generated.str
 BaseC/trans/naming/*.str
 BaseC/syntax/*.sdf
+Statemachine/syntax/*.sdf
