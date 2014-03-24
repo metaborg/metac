@@ -16,7 +16,7 @@ imports
 	BaseC/trans/analysis/desugar/desugar
 	BaseC/trans/analysis/desugar/constructors
 	BaseC/trans/naming/names
-	BaseC/trans/typing/types.generated
+	//BaseC/trans/typing/types.generated
 	
 rules
 	
