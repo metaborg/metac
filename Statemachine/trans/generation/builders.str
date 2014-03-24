@@ -1,19 +1,21 @@
 module Statemachine/trans/generation/builders
 
 imports
-	lib/analysis-library
-	lib/analysis-library-internal
+	//lib/analysis-library
+	//lib/analysis-library-internal
+	lib/analysis/-
 	lib/editor-common.generated
-	lib/index-library
+	lib/index/-
 	libstratego-gpp
 	libstratego-lib
-	lib/c/c
+	lib/c/C
 	include/MetaC
-	baseC/trans/desugaring/desugar
+	BaseC/trans/analysis/desugar/-
 	trans/builders/generate
-	baseC/trans/desugaring/to-basec
-	baseC/trans/generation/to-c
-	Statemachine/trans/Statemachine-mapping
+	BaseC/trans/generation/to-basec
+	BaseC/trans/generation/to-c
+	//Statemachine/trans/Statemachine-mapping
+	Statemachine/trans/generation/to-basec
 
 rules
 	editor-to-basec: (selected, position, ast, path, project-path) -> (filename, result)
@@ -52,4 +54,9 @@ rules
 		basecAST:= <to-basec-all; desugar-all> selected;
 		<basec-execute> (basecAST, path, project-path)
 		
+	editor-to-basec-devel-debug: (selected, position, ast, path, project-path) -> (filename, result)
+  	with
+		filename := <guarantee-extension(|"basec.aterm")> path;
+		index-setup(|<language>, [<project-path>], ".");
+		result:= <to-basec-all(|path); desugar-all> selected
 		

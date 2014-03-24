@@ -1,0 +1,67 @@
+module to-basec
+
+imports
+		include/MetaC
+		lib/nabl/-
+		libstratego-lib
+		lib/editor-common.generated
+		lib/index/-
+		lib/analysis/-
+		lib/c/C
+		libstratego-gpp
+		Statemachine/trans/statemachine-names
+		BaseC/trans/analysis/desugar/-
+		BaseC/trans/generation/to-c
+		trans/builders/generate
+
+signature constructors
+	SmParamDef : Type * String -> Param
+	SmEvtParamList : List(UriPart) * Param -> Param
+	EvtParamList : DefDataType
+	BoundFun : DefDataType
+	
+rules
+	
+	to-basec-all(|path): ast -> ast
+	where
+		//(basecAST, _):= <topdown(try(to-basec-devel);try(flatten-list))> ast
+		<topdown(try(to-basec);try(flatten-list))> ast
+		//smPath:= $[[<remove-extension> path]__sm.mc];
+		//filename := <guarantee-extension(|"h")> smPath;
+		//result   := <desugar-all;to-c;pp-c-string> basecAST;
+		//<write-file> (filename, result)
+	
+	
+	to-basec: Statemachine(name, initial, components*) -> [[], []]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	where
+		moduleName := <get-module-name> name
+      ; <collect-components> components* => (states_out, events_out, vars_out)
+		//;<generate-statemachine-header(|moduleName, name)> (states_out, events_out, vars_out) => headerAST;
+		//<generate-sm-basec-function(|moduleName, name)> states_out => executeFunction;
+		//<generate-sm-basec-init(|moduleName, name, initial)> vars_out => initFunction
+	
+	get-module-name: smName -> parent
+	where
+		parent:= <nabl-uri; nabl-uri-path; filter(?ID(NablNsModule(), _, _)); Hd; nabl-segment-name> smName
+	
+	get-statemachine-name: element -> statemachine
+	where
+		statemachine:= <nabl-uri; nabl-uri-path; filter(?ID(NablNsStatemachine(), _, _)); Hd; nabl-segment-name> element
+		
+	collect-components: componentList* -> (states, events, vars)
+	where
+		not(<eq> (0, <length> componentList*));	 	
+	 	states:= <collect-states; map(expand-name); debug(!"states: ")> componentList*;
+	 	events:= <collect-events; map(expand-name); debug(!"events: ")> componentList*;
+	 	vars:= <collect-vars> componentList*					
+	
+	collect-states = filter(?StateMachineState(_, _))
+	
+	collect-events = filter(?StateMachineInEvent(_, _) <+ ?StateMachineOutEvent(_, _, _))
+
+	collect-vars = filter(?StateMachineVarDecl(_, _, _, _))
+	
+	expand-name: StateMachineInEvent(name, block) -> StateMachineInEvent($[[<get-statemachine-name>name]__event_[name]], block)
+	expand-name: StateMachineOutEvent(name, param, binding) -> StateMachineOutEvent($[[<get-statemachine-name>name]__event_[name]], param, binding)
+	expand-name: StateMachineState(name, block) -> StateMachineState($[[<get-statemachine-name>name]__state_[name]], block)
+	
