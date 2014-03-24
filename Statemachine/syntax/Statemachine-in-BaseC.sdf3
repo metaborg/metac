@@ -19,16 +19,16 @@ StatemachineStm.StateMachineTrigger = <
 	>
  
 StatemachineExp.StateMachineIsInState = <
-	smIsInState(<Exp>, <Identifier>);
+	smIsInState(<Exp>, <StateRef>);
 	>
 
 StatemachineStm.StateMachineSend = <
 	send <Identifier>(<Exp*; separator=", ">) 
 	>
 
-PureType.StatemachineType = <statemachine <Identifier>>
+PureType.StatemachineType = <statemachine <ID>>
 
-EventRef.EventRef = <<Identifier> (<Exp*;separator=", ">) >
+EventRef.EventRef = <<ID> (<Exp*;separator=", ">) >
 
 
 context-free syntax

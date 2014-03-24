@@ -17,29 +17,37 @@ Statemachine
 lexical syntax
 
 ID = "statemachine" {reject}
-StatemachineVarModifier = "readable" | "writable"
+//StatemachineVarModifier = "readable" | "writable"
 
 templates
 
+  StatemachineVarModifier.Readable = <readable>
+  StatemachineVarModifier.Writable = <writable>
+
   Statemachine.Statemachine = <
-    statemachine <Identifier> initial = <Identifier> {
+    statemachine <ID> initial = <StateRef> {
     	<StateMachineComponent*; separator = "\n">
     }
   >
  
   StateMachineComponent.StateMachineState = <
-  	state <Identifier> {
+  	state <ID> {
   		<StateBody*>
   	}
   >
   
+  StateRef.StateRef = <<ID>>
+  
+  InEventRef.InEventRef = <<ID>>
+  //OutEventRef.OutEventRef = <<ID>>
+  
   StateMachineComponent.StateMachineInEvent = <
-  	in <Identifier> ( <FunctionParameter*; separator=","> ) 
+  	in <ID> ( <FunctionParameter*; separator=","> ) 
   >																										//TODO add binding?
   																																																				
   
   StateMachineComponent.StateMachineOutEvent = <
-  	out <Identifier> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
+  	out <ID> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
   >
   																										
 
@@ -48,7 +56,7 @@ templates
   >																									
   
   StateMachineEventBinding.Binding = <
-  	=\> <Identifier>
+  	=\> <ID>
   >	
   	
   StateBody.StateEntry = <
@@ -60,7 +68,7 @@ templates
   >																										
   	
   StateBody.StateTransition = <
-  	on <Identifier> [ <Exp?> ] -\> <Identifier> <Block?>
+  	on <InEventRef> [ <Exp?> ] -\> <StateRef> <Block?>
   >																										
  
   
