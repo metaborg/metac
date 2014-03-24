@@ -19,7 +19,7 @@ StatemachineStm.StateMachineTrigger = <
 	>
  
 StatemachineExp.StateMachineIsInState = <
-	smIsInState(<Exp>, <StateRef>);
+	smIsInState(<Exp>, <ID>)
 	>
 
 StatemachineStm.StateMachineSend = <
