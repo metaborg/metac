@@ -19,6 +19,7 @@ namespaces
 	Module
 	Variable
 	StateTransition
+
 //rules
 	//Module(_ , _, _):
 	//		scopes Statemachine
@@ -27,58 +28,48 @@ namespaces
 	
 binding rules
 
-	Statemachine(Identifier(sm),Identifier(state),_) : defines unique Statemachine sm 
+	Statemachine(name, _, _) : defines unique Statemachine name 
+							//refers to State name
 							scopes State, Variable, InEvent, OutEvent, StateTransition
-							refers to State state
-	
-	
 							
-	StatemachineType(Identifier(sm)) : refers to Statemachine sm
+	StateRef(name): refers to State name
 	
-	StateMachineState(Identifier(state_name),_) : defines unique State state_name
+	InEventRef(name): imports Variable from InEvent name							
+							
+	StatemachineType(name) : refers to Statemachine name
+	
+	StateMachineState(state_name,_) : defines unique State state_name
 												scopes Variable, StateTransition, InEvent, OutEvent
 	
-	StateMachineInEvent(Identifier(event_name),_) : defines unique InEvent event_name
+	StateMachineInEvent(event_name,_) : defines unique InEvent event_name
 													scopes Variable
-				
 
-	StateMachineOutEvent(Identifier(event_name),_,_) : defines unique OutEvent event_name
+	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
 	
 	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique Variable name of type var_type
 	
 	//TODO - needs BaseC namebinding
-	Binding(Identifier(f)) : refers to Function f
+	Binding(name) : refers to Function name
 	
 	//field refence like struct or union
 /*	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
 							   		where 
 										var has type StatemachineType(Identifier(stm))
 */	
-			
-	StateTransition(Identifier(event_name), cond, Identifier(state_name), block) : 
+
+	StateTransition(InEventRef(name), cond, _, block) : 
 		defines StateTransition block
-		refers to InEvent event_name 
-		refers to State state_name
-		imports Variable from InEvent event_name
 		scopes Variable
-										
-	StateMachineInit(e) :	
-		refers to Statemachine s
-		where
-			e has type Type(_, StatemachineType(Identifier(s)))
 	
 	StateMachineSend(Identifier(evt), list):
 		refers to OutEvent evt
 	
-	StateMachineTrigger(e, EventRef(Identifier(in_event), _)) : //refers to Statemachine sm_name
+	StateMachineTrigger(e, EventRef(name, _)): //refers to Statemachine sm_name
 									//refers to InEvent in_event
-		refers to InEvent in_event in Statemachine s
-		where e has type Type(_, StatemachineType(Identifier(s)))
-									
-	StateMachineIsInState(Identifier(sm_name), Identifier(state)) : refers to Statemachine sm_name
-								  	refers to State state
+		refers to InEvent name in Statemachine s
+		where e has type Type(_, StatemachineType(s))
 	
-	StatemachineType(Identifier(name)): 
+	StatemachineType(name): 
 		refers to Statemachine name
 		
 	Field(e, Identifier(field)):  
