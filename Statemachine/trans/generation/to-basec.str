@@ -22,22 +22,22 @@ signature constructors
 	
 rules
 	
-	to-basec-all(|path): ast -> ast
+	to-basec-all(|path): ast -> outAst
 	where
 		//(basecAST, _):= <topdown(try(to-basec-devel);try(flatten-list))> ast
-		<topdown(try(to-basec);try(flatten-list))> ast
+		outAst := <topdown(try(to-basec);try(flatten-list))> ast
 		//smPath:= $[[<remove-extension> path]__sm.mc];
 		//filename := <guarantee-extension(|"h")> smPath;
 		//result   := <desugar-all;to-c;pp-c-string> basecAST;
 		//<write-file> (filename, result)
 	
 	
-	to-basec: Statemachine(name, initial, components*) -> [[], []]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	to-basec: Statemachine(name, initial, components*) -> [headerAST]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
 	where
 		moduleName := <get-module-name> name
       ; <collect-components> components* => (states_out, events_out, vars_out)
-		//;<generate-statemachine-header(|moduleName, name)> (states_out, events_out, vars_out) => headerAST;
-		//<generate-sm-basec-function(|moduleName, name)> states_out => executeFunction;
+	  ; <generate-header(|moduleName, name)> (states_out, events_out, vars_out) => headerAST
+	  //; <generate-function(|moduleName, name)> states_out => executeFunction
 		//<generate-sm-basec-init(|moduleName, name, initial)> vars_out => initFunction
 	
 	get-module-name: smName -> parent
@@ -64,4 +64,32 @@ rules
 	expand-name: StateMachineInEvent(name, block) -> StateMachineInEvent($[[<get-statemachine-name>name]__event_[name]], block)
 	expand-name: StateMachineOutEvent(name, param, binding) -> StateMachineOutEvent($[[<get-statemachine-name>name]__event_[name]], param, binding)
 	expand-name: StateMachineState(name, block) -> StateMachineState($[[<get-statemachine-name>name]__state_[name]], block)
+	
+	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct]//Module($[[moduleName]Header], None(), headerAST)          //add module imports
+	where
+		event-enum:= <generate-enum(|moduleID, smID)> ("_sm_events_", events);		
+		state-enum:= <generate-enum(|moduleID, smID)> ("_sm_states_", states);
+		var-struct:= <generate-struct(|moduleID, smID)> ("_sm_data_", vars);
+		smFunctionPrototype := []										//TODO if generating sm header
+		
+	generate-enum(|moduleID, smID): (name, componentList) -> Enum(Exported(), Identifier($[[moduleID][name][smID]]), enumList)
+	where
+		enumList:= <mapconcat(try(generate-enumItem))> componentList
+	
+	generate-enumItem: StateMachineInEvent(event_name, _) -> [EnumItem(Identifier(event_name))]
+	
+	generate-enumItem: StateMachineOutEvent(_, _, _) -> []
+	
+	generate-enumItem: StateMachineState(state_name, _) -> [EnumItem(Identifier(state_name))]
+	
+	generate-struct(|moduleID, smID): (name, componentList) -> Struct(Exported(), Identifier($[[moduleID][name][smID]]), structBody)
+	where
+		structList:= <map(try(generate-structItem))> componentList;
+		currentState:= FieldDecl(Type([], EnumType(Identifier($[[moduleID]_sm_states_[smID]]))), Identifier("__currentState"));
+		structBody:= [currentState | structList]
+		
+	generate-structItem: StateMachineVarDecl(_, type, name, _) -> element
+	where
+		element:= FieldDecl(type, name)
+		
 	
