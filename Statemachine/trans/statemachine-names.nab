@@ -20,6 +20,10 @@ namespaces
 	Variable
 	StateTransition
 
+
+properties
+	
+	paramIndex of Variable: VarIndex
 //rules
 	//Module(_ , _, _):
 	//		scopes Statemachine
@@ -36,13 +40,13 @@ binding rules
 	
 	InEventRef(name): imports Variable from InEvent name							
 							
-	StatemachineType(name) : refers to Statemachine name
+	StatemachineType(name): refers to Statemachine name
 	
-	StateMachineState(state_name,_) : defines unique State state_name
-												scopes Variable, StateTransition, InEvent, OutEvent
+	StateMachineState(state_name,_): defines unique State state_name
+									 scopes Variable, StateTransition, InEvent, OutEvent
 	
-	StateMachineInEvent(event_name,_) : defines unique InEvent event_name
-													scopes Variable
+	StateMachineInEvent(event_name,_): defines unique InEvent event_name
+									   scopes Variable
 
 	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
 	
