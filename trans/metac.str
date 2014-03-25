@@ -16,11 +16,15 @@ imports
 	lib/analysis/-
 	BaseC/trans/analysis/desugar/-
 	BaseC/trans/naming/names
-	BaseC/trans/typing/types.generated
+	//BaseC/trans/typing/types.generated
 	BaseC/trans/helpers/helpers
 	
 	trans/builders/generate
+	pp
 	
+	Statemachine/trans/statemachine-names
+	Statemachine/trans/generation/builders
+	Statemachine/trans/analysis/analyze
 	
 	//names
 	//check
@@ -63,7 +67,7 @@ rules // Editor services
     with
     	ext      := <get-extension> path;
       filename := <guarantee-extension(|$[pp.[ext]])> path;
-      result   := []//<pp-debug> selected
+      result   := <pp-debug> selected
 
 rules // Debugging
 	

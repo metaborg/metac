@@ -1,0 +1,22 @@
+module analyze
+
+imports 
+	lib/analysis/-
+  	lib/properties/-
+  	include/MetaC
+	Statemachine/trans/statemachine-names
+rules
+	
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		StateMachineInEvent(name, paramList) -> <fail>
+	where
+		<map-with-index(store-param-index(|ctx))> paramList
+	
+	store-param-index(|ctx): (index, Param(_, Identifier(name))) ->[]
+		where
+			<store-paramIndex(|ctx, index)> name
+			
+		
+	
+		
+	
