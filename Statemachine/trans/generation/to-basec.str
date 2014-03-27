@@ -68,7 +68,7 @@ rules
 		is-statemachine-state;
 		fname:= $[[<get-statemachine-name> name]__state_[name]]
 	
-	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct]//Module($[[moduleName]Header], None(), headerAST)          //add module imports
+	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] //Module($[[moduleName]Header], None(), headerAST)          //add module imports
 	where
 		event-enum:= <generate-enum(|moduleID, smID)> ("_sm_events_", events);		
 		state-enum:= <generate-enum(|moduleID, smID)> ("_sm_states_", states);
@@ -148,9 +148,9 @@ rules
 	
 	generate-if: (condition, body) -> statement
 	where
-		if None():= condition
+		if []:= condition
 		then
-			statement:= If(True(), Block(body))
+			statement:= If(Decimal("1"), Block(body))
 		else
 			statement:= If(condition, Block(body))
 		end
