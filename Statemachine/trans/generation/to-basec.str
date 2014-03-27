@@ -7,6 +7,7 @@ imports
 		lib/editor-common.generated
 		lib/index/-
 		lib/analysis/-
+		lib/types/-
 		lib/c/C
 		libstratego-gpp
 		Statemachine/trans/statemachine-names
@@ -15,11 +16,10 @@ imports
 		trans/builders/generate
 
 signature constructors
-	SmParamDef : Type * String -> Param
-	SmEvtParamList : List(UriPart) * Param -> Param
-	EvtParamList : DefDataType
-	BoundFun : DefDataType
-	
+	ExitStatementsPlaceholder: ID -> StatementPlaceholder
+	ExitStatementsPlaceholder: StatementPlaceholder
+	EntryStatementsPlaceholder: ID -> StatementPlaceholder
+
 rules
 	
 	to-basec-all(|path): ast -> outAst
@@ -32,12 +32,13 @@ rules
 		//<write-file> (filename, result)
 	
 	
-	to-basec: Statemachine(name, initial, components*) -> [headerAST]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	//TODO - expand names on the basec-ast?
+	to-basec: Statemachine(name, initial, components*) -> [headerAST, executeFunction]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
 	where
 		moduleName := <get-module-name> name
-      ; <collect-components> components* => (states_out, events_out, vars_out)
-	  ; <generate-header(|moduleName, name)> (states_out, events_out, vars_out) => headerAST
-	  //; <generate-function(|moduleName, name)> states_out => executeFunction
+      ; <collect-components> components* => (states, events, vars)
+	  ; <generate-header(|moduleName, name)> (states, events, vars) => headerAST
+	  ; <generate-function(|moduleName, name)> states => executeFunction
 		//<generate-sm-basec-init(|moduleName, name, initial)> vars_out => initFunction
 	
 	get-module-name: smName -> parent
@@ -92,4 +93,128 @@ rules
 	where
 		element:= FieldDecl(type, name)
 		
+	generate-function(|moduleID, smID): statesList -> smFunctionAST
+	where
+		name:= $[[moduleID]_sm_execute_[smID]];
+		params := <generate-params> ($[[moduleID]_sm_data_[smID]], $[[moduleID]_sm_events_[smID]]);
+		stateCaseList:= <map(generate-state-case)> statesList;
+		
+		stateSwitch:= Switch(FieldViaPointer(Var(Identifier("instance")), Identifier("__currentState")), Block(stateCaseList));				
+		smFunctionBlock := [stateSwitch];			
+		smFunctionAST := FunDef(None(), Type([], BasicType("void")), Identifier(name), ParamList(params), smFunctionBlock)							
 	
+	generate-params: (smData, smEvents) -> [instance, event, arguments] 
+	where
+		instance:= Param(Type([], Pointer(StructType(Identifier(smData)))), Identifier("instance"));			
+		event:= Param(Type([], EnumType(Identifier(smEvents))), Identifier("event"));
+		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], BasicType("void")))))), Identifier("arguments"))
+	
+	generate-state-case: StateMachineState(stateID, stateBody*) -> stateCaseStatement
+	where
+		caseStatements:= <generate-case> stateBody*;
+		eventSwitch:= Switch(Var(Identifier("event")), Block(caseStatements));
+		stateCaseStatement := Case(Var(Identifier(stateID)), Block([eventSwitch, Break()]))		
+	
+	generate-case: stateBody* -> eventCaseList
+	where
+		transitions:= <filter(?StateTransition(_, _, _, _))> stateBody*;
+		exitStatements:= <collect(\StateExit(Block(stmList))->stmList\); try(flatten-list)> stateBody*;
+		eventNames:= <collect(\InEventRef(name)->name\)> transitions;
+		eventCaseList:= <map(generate-event-case(|transitions, exitStatements))> eventNames
+	
+	generate-event-case(|transitions, exitStatements): eventName -> [Case(Var(Identifier(eventName)), Block([ifStatements, Break()]))]
+	 where
+	 	eventTransitions:= <filter(?StateTransition(InEventRef(eventName), _, _, _))> transitions;
+	 	ifStatements:= <map(generate-if(|exitStatements))> eventTransitions
+	 	
+	generate-if(|exitStatements*): StateTransition(InEventRef(name), condition, StateRef(endState), block) -> ifStatement
+	where
+	 	conditionStatement:= <topdown(try(to-basec(|name)))>condition;
+	 	// if Block(statements):= block 
+	 	// then								
+	 	// 	transitionStatements := <topdown(try(to-basec(|name)))> statements
+	 	// else
+	 	// 	transitionStatements := []
+	 	// end;
+	 	stateStatements*:= <topdown(try(to-basec(|name)))> [exitStatements*, block];
+	 	
+	 	//exitStm*:= <map(try(to-basec(|name)))> exitStatements*;
+	 	switchState:= Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")),Identifier("__currentState")), Assign(), Var(Identifier(endState)))));
+		return:= Return(Decimal(-1));
+	 	//ifStatement:= <generate-if> (conditionStatement, [exitStatements*, transitionStatements, switchState, EntryStatementsPlaceholder(endState), return])
+	 	ifStatement:= <generate-if> (conditionStatement, [stateStatements*, switchState, EntryStatementsPlaceholder(endState), return])
+	
+	generate-if: (condition, body) -> statement
+	where
+		if None():= condition
+		then
+			statement:= If(True(), Block(body))
+		else
+			statement:= If(condition, Block(body))
+		end
+	
+	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Type([], Pointer(paramType)), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
+	where
+		<is-event-param> name;
+		paramType:= <get-type> name;
+		index := <subt> (<get-paramIndex> name, 1)
+	
+	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))
+	where
+		<is-statemachine-var> name
+		
+	to-basec(|event): Block(statements) -> statements
+	to-basec(|event): None() -> []
+		
+	is-statemachine-var = nabl-uri; nabl-uri-parent; nabl-uri-namespace; ?NablNsStatemachine() 
+	
+	is-event-param = nabl-uri; nabl-uri-parent; nabl-uri-namespace; ?NablNsInEvent()
+			
+	
+/*	get-sm-stateExit-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
+	where
+		<eq> (stateName, stateID);
+		StateExit(stmBlock) := <fetch-elem(get-stateExit-block)> stateBody;
+		statementBlock:= [<stm-to-basec> stmBlock] <+
+		statementBlock:= []		
+	
+	get-sm-stateEntry-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
+	where
+		<eq> (stateName, stateID);
+		//get stateEntry statements
+		StateEntry(stmBlock) := <fetch-elem(get-stateEntry-block)> stateBody; 
+		statementBlock:= [<stm-to-basec> stmBlock] <+
+		statementBlock:= []
+		
+	
+	get-stateEntry-block: StateEntry(statementBlock) -> StateEntry(statementBlock)
+	
+	get-stateExit-block: StateExit(statementBlock) -> StateExit(statementBlock)
+	
+	get-transitionStatements: None() -> []
+	
+	get-transitionStatements: Some(StatementBlock) -> [basecBlock]
+	where
+		basecBlock := <stm-to-basec> StatementBlock
+	
+	get-transition-conditionStatement: Some(statement) -> basecStatement
+	where
+		basecStatement := <stm-to-basec;debug(!"here: ")> statement
+		//basecStatement := statement
+	
+	get-transition-conditionStatement: None() -> []
+	
+	generate-sm-basec-ifStatement: (None(), statementList) -> Block(statementList)
+	
+	generate-sm-basec-ifStatement: (condition, statementList) ->  If(condition, Block(statementList))
+	where 
+		not(<eq> (condition, None()))
+		
+	stm-to-basec: stmBlock -> basecBlock
+	where
+		basecBlock:= <topdown(try(to-basec(|None())))> stmBlock
+	
+	unbox-block: Block(statementList) -> statementList
+	unbox-block: None() -> []											 
+		
+	*/
