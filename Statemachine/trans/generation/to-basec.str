@@ -20,18 +20,11 @@ signature constructors
 
 rules
 	
-	to-basec-all(|path): ast -> outAst
+	to-basec-all: ast -> basecAst
 	where
-		//(basecAST, _):= <topdown(try(to-basec-devel);try(flatten-list))> ast
-		outAst := <topdown(try(to-basec);try(flatten-list))> ast
-		//smPath:= $[[<remove-extension> path]__sm.mc];
-		//filename := <guarantee-extension(|"h")> smPath;
-		//result   := <desugar-all;to-c;pp-c-string> basecAST;
-		//<write-file> (filename, result)
+		basecAst := <topdown(try(to-basec);try(flatten-list))> ast
 	
-	
-	//TODO - expand names on the basec-ast?
-	to-basec: Statemachine(name, StateRef(initial), components*) -> [headerAST, executeFunction, initFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	to-basec: Statemachine(name, StateRef(initial), components*) -> [headerAST, executeFunction, initFunction] 
 	where
 		moduleName := <get-module-name> name
       ; <collect-components> components* => (states, events, vars)
@@ -73,12 +66,12 @@ rules
 		is-statemachine-inevent;
 		fname:= $[[<get-statemachine-name> name]__event_[name]]
 	
-	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] //Module($[[moduleName]Header], None(), headerAST)          //add module imports
+	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] 
 	where
 		event-enum:= <generate-enum(|moduleID, smID)> ("_sm_events_", events);		
 		state-enum:= <generate-enum(|moduleID, smID)> ("_sm_states_", states);
 		var-struct:= <generate-struct(|moduleID, smID)> ("_sm_data_", vars);
-		smFunctionPrototype := []										//TODO if generating sm header
+		smFunctionPrototype := []										
 		
 	generate-enum(|moduleID, smID): (name, componentList) -> Enum(Exported(), Identifier($[[moduleID][name][smID]]), enumList)
 	where
