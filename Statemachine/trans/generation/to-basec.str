@@ -31,13 +31,13 @@ rules
 	
 	
 	//TODO - expand names on the basec-ast?
-	to-basec: Statemachine(name, initial, components*) -> [headerAST, executeFunction]// [headerAST, initFunction, executeFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
+	to-basec: Statemachine(name, StateRef(initial), components*) -> [headerAST, executeFunction, initFunction] //(headerModule, executeFunction, initFunction)		//TODO: change to generate header file(including initFunction?) and output only executeFunction 
 	where
 		moduleName := <get-module-name> name
       ; <collect-components> components* => (states, events, vars)
 	  ; <generate-header(|moduleName, name)> (states, events, vars) => headerAST
 	  ; <generate-function(|moduleName, name)> states => executeFunction
-		//<generate-sm-basec-init(|moduleName, name, initial)> vars_out => initFunction
+	  ; <generate-init(|moduleName, name, initial)> vars => initFunction
 	
 	get-module-name: smName -> parent
 	where
@@ -50,8 +50,8 @@ rules
 	collect-components: componentList* -> (states, events, vars)
 	where
 		not(<eq> (0, <length> componentList*));	 	
-	 	states:= <collect-states; map(expand-name); debug(!"states: ")> componentList*;
-	 	events:= <collect-events; map(expand-name); debug(!"events: ")> componentList*;
+	 	states:= <collect-states; map(expand-name)> componentList*;
+	 	events:= <collect-events; map(expand-name)> componentList*;
 	 	vars:= <collect-vars> componentList*					
 	
 	collect-states = filter(?StateMachineState(_, _))
@@ -67,6 +67,11 @@ rules
 	where
 		is-statemachine-state;
 		fname:= $[[<get-statemachine-name> name]__state_[name]]
+	
+	expand-name: name -> fname
+	where
+		is-statemachine-inevent;
+		fname:= $[[<get-statemachine-name> name]__event_[name]]
 	
 	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] //Module($[[moduleName]Header], None(), headerAST)          //add module imports
 	where
@@ -112,7 +117,7 @@ rules
 	insert-entryBlock(|stateList): EntryStatementsPlaceholder(name) -> basecStm
 	where
 		statements:= <filter(\StateMachineState(name, body)->body\); flatten-list; filter(\StateEntry(Block(stm))->stm\)> stateList;
-		basecStm:= <topdown(try(to-basec(|None()))); debug(!"stmList: ")> statements
+		basecStm:= <topdown(try(to-basec(|None())))> statements
 	
 	generate-params: (smData, smEvents) -> [instance, event, arguments] 
 	where
@@ -133,7 +138,7 @@ rules
 		eventNames:= <collect(\InEventRef(name)->name\)> transitions;
 		eventCaseList:= <map(generate-event-case(|transitions, exitStatements))> eventNames
 	
-	generate-event-case(|transitions, exitStatements): eventName -> [Case(Var(Identifier(eventName)), Block([ifStatements, Break()]))]
+	generate-event-case(|transitions, exitStatements): eventName -> [Case(Var(Identifier(<expand-name> eventName)), Block([ifStatements, Break()]))]
 	 where
 	 	eventTransitions:= <filter(?StateTransition(InEventRef(eventName), _, _, _))> transitions;
 	 	ifStatements:= <map(generate-if(|exitStatements))> eventTransitions
@@ -182,51 +187,14 @@ rules
 		<parent-is-namespace(|NablNsInEvent())> name
 	
 	is-statemachine-state = nabl-uri; nabl-uri-namespace; ?NablNsState()
+	is-statemachine-inevent = nabl-uri; nabl-uri-namespace; ?NablNsInEvent()
 	
-/*	get-sm-stateExit-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
+	generate-init(|moduleName, statemachineID, initial): varList -> initFunction
 	where
-		<eq> (stateName, stateID);
-		StateExit(stmBlock) := <fetch-elem(get-stateExit-block)> stateBody;
-		statementBlock:= [<stm-to-basec> stmBlock] <+
-		statementBlock:= []		
-	
-	get-sm-stateEntry-statements(|stateName): StateMachineState(stateID, stateBody) -> statementBlock
-	where
-		<eq> (stateName, stateID);
-		//get stateEntry statements
-		StateEntry(stmBlock) := <fetch-elem(get-stateEntry-block)> stateBody; 
-		statementBlock:= [<stm-to-basec> stmBlock] <+
-		statementBlock:= []
+	    initVars:=<map(generate-initStm)> varList																
+	  ; initState:= Exp(Assign(FieldViaPointer(Var(Identifier("instance")), Identifier("__currentState")), Assign(), Var(Identifier($[[statemachineID]__state_[initial]]))))
+	  ; paramList:= [Param(Type([], Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]])))), Identifier("instance"))]				
+	  ; initFunction:= FunDef(None(), Type([], BasicType("void")), Identifier($[[moduleName]_sm_init_[statemachineID]]), ParamList(paramList), [initState|initVars])									
 		
+	generate-initStm: StateMachineVarDecl(_, _, varName, initValue) -> Exp(Assign(FieldViaPointer(Var(Identifier("instance")), varName), Assign(), initValue))
 	
-	get-stateEntry-block: StateEntry(statementBlock) -> StateEntry(statementBlock)
-	
-	get-stateExit-block: StateExit(statementBlock) -> StateExit(statementBlock)
-	
-	get-transitionStatements: None() -> []
-	
-	get-transitionStatements: Some(StatementBlock) -> [basecBlock]
-	where
-		basecBlock := <stm-to-basec> StatementBlock
-	
-	get-transition-conditionStatement: Some(statement) -> basecStatement
-	where
-		basecStatement := <stm-to-basec;debug(!"here: ")> statement
-		//basecStatement := statement
-	
-	get-transition-conditionStatement: None() -> []
-	
-	generate-sm-basec-ifStatement: (None(), statementList) -> Block(statementList)
-	
-	generate-sm-basec-ifStatement: (condition, statementList) ->  If(condition, Block(statementList))
-	where 
-		not(<eq> (condition, None()))
-		
-	stm-to-basec: stmBlock -> basecBlock
-	where
-		basecBlock:= <topdown(try(to-basec(|None())))> stmBlock
-	
-	unbox-block: Block(statementList) -> statementList
-	unbox-block: None() -> []											 
-		
-	*/
