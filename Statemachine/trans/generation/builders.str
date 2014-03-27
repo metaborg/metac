@@ -6,6 +6,7 @@ imports
 	lib/analysis/-
 	lib/editor-common.generated
 	lib/index/-
+	lib/task/-
 	libstratego-gpp
 	libstratego-lib
 	lib/c/C
@@ -58,5 +59,6 @@ rules
   	with
 		filename := <guarantee-extension(|"basec.aterm")> path;
 		index-setup(|<language>, [<project-path>], ".");
+		task-setup(|project-path);
 		result:= <to-basec-all(|path); desugar-all> selected
 		
