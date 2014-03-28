@@ -213,6 +213,8 @@ rules
 	
 	to-basec: StateMachineIsInState(sm, state) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(<expand-name> state)))
 	
+	to-basec: StateMachineSend(OutEventRef(name), params) -> Exp(FunctionCall(Identifier(<get-boundFunction>name), params))
+	
 	generate-decl: size -> Declaration( Type([], Pointer(Type([], BasicType("void")))), NoInit((Identifier("___args"), Decimal(size))))
 	
 	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
