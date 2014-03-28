@@ -109,7 +109,7 @@ rules
 	
 	insert-entryBlock(|stateList): EntryStatementsPlaceholder(name) -> basecStm
 	where
-		statements:= <filter(\StateMachineState(name, body)->body\); flatten-list; filter(\StateEntry(Block(stm))->stm\)> stateList;
+		statements:= <filter(?StateMachineState(name, <id>)); flatten-list; filter(\StateEntry(Block(stm))->stm\)> stateList;
 		basecStm:= <topdown(try(to-basec(|None())))> statements
 	
 	generate-params: (smData, smEvents) -> [instance, event, arguments] 
@@ -140,7 +140,7 @@ rules
 	where
 	 	conditionStatement:= <topdown(try(to-basec(|name)))>condition;
 	 	stateStatements*:= <topdown(try(to-basec(|name)))> [exitStatements*, block];
-	 	switchState:= Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")),Identifier("__currentState")), Assign(), Var(Identifier(endState)))));
+	 	switchState:= Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")),Identifier("__currentState")), Assign(), Var(Identifier(<expand-name>endState)))));
 		return:= Return(Decimal(-1));
 	 	ifStatement:= <generate-if> (conditionStatement, [stateStatements*, switchState, EntryStatementsPlaceholder(<expand-name> endState), return])
 	
@@ -190,4 +190,36 @@ rules
 	  ; initFunction:= FunDef(None(), Type([], BasicType("void")), Identifier($[[moduleName]_sm_init_[statemachineID]]), ParamList(paramList), [initState|initVars])									
 		
 	generate-initStm: StateMachineVarDecl(_, _, varName, initValue) -> Exp(Assign(FieldViaPointer(Var(Identifier("instance")), varName), Assign(), initValue))
+	
+	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), [Address(e)]))
+	where
+		Type(_, StatemachineType(name)) := <get-type> e;
+		funName:= $[[<get-module-name> name]_sm_init_[name]]
+		 
+	to-basec: StateMachineTrigger(e, EventRef(event, list)) -> Block([argDecl, argStatements, Exp(FunctionCall(Identifier(funName), paramList))])
+	where
+		
+		evtParams:= <get-eventParams> event
+	  ; argDecl:= <length; generate-decl> list
+	  ; argStatements := <zip(id); map-with-index(generate-args); flatten-list> (evtParams, list)
+	  ; Type(_, StatemachineType(name)) := <get-type> e
+	  ; funName:= $[[<get-module-name> event]_sm_execute_[name]]
+	  ; evtName:= $[[name]__event_[event]]
+	  ; paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
+	
+	to-basec: Declaration(Type(modifiers, StatemachineType(name)), init) -> Declaration(Type(modifiers, StructType(Identifier(structName))), init)
+	where
+		structName:= $[[<get-module-name> name]_sm_data_[name]]
+	
+	to-basec: StateMachineIsInState(sm, state) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(<expand-name> state)))
+	
+	generate-decl: size -> Declaration( Type([], Pointer(Type([], BasicType("void")))), NoInit((Identifier("___args"), Decimal(size))))
+	
+	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
+	where
+		decl:= Declaration(type, Init(Identifier($[___[name]]), initExp))				
+	  ; assign:= Exp(Assign(ArrayField(Var(Identifier("___args")), Decimal(<subt>(index, 1))), Assign(), UnExp(Addr(), Var(Identifier($[___[name]])))))
+	  ; statements := [decl , assign]
+	    
+	    
 	
