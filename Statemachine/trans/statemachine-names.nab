@@ -24,6 +24,8 @@ namespaces
 properties
 	
 	paramIndex of Variable: VarIndex
+	eventParams of InEvent: List
+	
 //rules
 	//Module(_ , _, _):
 	//		scopes Statemachine
@@ -32,36 +34,44 @@ properties
 	
 binding rules
 
-	Statemachine(name, _, _) : defines unique Statemachine name 
-							//refers to State name
-							scopes State, Variable, InEvent, OutEvent, StateTransition
+	Statemachine(name, _, _) : 
+		defines unique Statemachine name 
+		scopes State, Variable, InEvent, OutEvent, StateTransition
 							
-	StateRef(name): refers to State name
+	StateRef(name): 
+		refers to State name
 	
-	InEventRef(name): imports Variable from InEvent name							
+	InEventRef(name): 
+		imports Variable from InEvent name							
 							
-	StatemachineType(name): refers to Statemachine name
+	StatemachineType(name): 
+		refers to Statemachine name
 	
-	StateMachineState(state_name,_): defines unique State state_name
-									 scopes Variable, StateTransition, InEvent, OutEvent
+	StateMachineState(state_name,_): 
+		defines unique State state_name
+		scopes Variable, StateTransition, InEvent, OutEvent
 	
-	StateMachineInEvent(event_name,_): defines unique InEvent event_name
-									   scopes Variable
+	StateMachineInEvent(event_name,_): 
+		defines unique InEvent event_name
+		scopes Variable
 
-	StateMachineOutEvent(event_name,_,_) : defines unique OutEvent event_name
+	StateMachineOutEvent(event_name,_,_) : 
+		defines unique OutEvent event_name
 	
-	StateMachineVarDecl(_,var_type, Identifier(name), _) : defines unique Variable name of type var_type
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : 
+		defines unique Variable name of type var_type
 	
-	//TODO - needs BaseC namebinding
-	Binding(name) : refers to Function name
+	Binding(name) : 
+		refers to Function name
 	
 	//field refence like struct or union
 /*	Field(var,Identifier(field)) : refers to StateMachineVar field in Statemachine stm
 							   		where 
 										var has type StatemachineType(Identifier(stm))
 */	
-	StateMachineIsInState(e, state): refers to State state in Statemachine s
-		 where
+	StateMachineIsInState(e, state): 
+		refers to State state in Statemachine s
+		where
 		 	e has type Type(_, StatemachineType(s)) 
 
 	StateTransition(InEventRef(name), cond, _, block) : 
@@ -71,8 +81,7 @@ binding rules
 	StateMachineSend(Identifier(evt), list):
 		refers to OutEvent evt
 	
-	StateMachineTrigger(e, EventRef(name, _)): //refers to Statemachine sm_name
-									//refers to InEvent in_event
+	StateMachineTrigger(e, EventRef(name, _)):
 		refers to InEvent name in Statemachine s
 		where e has type Type(_, StatemachineType(s))
 	
@@ -83,26 +92,4 @@ binding rules
 		refers to Variable field in Statemachine s
 		where 
 			e has type Type(_, StatemachineType(s))
-							    
-	  
-	//methods: sminit, smtrigger,smIsInState 
- 
-//  a statemac; 
-//  stm2 second; 
-//  sminit(second); 
-//  sminit(statemac); 
-//  smtrigger(statemac, event(9)); 
-//  smIsInState(statemac, st); 
-//  statemac.variab = 5; 
-   
- 
-   //Statemachine         : ID * ID * List(StateMachineComponent) -> Statemachine
-   //StateMachineState    : ID * List(StateBody) -> StateMachineComponent					
-   //StateMachineInEvent  : ID * ParamList -> StateMachineComponent
-   // StateMachineOutEvent : ID * ParamList * Option(StateMachineEventBinding) -> StateMachineComponent
-   // StateMachineVarDecl  : Option(StatemachineVarModifier) * Type * ID * Exp -> StateMachineComponent
-   // Binding              : ID -> StateMachineEventBinding
-   // Entry                : CompoundStatement -> StateBody
-   // Exit                 : CompoundStatement -> StateBody
-   // Transition           : ID * Option(Exp) * ID * Option(CompoundStatement) -> StateBody							
-	
+			
