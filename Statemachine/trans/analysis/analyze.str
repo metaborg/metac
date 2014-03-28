@@ -12,11 +12,19 @@ rules
 	where
 		<map-with-index(store-param-index(|ctx))> paramList
 	
-	store-param-index(|ctx): (index, Param(_, Identifier(name))) ->[]
-		where
-			<store-paramIndex(|ctx, index)> name
+	store-param-index(|ctx): 
+		(index, Param(_, Identifier(name))) ->[]
+	where
+		<store-paramIndex(|ctx, index)> name
 			
-		
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		StateMachineInEvent(name, paramList) -> <fail>
+	where
+		<store-eventParams(|ctx, paramList)> name
 	
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		StateMachineOutEvent(name, _, Binding(functionName)) -> <fail>
+	where
+		<store-boundFunction(|ctx, functionName)> name
 		
 	
