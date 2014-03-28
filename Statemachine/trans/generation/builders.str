@@ -30,6 +30,7 @@ rules
 		filename := <guarantee-extension(|"c.aterm")> path;
 		//result:= <editor-to-c-ast-debug> (basecResult, position, ast, path, project-path)
 		index-setup(|<language>, [<project-path>], ".");
+		task-setup(|project-path);
 		result:= <to-basec-all; desugar-all; topdown(try(to-c))> selected
 		
 	editor-sm-to-c: (selected, position, ast, path, project-path) -> (filename, result)
@@ -49,9 +50,8 @@ rules
 	
 	editor-sm-execute: (selected, position, ast, path, project-path) -> None()
 	with
-		//(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all; desugar-all> (selected, path, project-path);
-		//(basecAST, _) := <desugar-all; analyze-top(|<language>); to-basec-all> (selected, path, project-path);
 		index-setup(|<language>, [<project-path>], ".");
+		task-setup(|project-path);
 		basecAST:= <to-basec-all; desugar-all> selected;
 		<basec-execute> (basecAST, path, project-path)
 		
@@ -60,5 +60,5 @@ rules
 		filename := <guarantee-extension(|"basec.aterm")> path;
 		index-setup(|<language>, [<project-path>], ".");
 		task-setup(|project-path);
-		result:= <to-basec-all(|path); desugar-all> selected
+		result:= <to-basec-all; desugar-all> selected
 		
