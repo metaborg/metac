@@ -23,7 +23,7 @@ StatemachineExp.StateMachineIsInState = <
 	>
 
 StatemachineStm.StateMachineSend = <
-	send <Identifier>(<Exp*; separator=", ">) 
+	send <OutEventRef>(<Exp*; separator=", ">); 
 	>
 
 PureType.StatemachineType = <statemachine <ID>>

@@ -39,7 +39,7 @@ templates
   StateRef.StateRef = <<ID>>
   
   InEventRef.InEventRef = <<ID>>
-  //OutEventRef.OutEventRef = <<ID>>
+  OutEventRef.OutEventRef = <<ID>>
   
   StateMachineComponent.StateMachineInEvent = <
   	in <ID> ( <FunctionParameter*; separator=","> ) 

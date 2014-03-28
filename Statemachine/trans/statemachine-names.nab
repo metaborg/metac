@@ -24,6 +24,7 @@ properties
 	
 	paramIndex of Variable: VarIndex
 	eventParams of InEvent: List
+	boundFunction of OutEvent: Function
 	
 //rules
 	//Module(_ , _, _):
@@ -41,7 +42,10 @@ binding rules
 		refers to State name
 	
 	InEventRef(name): 
-		imports Variable from InEvent name							
+		imports Variable from InEvent name
+	
+	OutEventRef(name): 
+		refers to OutEvent name							
 							
 	StatemachineType(name): 
 		refers to Statemachine name
@@ -75,9 +79,6 @@ binding rules
 
 	StateTransition(InEventRef(name), cond, _, block) : 
 		scopes Variable
-	
-	StateMachineSend(Identifier(evt), list):
-		refers to OutEvent evt
 	
 	StateMachineTrigger(e, EventRef(name, _)):
 		refers to InEvent name in Statemachine s
