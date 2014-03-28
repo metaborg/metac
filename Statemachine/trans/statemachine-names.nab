@@ -8,7 +8,6 @@ imports
   Statemachine/trans/statemachine-types
   include/MetaC
   
-  //CompoundStatement is considered a namespace that scopes variables
 namespaces 
 	Statemachine 
 	State 
@@ -75,7 +74,6 @@ binding rules
 		 	e has type Type(_, StatemachineType(s)) 
 
 	StateTransition(InEventRef(name), cond, _, block) : 
-		defines StateTransition block
 		scopes Variable
 	
 	StateMachineSend(Identifier(evt), list):
