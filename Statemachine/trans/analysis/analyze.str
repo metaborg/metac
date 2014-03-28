@@ -1,10 +1,9 @@
 module analyze
 
 imports 
-	lib/analysis/-
   	lib/properties/-
   	include/MetaC
-	Statemachine/trans/statemachine-names
+	Statemachine/trans/naming/names
 rules
 	
 	nabl-prop-site(|lang, ctx, uris, states, implicits):

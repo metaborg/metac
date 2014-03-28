@@ -1,21 +1,14 @@
-module Statemachine/trans/generation/builders
+module builders
 
 imports
-	//lib/analysis-library
-	//lib/analysis-library-internal
-	lib/analysis/-
 	lib/editor-common.generated
 	lib/index/-
 	lib/task/-
-	libstratego-gpp
-	libstratego-lib
-	lib/c/C
 	include/MetaC
 	BaseC/trans/analysis/desugar/-
 	trans/builders/generate
 	BaseC/trans/generation/to-basec
 	BaseC/trans/generation/to-c
-	//Statemachine/trans/Statemachine-mapping
 	Statemachine/trans/generation/to-basec
 
 rules

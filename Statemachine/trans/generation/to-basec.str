@@ -1,19 +1,15 @@
 module to-basec
 
 imports
-		include/MetaC
-		lib/nabl/-
-		libstratego-lib
-		lib/editor-common.generated
-		lib/index/-
-		lib/analysis/-
-		lib/types/-
-		lib/c/C
-		libstratego-gpp
-		Statemachine/trans/statemachine-names
-		BaseC/trans/analysis/desugar/-
-		BaseC/trans/generation/to-c
-		trans/builders/generate
+	include/MetaC
+	lib/nabl/-
+	lib/types/-
+	BaseC/trans/naming/modules
+	BaseC/trans/naming/variables
+	Statemachine/trans/naming/names
+	Statemachine/trans/naming/events
+	Statemachine/trans/naming/states
+	BaseC/trans/analysis/desugar/-
 
 signature constructors
 	EntryStatementsPlaceholder: ID -> StatementPlaceholder

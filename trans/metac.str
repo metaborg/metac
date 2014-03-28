@@ -1,34 +1,19 @@
 module metac
 
 imports
-	
-	libstratego-lib
-	libstratego-gpp
-	libstratego-aterm
 	include/MetaC
-	editor/MetaC-Outliner
 	lib/editor-common.generated
-	lib/index/-
-	lib/nabl/-
-	lib/properties/-
 	lib/types/-
-	lib/task/-
 	lib/analysis/-
 	BaseC/trans/analysis/desugar/-
 	BaseC/trans/naming/names
 	//BaseC/trans/typing/types.generated
 	BaseC/trans/helpers/helpers
-	
 	trans/builders/generate
 	pp
-	
-	Statemachine/trans/statemachine-names
+	Statemachine/trans/naming/names
 	Statemachine/trans/generation/builders
 	Statemachine/trans/analysis/analyze
-	
-	//names
-	//check
-	//generate
 
 rules // Analysis
 	

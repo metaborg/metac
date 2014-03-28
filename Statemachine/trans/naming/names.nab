@@ -1,0 +1,38 @@
+module names
+
+imports
+  include/MetaC
+  BaseC/trans/naming/variables
+  Statemachine/trans/naming/events
+  Statemachine/trans/naming/statements
+  Statemachine/trans/naming/states
+  
+namespaces 
+	Statemachine  
+
+properties
+	
+	paramIndex of Variable: VarIndex
+	eventParams of InEvent: List
+	boundFunction of OutEvent: Function
+	
+//rules
+	//Module(_ , _, _):
+	//		scopes Statemachine
+	//Function():
+	//		scopes Statemachine
+	
+binding rules
+
+	Statemachine(name, _, _) : 
+		defines unique Statemachine name 
+		scopes State, Variable, InEvent, OutEvent, StateTransition
+	
+	StatemachineType(name): 
+		refers to Statemachine name
+		
+	Field(e, Identifier(field)):  
+		refers to Variable field in Statemachine s
+		where 
+			e has type Type(_, StatemachineType(s))
+			

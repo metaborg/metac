@@ -1,0 +1,29 @@
+module events
+
+imports
+  include/MetaC
+  BaseC/trans/naming/variables
+  BaseC/trans/naming/functions
+  
+namespaces 
+	InEvent 
+	OutEvent
+	
+binding rules
+	
+	StateMachineInEvent(event_name,_): 
+		defines unique InEvent event_name
+		scopes Variable
+
+	StateMachineOutEvent(event_name,_,_) : 
+		defines unique OutEvent event_name
+	
+	InEventRef(name): 
+		imports Variable from InEvent name
+	
+	OutEventRef(name): 
+		refers to OutEvent name							
+	
+	Binding(name) : 
+		refers to Function name
+	
