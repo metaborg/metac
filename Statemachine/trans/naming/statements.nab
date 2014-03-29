@@ -5,6 +5,7 @@ imports
   Statemachine/trans/naming/names
   Statemachine/trans/naming/states
   Statemachine/trans/naming/events
+  BaseC/trans/typing/types.generated
   
 binding rules
 
