@@ -6,6 +6,7 @@ imports
   Statemachine/trans/naming/events
   Statemachine/trans/naming/statements
   Statemachine/trans/naming/states
+  Statemachine/trans/naming/variables
   BaseC/trans/typing/types.generated
   
 namespaces 
