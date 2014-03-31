@@ -49,18 +49,17 @@ rules
 
 	collect-vars = filter(?StateMachineVarDecl(_, _, _, _))
 	
-	expand-name: StateMachineInEvent(name, block) -> StateMachineInEvent($[[<get-statemachine-name>name]__event_[name]], block)
-	expand-name: StateMachineOutEvent(name, param, binding) -> StateMachineOutEvent($[[<get-statemachine-name>name]__event_[name]], param, binding)
-	expand-name: StateMachineState(name, block) -> StateMachineState($[[<get-statemachine-name>name]__state_[name]], block)
-	expand-name: name -> fname
-	where
-		is-statemachine-state;
-		fname:= $[[<get-statemachine-name> name]__state_[name]]
+	expand-name: StateMachineInEvent(name, block) -> StateMachineInEvent(<expand-name>name, block)
+	expand-name: StateMachineOutEvent(name, param, binding) -> StateMachineOutEvent(<expand-name>name, param, binding)
+	expand-name: StateMachineState(name, block) -> StateMachineState(<expand-name>name, block)
 	
-	expand-name: name -> fname
+	expand-name: name -> $[[<get-statemachine-name> name]__state_[name]]
 	where
-		is-statemachine-inevent;
-		fname:= $[[<get-statemachine-name> name]__event_[name]]
+		is-statemachine-state
+	
+	expand-name: name -> $[[<get-statemachine-name> name]__event_[name]]
+	where
+		is-statemachine-inevent <+ is-statemachine-outevent
 	
 	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] 
 	where
@@ -95,9 +94,9 @@ rules
 		params := <generate-params> ($[[moduleID]_sm_data_[smID]], $[[moduleID]_sm_events_[smID]]);
 		stateCaseList:= <map(generate-state-case); insert-entryBlocks(|statesList)> statesList;
 		
-		stateSwitch:= Switch(FieldViaPointer(Var(Identifier("instance")), Identifier("__currentState")), Block(stateCaseList));				
+		stateSwitch:= Switch(INSTANCE-FIELD("__currentState"), Block(stateCaseList));				
 		smFunctionBlock := [stateSwitch];			
-		smFunctionAST := FunDef(None(), Type([], BasicType("void")), Identifier(name), ParamList(params), smFunctionBlock)							
+		smFunctionAST := VOID-FUNCTION(name, params, smFunctionBlock)							
 	
 	insert-entryBlocks(|stateList): caseStatements -> statements
 	where
@@ -110,7 +109,7 @@ rules
 	
 	generate-params: (smData, smEvents) -> [instance, event, arguments] 
 	where
-		instance:= Param(Type([], Pointer(StructType(Identifier(smData)))), Identifier("instance"));			
+		instance:= Param(Type([], Pointer(Type([], StructType(Identifier(smData))))), Identifier("instance"));			
 		event:= Param(Type([], EnumType(Identifier(smEvents))), Identifier("event"));
 		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], BasicType("void")))))), Identifier("arguments"))
 	
@@ -118,7 +117,7 @@ rules
 	where
 		caseStatements:= <generate-case> stateBody*;
 		eventSwitch:= Switch(Var(Identifier("event")), Block(caseStatements));
-		stateCaseStatement := Case(Var(Identifier(stateID)), Block([eventSwitch, Break()]))		
+		stateCaseStatement := CASE(stateID, eventSwitch)		
 	
 	generate-case: stateBody* -> eventCaseList
 	where
@@ -127,7 +126,7 @@ rules
 		eventNames:= <collect(\InEventRef(name)->name\)> transitions;
 		eventCaseList:= <map(generate-event-case(|transitions, exitStatements))> eventNames
 	
-	generate-event-case(|transitions, exitStatements): eventName -> [Case(Var(Identifier(<expand-name> eventName)), Block([ifStatements, Break()]))]
+	generate-event-case(|transitions, exitStatements): eventName -> [CASE(<expand-name>eventName, ifStatements)]
 	 where
 	 	eventTransitions:= <filter(?StateTransition(InEventRef(eventName), _, _, _))> transitions;
 	 	ifStatements:= <map(generate-if(|exitStatements))> eventTransitions
@@ -136,7 +135,7 @@ rules
 	where
 	 	conditionStatement:= <topdown(try(to-basec(|name)))>condition;
 	 	stateStatements*:= <topdown(try(to-basec(|name)))> [exitStatements*, block];
-	 	switchState:= Exp(Some(Assign(FieldViaPointer(Var(Identifier("instance")),Identifier("__currentState")), Assign(), Var(Identifier(<expand-name>endState)))));
+	 	switchState:= Exp(Some(Assign(INSTANCE-FIELD("__currentState"), Assign(), Var(Identifier(<expand-name>endState)))));
 		return:= Return(Decimal(-1));
 	 	ifStatement:= <generate-if> (conditionStatement, [stateStatements*, switchState, EntryStatementsPlaceholder(<expand-name> endState), return])
 	
@@ -155,7 +154,7 @@ rules
 		paramType:= <get-type> name;
 		index := <subt> (<get-paramIndex> name, 1)
 	
-	to-basec(|event): Var(Identifier(name)) -> FieldViaPointer(Var(Identifier("instance")), Identifier(name))					//strip-annos?
+	to-basec(|event): Var(Identifier(name)) -> INSTANCE-FIELD(name)					//strip-annos?
 	where
 		<is-statemachine-var> name
 		
@@ -177,15 +176,16 @@ rules
 	
 	is-statemachine-state = nabl-uri; nabl-uri-namespace; ?NablNsState()
 	is-statemachine-inevent = nabl-uri; nabl-uri-namespace; ?NablNsInEvent()
+	is-statemachine-outevent = nabl-uri; nabl-uri-namespace; ?NablNsOutEvent()
 	
-	generate-init(|moduleName, statemachineID, initial): varList -> initFunction
+	generate-init(|moduleName, statemachineID, initial): varList -> VOID-FUNCTION(fname, paramList, [initState|initVars])
 	where
 	    initVars:=<map(generate-initStm)> varList																
-	  ; initState:= Exp(Assign(FieldViaPointer(Var(Identifier("instance")), Identifier("__currentState")), Assign(), Var(Identifier($[[statemachineID]__state_[initial]]))))
-	  ; paramList:= [Param(Type([], Pointer(StructType(Identifier($[[moduleName]_sm_data_[statemachineID]])))), Identifier("instance"))]				
-	  ; initFunction:= FunDef(None(), Type([], BasicType("void")), Identifier($[[moduleName]_sm_init_[statemachineID]]), ParamList(paramList), [initState|initVars])									
+	  ; initState:= Exp(Assign(INSTANCE-FIELD("__currentState"), Assign(), Var(Identifier(<expand-name>initial))))
+	  ; paramList:= [Param(Type([], Pointer(Type([],StructType(Identifier($[[moduleName]_sm_data_[statemachineID]]))))), Identifier("instance"))]				
+	  ; fname:= $[[moduleName]_sm_init_[statemachineID]] 									
 		
-	generate-initStm: StateMachineVarDecl(_, _, varName, initValue) -> Exp(Assign(FieldViaPointer(Var(Identifier("instance")), varName), Assign(), initValue))
+	generate-initStm: StateMachineVarDecl(_, _, Identifier(name), initValue) -> Exp(Assign(INSTANCE-FIELD(name), Assign(), initValue))
 	
 	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), [Address(e)]))
 	where
@@ -194,8 +194,7 @@ rules
 		 
 	to-basec: StateMachineTrigger(e, EventRef(event, list)) -> Block([argDecl, argStatements, Exp(FunctionCall(Identifier(funName), paramList))])
 	where
-		
-		evtParams:= <get-eventParams> event
+	    evtParams:= <get-eventParams> event
 	  ; argDecl:= <length; generate-decl> list
 	  ; argStatements := <zip(id); map-with-index(generate-args); flatten-list> (evtParams, list)
 	  ; Type(_, StatemachineType(name)) := <get-type> e
@@ -219,5 +218,9 @@ rules
 	  ; assign:= Exp(Assign(ArrayField(Var(Identifier("___args")), Decimal(<subt>(index, 1))), Assign(), UnExp(Addr(), Var(Identifier($[___[name]])))))
 	  ; statements := [decl , assign]
 	    
-	    
+overlays
+	
+	INSTANCE-FIELD(name) = FieldViaPointer(Var(Identifier("instance")), Identifier(name)) 
+	CASE(name, stmList) = Case(Var(Identifier(name)), Block([stmList, Break()]))
+	VOID-FUNCTION(name, params, statements) = FunDef(None(), Type([], BasicType("void")), Identifier(name), ParamList(params), statements)
 	
