@@ -15,9 +15,12 @@ include/metac.ctree.dep
 include/metac.jar
 include/metac-java.jar
 editor/java/trans
+editor/java/metac
 editor/*.generated.esv
+editor/*.generated.str
 syntax/MetaC*.generated.esv
 syntax/MetaC.generated.pp
+syntax/*.sdf
 .settings/org.eclipse.jdt.core.prefs
 utils
 lib/runtime
@@ -35,5 +38,6 @@ lib-refactoring/*.generated.str
 trans/*.pp.generated.str
 BaseC/trans/naming/*.str
 BaseC/syntax/*.sdf
+BaseC/trans/typing/*.generated.str
 Statemachine/syntax/*.sdf
 Statemachine/trans/naming/*.str
