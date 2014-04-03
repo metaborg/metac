@@ -1,0 +1,31 @@
+module BaseC
+
+imports
+	BaseC-Component
+	BaseC-Constants
+	BaseC-Declaration
+	BaseC-Enums
+	BaseC-Expressions
+	BaseC-FunDef
+	BaseC-Identifiers
+	BaseC-Keywords
+	BaseC-Lexical
+	BaseC-Modules
+	BaseC-Statements
+	BaseC-StructsAndUnions
+	BaseC-Types
+
+context-free start-symbols
+
+Identifier
+Constant
+Type
+Exp
+CommaExp 
+Enum
+StructOrUnion
+Stm
+Module
+Declaration
+FunDef
+Component

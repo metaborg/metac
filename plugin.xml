@@ -1,12 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-
 <plugin>
-       <extension point="org.eclipse.imp.runtime.languageDescription">
-          <language extensions="mc" description="MetaC" language="MetaC" derivedFrom="DynamicRoot" validator="metac.MetaCValidator" validatorClass="metac.MetaCValidator"></language>
-       </extension>
-       <extension id="metac.parser" name="MetaC Parser" point="org.eclipse.imp.runtime.parser">
-          <parser class="metac.MetaCParseController" language="MetaC">
-          </parser>
-       </extension>    
-    </plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="mc"
+            description="MetaC"
+            language="MetaC"
+            derivedFrom="DynamicRoot"
+            validator="metac.MetaCValidator"
+            validatorClass="metac.MetaCValidator"
+      ></language>
+   </extension>
+   <extension
+         id="metac.parser"
+         name="MetaC Parser"
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="metac.MetaCParseController"
+            language="MetaC">
+      </parser>
+   </extension>    
+</plugin>

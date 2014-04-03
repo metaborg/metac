@@ -1,0 +1,12 @@
+module BaseC-StructsAndUnions 
+
+imports 
+	BaseC-Identifiers
+	BaseC-Types
+	BaseC-FunDef
+ 
+templates
+	FieldDecl.FieldDecl =<<Type> <Identifier*;separator=",">;>
+	FieldDecl.NestedStruct = <<StructOrUnion> <Identifier?>;>
+	StructOrUnion.Struct =	<<Exported?>struct <Identifier?> {<FieldDecl*>}>
+	StructOrUnion.Union =	<<Exported?>union <Identifier?> {<FieldDecl*>}>

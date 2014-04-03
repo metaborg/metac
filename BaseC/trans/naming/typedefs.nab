@@ -1,0 +1,24 @@
+module BaseC/trans/naming/typedefs
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/modules
+  	BaseC/trans/naming/structsandunions
+  	BaseC/trans/naming/enums
+  	
+namespaces
+	TypeSynonym 	
+
+binding rules
+	TypedefDecl(type, Identifier(name)):
+		defines TypeSynonym name of type type
+		
+	TypeSynonym(Identifier(name)):
+		refers to TypeSynonym name
+		refers to Struct name										//figure out another way?
+		refers to Union name
+		refers to Enum name
+		//refers to Statemachine name

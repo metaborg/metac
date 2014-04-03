@@ -1,0 +1,18 @@
+module BaseC/trans/naming/enums
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/names
+
+namespaces 
+	Enum
+
+binding rules
+	Enum(_, Identifier(name), _):
+		defines Enum name of type BasicType("int8")			//modify to other types of int ?
+		
+	EnumType(Identifier(name)):
+		refers to Enum name

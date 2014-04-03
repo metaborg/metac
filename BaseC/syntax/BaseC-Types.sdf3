@@ -1,0 +1,50 @@
+module BaseC-Types
+
+imports 
+	BaseC-Constants
+	BaseC-Identifiers
+		
+
+//TODO: move these to keywords + specify these in template language to have contructors for all diff types.
+lexical syntax
+	BasicType = "void"
+	BasicType = "boolean"
+	BasicType = "int8"			//default: char
+	BasicType = "int16"			//default: short
+	BasicType = "int32"			//default: int
+	BasicType = "int64"     	//default: long long
+	BasicType = "uint8"			//default: unsigned char
+	BasicType = "uint16"		//default: unsigned short
+	BasicType = "uint32"		//default: unsigned int
+	BasicType = "uint64"		//default: unsigned long long
+	BasicType = "float" 		//default: 32 bit
+	BasicType = "double" 		//default: 64 bit
+	BasicType = "long" LAYOUT+ "double" //default: 128 bit
+	BasicType = "string"
+	
+	// tests connected to http://yellowgrass.org/issue/Spoofax/655
+	// BasicType = "d1" 		//here to test
+	// BasicType = "dou" 		//here to test
+	// BasicType = "doub" 		//here to test
+	// BasicType = "doubl" 		//here to test
+	// BasicType = "doubla" 		//here to test
+	// BasicType = "double1" 		//here to test
+	// BasicType = "doublaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" 		//here to test
+	
+lexical restrictions
+	BasicType -/- [a-zA-Z0-9\_]
+	
+templates
+	PureType.BasicType = <<BasicType>>
+	PureType.Array = <<Type> [ <Constant?> ]>
+	PureType.StructType = <struct <Identifier>>		// structs
+	PureType.UnionType = <union <Identifier>>		// unions
+	PureType.EnumType = <enum <Identifier>>			// enum
+	PureType.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
+	
+	Type.Type = <<TypeModifier*> <PureType>>
+	Type.PointerType = <<Type> * <TypeModifier*> >
+
+	TypeModifier.Static = <static>
+	TypeModifier.Const = <const>
+	TypeModifier.Volatile = <volatile>

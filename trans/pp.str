@@ -1,0 +1,37 @@
+module pp
+
+imports
+
+	libstratego-gpp
+	lib/tmpl/pp
+	Common.pp.generated
+	BaseC-Modules.pp.generated
+	BaseC-Component.pp.generated
+	BaseC-Constants.pp.generated
+	BaseC-Declaration.pp.generated
+	BaseC-Enums.pp.generated
+	BaseC-Expressions.pp.generated
+	BaseC-FunDef.pp.generated
+	BaseC-Identifiers.pp.generated
+	BaseC-Keywords.pp.generated
+	BaseC-Lexical.pp.generated
+	BaseC-Statements.pp.generated
+	BaseC-StructsAndUnions.pp.generated
+	BaseC-Types.pp.generated
+	BaseC.pp.generated
+	
+
+rules
+	
+  pp-MetaC-string =
+    prettyprint-Module
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-debug :
+    ast -> result
+    with
+       result := <pp-MetaC-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); debug(!"cannot pp ")))> ast
+    ;  result := ""
+

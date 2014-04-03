@@ -1,0 +1,29 @@
+module BaseC/trans/naming/messages
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/typing/constructors
+  	BaseC/trans/naming/names
+
+namespaces 
+	Messagelist
+	Message
+
+binding rules
+	MessageList(_, Identifier(name), _):
+		defines unique Messagelist name of type MsgListType(Identifier(name))
+		scopes Message
+		
+	Message(Identifier(name), _, _, _):
+ 		defines Message name
+ 		
+ 	Report(var, Identifier(msg)):
+ 		refers to Message msg in Messagelist mList
+ 		where
+ 			var has type MsgListType(Identifier(mList))
+ 			
+ 	MListRef(Identifier(name)):
+		refers to Messagelist name

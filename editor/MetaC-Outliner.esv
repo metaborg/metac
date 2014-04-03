@@ -1,5 +1,0 @@
-module MetaC-Outliner
-
-imports MetaC-Outliner.generated
-
-outliner

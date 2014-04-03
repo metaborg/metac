@@ -1,0 +1,10 @@
+module variables
+
+imports
+  include/MetaC
+  BaseC/trans/naming/variables
+	
+binding rules
+	
+	StateMachineVarDecl(_,var_type, Identifier(name), _) : 
+		defines unique Variable name of type var_type 

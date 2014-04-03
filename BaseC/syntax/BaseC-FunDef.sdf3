@@ -1,0 +1,22 @@
+module BaseC-FunDef
+
+imports 
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-Types
+	BaseC-Statements
+
+templates
+
+FunctionParameter.Param = <<Type> <Identifier>>
+FunctionParameter.Param = <<FunctionParameter> [<Constant>]>
+FunctionParameter.Param = <*<FunctionParameter>>
+
+ParamList.ParamList = <<FunctionParameter*;separator=",">>
+
+//FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) <Block> > IT DOESN'T WORK. By the way Block is defined exactly as {Stm*}
+FunDef.FunDef = <<Exported?> <Type> <Identifier> (<ParamList>) {<Stm*>} >
+
+Exported.Exported = <exported>
+
+FunProto.FunProto = <<Type> <Identifier> (<ParamList>) ; >

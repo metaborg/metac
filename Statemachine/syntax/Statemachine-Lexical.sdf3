@@ -1,0 +1,37 @@
+module Statemachine-Lexical
+
+//================================================================
+// Layout characters
+//================================================================
+lexical syntax
+[\ \t\r\n\12] -> LAYOUT
+
+context-free restrictions
+LAYOUT? -/- [\ \t\r\n\12]
+
+
+//================================================================
+// Comments
+// - single line comments
+// - nested multiline comments
+// TODO: disallow nested multiline comments?
+//================================================================
+lexical syntax
+[\*]                             					-> Asterisk
+[\/]                             					-> Slash
+(~[\*\/] | Asterisk | Slash)*						-> NestedCommentText
+"/*" NestedCommentText NestedCommentRest "*/"		-> NestedComment			// }
+NestedComment NestedCommentText	NestedCommentRest	-> NestedCommentRest		// }these two allow for nesting comments in eachother (with non nested comment) and inside next to eachother
+													-> NestedCommentRest		// this is the stopcondition
+NestedComment										-> LAYOUT
+"//" ~[\n\r]* ([\n\r] | EOF)						-> LAYOUT
+-> EOF
+    
+lexical restrictions
+EOF -/- ~[]
+Asterisk -/- [\/]
+Slash -/- [\*]
+
+context-free restrictions
+LAYOUT? -/- [\/].[\/]
+LAYOUT? -/- [\/].[\*]

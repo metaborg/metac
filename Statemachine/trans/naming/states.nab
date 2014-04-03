@@ -1,0 +1,23 @@
+module states
+
+imports
+  include/MetaC
+  BaseC/trans/naming/variables
+  Statemachine/trans/naming/events
+  
+namespaces 
+	State
+	StateTransition
+	
+binding rules
+	
+	StateMachineState(state_name,_): 
+		defines unique State state_name
+		scopes Variable, StateTransition, InEvent, OutEvent
+	
+	StateTransition(InEventRef(name), cond, _, block) : 
+		scopes Variable
+	
+	StateRef(name): 
+		refers to State name
+	

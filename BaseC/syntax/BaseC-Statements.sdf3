@@ -1,0 +1,82 @@
+module BaseC-Statements
+
+imports
+	BaseC-Identifiers
+	BaseC-Expressions
+	BaseC-Declaration
+
+templates
+
+// labels
+Stm.Label = <<Identifier> : <Stm>>
+Stm.Case = <case <Exp> : <Stm>>
+Stm.Default = <default : <Stm>>
+
+// blocks
+Block.Block = <
+{
+	<Stm*>
+}
+>
+Stm = <<Block>>
+
+// declarations
+Stm = <<Declaration>>
+
+// expresions
+Stm.Exp = <<CommaExp?> ;>
+	
+// selections
+Stm.If = <
+	if ( <CommaExp> )
+		<Stm>
+>
+
+Stm.IfElse = <
+	if ( <CommaExp> )
+		<Stm>
+	else
+		<Stm>
+>
+
+Stm.Switch = <
+	switch ( <CommaExp> )
+		<Stm>
+>
+
+// iterations
+Stm.While = <
+	while ( <CommaExp> )
+		<Stm>
+>
+
+Stm.DoWhile = <
+	do
+		<Stm>
+	while ( <CommaExp> )
+>
+
+Stm.For = <
+	for ( <CommaExp?> ; <CommaExp?> ; <CommaExp?> )
+		<Stm>
+>
+Stm.For = <
+	for ( <Declaration>  <CommaExp?> ; <CommaExp?> )
+		<Stm>
+>
+
+// jumps
+Stm.Goto = <goto <Identifier>;>
+
+Stm.Continue = <continue ;>
+
+Stm.Break = <break ;>
+
+Stm.Return = <return <CommaExp?> ;>
+
+Stm.Exit = <exit <CommaExp?> ;>
+
+// BaseC messages
+Stm.Report = <report <MListRef>.<Identifier>();>
+
+MListRef.MListRef = <<Identifier>>

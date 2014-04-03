@@ -20,12 +20,10 @@ module AnalyzeFlight{
 	struct Trackpoint* makeTP(int16 alt, int16 speed) {
 		
 		trackpointCounter++;
-		struct Trackpoint mem;
-		
-		mem.id = trackpointCounter;
-		mem.alt = alt;
-		mem.speed = speed;
-		struct Trackpoint* tp = &mem;
+		struct Trackpoint* tp = ((struct Trackpoint*) malloc (sizeof *tp));
+		tp->id = trackpointCounter;
+		tp->alt = alt;
+		tp->speed = speed;
 		return tp;
 	}
 	
@@ -45,32 +43,32 @@ module AnalyzeFlight{
 		}
 		
 		state airborne {
-			on next [tp->alt == 0  && tp->speed == 0] -> crashed
-			on next [tp->alt == 0 && tp->speed > 0] -> landing
+			on next [tp->alt == 0 && tp->speed == 0] -> crashed
+			on next [tp->alt == 0 && tp->speed > 0] -> landing 
 			on next [tp->speed > 200 ] -> airborne { points += VERY_HIGH_SPEED; }
 			on next [tp->speed > 100 ] -> airborne { points += HIGH_SPEED; }
-			on report[]-> airborne {printf("STATE: airborne\n");}
-			on reset [ ] -> beforeFlight
+			on report []-> airborne {printf("STATE: airborne\n");}
+			on reset [] -> beforeFlight
 		}
 		
 		state landing {
 			on next [tp->speed == 0] -> landed
-			on next [ ] -> landing { points--; }
+			on next [] -> landing { points--; }
 			on report[]-> landing {printf("STATE: landing\n");}
-			on reset [ ] -> beforeFlight
+			on reset [] -> beforeFlight
 			
 		}
 		
 		state landed {
 			entry { points += LANDING; }
 			on report[]-> landed {printf("STATE: landed\n");}
-			on reset [ ] -> beforeFlight
+			on reset [] -> beforeFlight
 		}
 		
 		state crashed {
 			entry { send crashNotification();}
 			on report[]-> crashed {printf("STATE: crashed\n");}
-			on reset [ ] -> beforeFlight
+			on reset [] -> beforeFlight
 		}
 	}
 	

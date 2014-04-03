@@ -1,0 +1,226 @@
+module to-basec
+
+imports
+	include/MetaC
+	lib/nabl/-
+	lib/types/-
+	BaseC/trans/naming/modules
+	BaseC/trans/naming/variables
+	Statemachine/trans/naming/names
+	Statemachine/trans/naming/events
+	Statemachine/trans/naming/states
+	BaseC/trans/analysis/desugar/-
+
+signature constructors
+	EntryStatementsPlaceholder: ID -> StatementPlaceholder
+
+rules
+	
+	to-basec-all: ast -> basecAst
+	where
+		basecAst := <topdown(try(to-basec);try(flatten-list))> ast
+	
+	to-basec: Statemachine(name, StateRef(initial), components*) -> [headerAST, executeFunction, initFunction] 
+	where
+		moduleName := <get-module-name> name
+      ; <collect-components> components* => (states, events, vars)
+	  ; <generate-header(|moduleName, name)> (states, events, vars) => headerAST
+	  ; <generate-function(|moduleName, name)> states => executeFunction
+	  ; <generate-init(|moduleName, name, initial)> vars => initFunction
+	
+	get-module-name: smName -> parent
+	where
+		parent:= <nabl-uri; nabl-uri-path; filter(?ID(NablNsModule(), _, _)); Hd; nabl-segment-name> smName
+	
+	get-statemachine-name: element -> statemachine
+	where
+		statemachine:= <nabl-uri; nabl-uri-path; filter(?ID(NablNsStatemachine(), _, _)); Hd; nabl-segment-name> element
+		
+	collect-components: componentList* -> (states, events, vars)
+	where
+		not(<eq> (0, <length> componentList*));	 	
+	 	states:= <collect-states; map(expand-name)> componentList*;
+	 	events:= <collect-events; map(expand-name)> componentList*;
+	 	vars:= <collect-vars> componentList*					
+	
+	collect-states = filter(?StateMachineState(_, _))
+	
+	collect-events = filter(?StateMachineInEvent(_, _) <+ ?StateMachineOutEvent(_, _, _))
+
+	collect-vars = filter(?StateMachineVarDecl(_, _, _, _))
+	
+	expand-name: StateMachineInEvent(name, block) -> StateMachineInEvent(<expand-name>name, block)
+	expand-name: StateMachineOutEvent(name, param, binding) -> StateMachineOutEvent(<expand-name>name, param, binding)
+	expand-name: StateMachineState(name, block) -> StateMachineState(<expand-name>name, block)
+	
+	expand-name: name -> $[[<get-statemachine-name> name]__state_[name]]
+	where
+		is-statemachine-state
+	
+	expand-name: name -> $[[<get-statemachine-name> name]__event_[name]]
+	where
+		is-statemachine-inevent <+ is-statemachine-outevent
+	
+	generate-header(|moduleID, smID): (states, events, vars) -> [event-enum, state-enum, var-struct] 
+	where
+		event-enum:= <generate-enum(|moduleID, smID)> ("_sm_events_", events);		
+		state-enum:= <generate-enum(|moduleID, smID)> ("_sm_states_", states);
+		var-struct:= <generate-struct(|moduleID, smID)> ("_sm_data_", vars);
+		smFunctionPrototype := []										
+		
+	generate-enum(|moduleID, smID): (name, componentList) -> Enum(Exported(), Identifier($[[moduleID][name][smID]]), enumList)
+	where
+		enumList:= <mapconcat(try(generate-enumItem))> componentList
+	
+	generate-enumItem: StateMachineInEvent(event_name, _) -> [EnumItem(Identifier(event_name))]
+	
+	generate-enumItem: StateMachineOutEvent(_, _, _) -> []
+	
+	generate-enumItem: StateMachineState(state_name, _) -> [EnumItem(Identifier(state_name))]
+	
+	generate-struct(|moduleID, smID): (name, componentList) -> Struct(Exported(), Identifier($[[moduleID][name][smID]]), structBody)
+	where
+		structList:= <map(try(generate-structItem))> componentList;
+		currentState:= FieldDecl(Type([], EnumType(Identifier($[[moduleID]_sm_states_[smID]]))), Identifier("__currentState"));
+		structBody:= [currentState | structList]
+		
+	generate-structItem: StateMachineVarDecl(_, type, name, _) -> element
+	where
+		element:= FieldDecl(type, name)
+		
+	generate-function(|moduleID, smID): statesList -> smFunctionAST
+	where
+		name:= $[[moduleID]_sm_execute_[smID]];
+		params := <generate-params> ($[[moduleID]_sm_data_[smID]], $[[moduleID]_sm_events_[smID]]);
+		stateCaseList:= <map(generate-state-case); insert-entryBlocks(|statesList)> statesList;
+		
+		stateSwitch:= Switch(INSTANCE-FIELD("__currentState"), Block(stateCaseList));				
+		smFunctionBlock := [stateSwitch];			
+		smFunctionAST := VOID-FUNCTION(name, params, smFunctionBlock)							
+	
+	insert-entryBlocks(|stateList): caseStatements -> statements
+	where
+		statements:= <topdown(try(insert-entryBlock(|stateList)))> caseStatements
+	
+	insert-entryBlock(|stateList): EntryStatementsPlaceholder(name) -> basecStm
+	where
+		statements:= <filter(?StateMachineState(name, <id>)); flatten-list; filter(\StateEntry(Block(stm))->stm\)> stateList;
+		basecStm:= <topdown(try(to-basec(|None())))> statements
+	
+	generate-params: (smData, smEvents) -> [instance, event, arguments] 
+	where
+		instance:= Param(Type([], Pointer(Type([], StructType(Identifier(smData))))), Identifier("instance"));			
+		event:= Param(Type([], EnumType(Identifier(smEvents))), Identifier("event"));
+		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], BasicType("void")))))), Identifier("arguments"))
+	
+	generate-state-case: StateMachineState(stateID, stateBody*) -> stateCaseStatement
+	where
+		caseStatements:= <generate-case> stateBody*;
+		eventSwitch:= Switch(Var(Identifier("event")), Block(caseStatements));
+		stateCaseStatement := CASE(stateID, eventSwitch)		
+	
+	generate-case: stateBody* -> eventCaseList
+	where
+		transitions:= <filter(?StateTransition(_, _, _, _))> stateBody*;
+		exitStatements:= <collect(\StateExit(Block(stmList))->stmList\); try(flatten-list)> stateBody*;
+		eventNames:= <collect(\InEventRef(name)->name\)> transitions;
+		eventCaseList:= <map(generate-event-case(|transitions, exitStatements))> eventNames
+	
+	generate-event-case(|transitions, exitStatements): eventName -> [CASE(<expand-name>eventName, ifStatements)]
+	 where
+	 	eventTransitions:= <filter(?StateTransition(InEventRef(eventName), _, _, _))> transitions;
+	 	ifStatements:= <map(generate-if(|exitStatements))> eventTransitions
+	 	
+	generate-if(|exitStatements*): StateTransition(InEventRef(name), condition, StateRef(endState), block) -> ifStatement
+	where
+	 	conditionStatement:= <topdown(try(to-basec(|name)))>condition;
+	 	stateStatements*:= <topdown(try(to-basec(|name)))> [exitStatements*, block];
+	 	switchState:= Exp(Some(Assign(INSTANCE-FIELD("__currentState"), Assign(), Var(Identifier(<expand-name>endState)))));
+		return:= Return(Decimal(-1));
+	 	ifStatement:= <generate-if> (conditionStatement, [stateStatements*, switchState, EntryStatementsPlaceholder(<expand-name> endState), return])
+	
+	generate-if: (condition, body) -> statement
+	where
+		if []:= condition
+		then
+			statement:= If(Decimal("1"), Block(body))
+		else
+			statement:= If(condition, Block(body))
+		end
+	
+	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Type([], Pointer(paramType)), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
+	where
+		<is-event-param> name;
+		paramType:= <get-type> name;
+		index := <subt> (<get-paramIndex> name, 1)
+	
+	to-basec(|event): Var(Identifier(name)) -> INSTANCE-FIELD(name)					//strip-annos?
+	where
+		<is-statemachine-var> name
+		
+	to-basec(|event): Block(statements) -> statements
+	to-basec(|event): None() -> []
+	
+	is-namespace(|s) = nabl-uri; nabl-uri-namespace; ?s
+	parent-is-namespace(|s) = nabl-uri; nabl-uri-parent; nabl-uri-namespace; ?s
+		
+	is-statemachine-var: name -> None()
+	where
+		is-namespace(|NablNsVariable());
+		<parent-is-namespace(|NablNsStatemachine())> name
+	
+	is-event-param: name -> None()
+	where
+		is-namespace(|NablNsVariable());
+		<parent-is-namespace(|NablNsInEvent())> name
+	
+	is-statemachine-state = nabl-uri; nabl-uri-namespace; ?NablNsState()
+	is-statemachine-inevent = nabl-uri; nabl-uri-namespace; ?NablNsInEvent()
+	is-statemachine-outevent = nabl-uri; nabl-uri-namespace; ?NablNsOutEvent()
+	
+	generate-init(|moduleName, statemachineID, initial): varList -> VOID-FUNCTION(fname, paramList, [initState|initVars])
+	where
+	    initVars:=<map(generate-initStm)> varList																
+	  ; initState:= Exp(Assign(INSTANCE-FIELD("__currentState"), Assign(), Var(Identifier(<expand-name>initial))))
+	  ; paramList:= [Param(Type([], Pointer(Type([],StructType(Identifier($[[moduleName]_sm_data_[statemachineID]]))))), Identifier("instance"))]				
+	  ; fname:= $[[moduleName]_sm_init_[statemachineID]] 									
+		
+	generate-initStm: StateMachineVarDecl(_, _, Identifier(name), initValue) -> Exp(Assign(INSTANCE-FIELD(name), Assign(), initValue))
+	
+	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), [Address(e)]))
+	where
+		Type(_, StatemachineType(name)) := <get-type> e;
+		funName:= $[[<get-module-name> name]_sm_init_[name]]
+		 
+	to-basec: StateMachineTrigger(e, EventRef(event, list)) -> Block([argDecl, argStatements, Exp(FunctionCall(Identifier(funName), paramList))])
+	where
+	    evtParams:= <get-eventParams> event
+	  ; argDecl:= <length; generate-decl> list
+	  ; argStatements := <zip(id); map-with-index(generate-args); flatten-list> (evtParams, list)
+	  ; Type(_, StatemachineType(name)) := <get-type> e
+	  ; funName:= $[[<get-module-name> event]_sm_execute_[name]]
+	  ; evtName:= $[[name]__event_[event]]
+	  ; paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
+	
+	to-basec: Declaration(Type(modifiers, StatemachineType(name)), init) -> Declaration(Type(modifiers, StructType(Identifier(structName))), init)
+	where
+		structName:= $[[<get-module-name> name]_sm_data_[name]]
+	
+	to-basec: StateMachineIsInState(sm, state) -> Equal(Field(Var(sm), Identifier("__currentState")), Var(Identifier(<expand-name> state)))
+	
+	to-basec: StateMachineSend(OutEventRef(name), params) -> Exp(FunctionCall(Identifier(<get-boundFunction>name), params))
+	
+	generate-decl: size -> Declaration( Type([], Pointer(Type([], BasicType("void")))), NoInit((Identifier("___args"), Decimal(size))))
+	
+	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
+	where
+		decl:= Declaration(type, Init(Identifier($[___[name]]), initExp))				
+	  ; assign:= Exp(Assign(ArrayField(Var(Identifier("___args")), Decimal(<subt>(index, 1))), Assign(), UnExp(Addr(), Var(Identifier($[___[name]])))))
+	  ; statements := [decl , assign]
+	    
+overlays
+	
+	INSTANCE-FIELD(name) = FieldViaPointer(Var(Identifier("instance")), Identifier(name)) 
+	CASE(name, stmList) = Case(Var(Identifier(name)), Block([stmList, Break()]))
+	VOID-FUNCTION(name, params, statements) = FunDef(None(), Type([], BasicType("void")), Identifier(name), ParamList(params), statements)
+	

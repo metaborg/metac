@@ -1,0 +1,25 @@
+module BaseC/trans/naming/names
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/modules
+  	BaseC/trans/naming/variables
+  	BaseC/trans/naming/structsandunions
+  	BaseC/trans/naming/typedefs
+  	BaseC/trans/naming/enums
+  	BaseC/trans/naming/labels
+  	BaseC/trans/naming/messages
+  	BaseC/trans/naming/functions
+  	//BaseC/trans/typing/types
+	
+namespaces
+	Statemachine
+
+binding rules
+	
+	// statements
+	Block(_):
+    	scopes Variable

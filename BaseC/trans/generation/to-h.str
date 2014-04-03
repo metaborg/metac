@@ -2,7 +2,7 @@ module BaseC/trans/generation/to-h
 
 imports
 	include/MetaC
-	lib/c/c
+	lib/c/C
 	libstratego-gpp
 	BaseC/trans/generation/to-c
 
@@ -64,5 +64,5 @@ overlays
 rules
 	// c pretty printer (external)
 	pp-c-string =
-		ast2abox(|[<import-term(lib/c/c.pp.af)>]);
+		ast2abox(|[<import-term(lib/c/C.pp.af)>]);
 		box2text-string(|100)

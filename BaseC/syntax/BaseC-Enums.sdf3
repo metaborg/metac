@@ -1,0 +1,16 @@
+module BaseC-Enums
+
+imports
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-FunDef
+
+templates
+
+	EnumItem.EnumItem = <<Identifier> = <Constant>> 
+	EnumItem.EnumItem = <<Identifier>>
+	
+	Enum.Enum = <<Exported?> enum <Identifier?> { <EnumItem+; separator=","> }>
+	Enum = <<Exported?> enum <Identifier?> { <EnumItem+; separator=",">, }>
+
+    

@@ -1,0 +1,46 @@
+module BaseC/trans/naming/variables
+
+imports
+  	lib/analysis/-
+  	lib/index/-
+  	include/MetaC
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/naming/names
+
+namespaces
+	Variable
+
+
+binding rules
+	// variable definitions
+	
+	//TODO desugar Init/NoInit to look the same
+	Declaration( type, Init(Identifier(name), _) ):
+		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
+	//	where
+	//		typ has type t 
+	
+	Declaration( type, NoInit(Identifier(name)) ):
+		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
+	//	where 
+	//		typ has type t
+	
+	Declaration( type, NoInit((Identifier(varName), size)) ):
+		defines Variable varName of type type
+	
+	Param( type, Identifier(name) ):
+		defines Variable name of type type
+		
+	StructOrUnionInlineDecl(Struct(_, Identifier(s), _), Identifier(name)):
+		defines Variable name of type StructType(Identifier(s))
+	
+	StructOrUnionInlineDecl(Struct(_, None(), _), Identifier(name)):
+		defines Variable name 													//TODO add type
+	
+	//variable references
+	
+	Var( Identifier(name) ):
+		refers to Variable name
+	
+	ArrayField(Var(Identifier(name)), _):
+		refers to Variable name

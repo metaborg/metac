@@ -1,0 +1,39 @@
+module Statemachine-in-BaseC
+
+imports
+	BaseC-Identifiers
+	Statemachine
+
+lexical syntax
+
+Keywords = "statemachine"								//change Keyword sort name?
+
+templates
+
+StatemachineStm.StateMachineInit = <
+	sminit(<Exp>) ;
+	>
+
+StatemachineStm.StateMachineTrigger = <
+	smtrigger(<Exp>, <EventRef>);
+	>
+ 
+StatemachineExp.StateMachineIsInState = <
+	smIsInState(<Exp>, <ID>)
+	>
+
+StatemachineStm.StateMachineSend = <
+	send <OutEventRef>(<Exp*; separator=", ">); 
+	>
+
+PureType.StatemachineType = <statemachine <ID>>
+
+EventRef.EventRef = <<ID> (<Exp*;separator=", ">) >
+
+
+context-free syntax
+
+  Statemachine -> ModuleContent
+  StatemachineStm -> Stm
+  StatemachineExp -> Exp
+  

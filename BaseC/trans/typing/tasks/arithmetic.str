@@ -1,0 +1,88 @@
+module BaseC/trans/typing/tasks/arithmetic
+
+imports
+	include/MetaC
+ 	lib/nabl/-
+ 	lib/task/-
+  	lib/types/-
+  	lib/properties/-
+  	BaseC/trans/analysis/desugar/constructors
+  	BaseC/trans/typing/constructors
+  	BaseC/trans/typing/tasks/subtypes
+  	BaseC/trans/typing/types.generated
+  	
+  	
+rules
+	
+	create-type-task(|ctx):
+		BinExp(op, exp1, exp2) -> <type-is(|ctx, [type1, type2])> returnType
+    where 
+    	opType := <type-task(|ctx)> op; 
+    	etype1 := <new-task(|ctx)> Rewrite("get-etype1", opType);
+        etype2 := <new-task(|ctx)> Rewrite("get-etype2", opType);
+    	type1 := <type-task(|ctx)> exp1;
+        type2 := <type-task(|ctx)> exp2;
+        constraintE1 := <create-subtype-task(|ctx)> ("<:", type1, etype1);
+        <debug(!"CE1: ")> constraintE1; 
+        constraintE2 := <create-subtype-task(|ctx)> ("<:", type2, etype2);
+        returnType := <convert-binary(|ctx)> (type1, type2);
+        <task-create-error-on-failure(|ctx, constraintE1, "Expression should have a numeric type.")> exp1;
+        <task-create-error-on-failure(|ctx, constraintE2, "Expression should have a numeric type.")> exp2
+	
+	is-numeric(|ctx):
+   	t -> <new-task(|ctx)> Choice( [<is-int(|ctx)> t, <is-float(|ctx)> t] )
+   	
+   	is-int(|ctx):
+   	t -> <new-task(|ctx)> Choice( [<is-int8(|ctx)> t, <is-int16(|ctx)> t, <is-int32(|ctx)> t, <is-int64(|ctx)> t] )
+   	
+   	is-int8(|ctx) = type-match(|ctx, Int8())
+   	is-int16(|ctx) = type-match(|ctx, Int16())
+   	is-int32(|ctx) = type-match(|ctx, Int32())
+   	is-int64(|ctx) = type-match(|ctx, Int64())
+   	
+	is-float(|ctx) = type-match(|ctx, Float())	
+	
+  	convert-binary(|ctx):
+  	(t1, t2) -> t
+  	where
+  	c1 := <convert-widening-primitive(|ctx, t1)> t2;
+  	c2 := <convert-widening-primitive(|ctx, t2)> t1;
+  	t := <new-task(|ctx)> Choice([c1, c2])
+  	
+rules // projections
+
+  	task-rewrite :
+   	("get-etype1", (et1, et2)) -> et1
+
+	task-rewrite :
+   	("get-etype2", (et1, et2)) -> et2
+  
+signature constructors
+                
+	WideningPrimitiveConversion : Relation
+
+rules
+        
+	convert-widening-primitive(|ctx, actual-ty):
+   	expected-ty -> <type-match(|ctx, WideningPrimitiveConversion(), expected-ty)> actual-ty
+   	
+   																//actual, expected
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int8(), t@Int8()  )) -> t
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int8(), t@Int16()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int8(), t@Int32() )) -> t
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int8(), t@Int64()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int8(), t@Float() )) -> t
+    
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int16(), t@Int16()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int16(), t@Int32() )) -> t
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int16(), t@Int64()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int16(), t@Float() )) -> t
+    
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int32(), t@Int32() )) -> t
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int32(), t@Int64()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int32(), t@Float() )) -> t
+   	
+   	nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int64(), t@Int64()  )) -> t
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Int64(), t@Float() )) -> t
+    
+    nabl-property-eq: (Type(), WideningPrimitiveConversion(), (Float(), t@Float()  )) -> t		

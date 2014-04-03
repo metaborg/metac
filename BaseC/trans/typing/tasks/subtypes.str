@@ -1,0 +1,36 @@
+module BaseC/trans/typing/tasks/subtypes
+
+imports
+	include/MetaC	
+	libstratego-lib
+	lib/editor-common.generated
+	lib/index/-
+	lib/analysis/-
+	lib/nabl/-
+	lib/task/-
+	lib/types/-
+	lib/relations/-
+	BaseC/trans/naming/names
+	BaseC/trans/typing/constructors
+	BaseC/trans/analysis/desugar/constructors
+	BaseC/trans/typing/tasks/arithmetic
+
+rules
+	
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		Module(_, _, _) -> <fail>
+	where
+		<new-rel-tuple(|ctx, "<:", Numeric())> Float()
+	;	<new-rel-tuple(|ctx, "<:", Numeric())> Int()
+	;	<new-rel-tuple(|ctx, "<:", Int())> Int8()
+	;	<new-rel-tuple(|ctx, "<:", Int())> Int16()
+	;	<new-rel-tuple(|ctx, "<:", Int())> Int32()
+	;	<new-rel-tuple(|ctx, "<:", Int())> Int64()
+	
+    create-subtype-task(|ctx):
+    	("<:", t1, t2) -> type
+    where
+    	eq := <type-match(|ctx, t2)> t1
+    ;	task1 := <new-task(|ctx)> RelationLookup(Transitive("<:"), t1)      
+    ;   task2 := <type-match(|ctx, t2)> task1
+    ;	type := <task-create-choice(|ctx)> [eq, task2]   

@@ -1,0 +1,57 @@
+module BaseC-Modules
+
+imports 
+	BaseC-Identifiers
+	BaseC-Constants
+	BaseC-Declaration
+	BaseC-FunDef
+	BaseC-StructsAndUnions
+	BaseC-Enums
+	BaseC-Component
+
+templates
+
+Module.Module = <
+module <Identifier> <ModuleImports?> {
+	<ModuleContent*; separator="\n">
+}
+>
+
+ModuleContent = <<Declaration>>
+ModuleContent = <<FunDef>>
+ModuleContent = <<MessageList>>
+ModuleContent = <<StructOrUnion>;>
+ModuleContent = <<Enum>;>
+ModuleContent = <<Component>>
+ModuleContent = <<Interface>>
+
+ModuleImports = <imports <Import*; separator=",">> 
+
+Import.Import = <<Identifier>>
+
+MessageList.MessageList = <
+<Exported?> messagelist <Identifier> {
+	<Message*;separator="\n">
+}
+>
+
+Message.Message = <INFO <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message.Message = <WARNING <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+Message.Message = <ERROR <Identifier>(<FunctionParameter*;separator=",">) <MessageActive>: <Constant>>
+
+MessageActive.MessageActive = <active>
+MessageActive.MessageInactive = <inactive>
+
+
+Module.ModuleExternal = <
+external module <Identifier> <ModuleResources?> {
+	<ExternalModuleContent*; separator="\n">
+}
+>
+
+ExternalModuleContent = <<FunProto>>
+
+ModuleResources.ModuleResources = <resources <Resource*; separator=",">> 
+Resource.Resource = <<Header>>
+
+Header.Header = <<Identifier><>.h>

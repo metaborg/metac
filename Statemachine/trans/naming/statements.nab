@@ -1,0 +1,19 @@
+module statements
+
+imports
+  include/MetaC
+  Statemachine/trans/naming/names
+  Statemachine/trans/naming/states
+  Statemachine/trans/naming/events
+  BaseC/trans/typing/types.generated
+  
+binding rules
+
+	StateMachineIsInState(e, state): 
+		refers to State state in Statemachine s
+		where
+		 	e has type Type(_, StatemachineType(s)) 
+
+	StateMachineTrigger(e, EventRef(name, _)):
+		refers to InEvent name in Statemachine s
+		where e has type Type(_, StatemachineType(s))

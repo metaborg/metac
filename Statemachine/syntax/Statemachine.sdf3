@@ -1,0 +1,74 @@
+module Statemachine
+
+imports
+	BaseC-Identifiers
+	BaseC-FunDef
+	BaseC-Types
+	BaseC-Statements
+	BaseC-Expressions
+	
+	Statemachine-Keywords
+	Statemachine-in-BaseC
+
+context-free start-symbols
+
+Statemachine
+
+lexical syntax
+
+ID = "statemachine" {reject}
+//StatemachineVarModifier = "readable" | "writable"
+
+templates
+
+  StatemachineVarModifier.Readable = <readable>
+  StatemachineVarModifier.Writable = <writable>
+
+  Statemachine.Statemachine = <
+    statemachine <ID> initial = <StateRef> {
+    	<StateMachineComponent*; separator = "\n">
+    }
+  >
+ 
+  StateMachineComponent.StateMachineState = <
+  	state <ID> {
+  		<StateBody*>
+  	}
+  >
+  
+  StateRef.StateRef = <<ID>>
+  
+  InEventRef.InEventRef = <<ID>>
+  OutEventRef.OutEventRef = <<ID>>
+  
+  StateMachineComponent.StateMachineInEvent = <
+  	in <ID> ( <FunctionParameter*; separator=","> ) 
+  >																										//TODO add binding?
+  																																																				
+  
+  StateMachineComponent.StateMachineOutEvent = <
+  	out <ID> ( <FunctionParameter*; separator=",">) <StateMachineEventBinding?>
+  >
+  																										
+
+  StateMachineComponent.StateMachineVarDecl = <
+  	<StatemachineVarModifier?> var <Type> <Identifier> = <Exp>	
+  >																									
+  
+  StateMachineEventBinding.Binding = <
+  	=\> <ID>
+  >	
+  	
+  StateBody.StateEntry = <
+  	entry <Block>														
+  >																										
+  
+  StateBody.StateExit = <
+  	exit <Block>
+  >																										
+  	
+  StateBody.StateTransition = <
+  	on <InEventRef> [ <Exp?> ] -\> <StateRef> <Block?>
+  >																										
+ 
+  

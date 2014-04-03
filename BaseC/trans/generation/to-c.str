@@ -1,13 +1,11 @@
 module metaC/trans/generation/to-c
 
 imports
-	lib/analysis-library
-	lib/index-library
+	lib/analysis/-
 	include/MetaC
-	lib/c/c
+	lib/c/C
 	libstratego-gpp
-	baseC/trans/desugaring/desugar
-	BaseC/trans/desugaring/constructors
+	BaseC/trans/analysis/desugar/-
 
 
 // === rewrite rules for BaseC to C99 === //

@@ -1,0 +1,23 @@
+module BaseC/trans/types/constructors
+
+imports
+	include/MetaC
+
+signature constructors
+	FunType : List(Type) * Type -> Type
+	MsgListType: Identifier -> Type
+	
+	Int	  : Type
+	Float : Type
+	Char  : Type
+	Str   : Type
+	Ptr   : Type
+	
+	Numeric: Type
+	
+	SubTyping : Relation
+	
+	Int8 : Type
+	Int16 : Type
+	Int32 : Type
+	Int64 : Type

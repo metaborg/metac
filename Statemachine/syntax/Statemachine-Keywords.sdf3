@@ -1,0 +1,19 @@
+module Statemachine-Keywords
+
+lexical syntax
+	
+	Keyword =     "statemachine"         
+	Keyword =     "smtrigger"   
+	Keyword =     "sminit"    
+	Keyword =     "smIsInState"        
+	Keyword =     "state"   
+	Keyword =     "initial"     
+	Keyword =     "in"     
+	Keyword =     "out" 
+	Keyword =     "var"    
+	Keyword =     "entry"   
+	Keyword =     "exit"   
+	Keyword =     "on"     
+
+lexical restrictions
+	Keyword -/- [a-zA-Z0-9\_]
