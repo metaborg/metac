@@ -34,7 +34,21 @@ binding rules
 		refers to Statemachine name
 		
 	Field(e, Identifier(field)):  
+		refers to Field field in Union s
+		where 
+			e has type Type(_, StructType(Identifier(s)))
+	otherwise
 		refers to Variable field in Statemachine s
 		where 
 			e has type Type(_, StatemachineType(s))
+	
+	FieldViaPointer(e, Identifier(field)):
+		refers to Field field in Union s
+		where
+			e has type Type(_, Pointer(Type(_, StructType(Identifier(s)))))
+	otherwise
+		refers to Field field in Union s
+		where
+			e has type Type(_, Pointer(Type(_, StatemachineType(s))))		
+		
 			
