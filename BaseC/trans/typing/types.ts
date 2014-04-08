@@ -33,13 +33,6 @@ type rules
    	
    	Param(type, name): type
    	
-   	// Field(e, Identifier(fieldId)) -> type
-   	// where
-   	// 	//Type(_, StructType(Identifier(s))) := <type-of> e;
-   	// 	StructType(Identifier(s)) := <type-of; get-puretype> e;
-   	// 	field := <index-lookup-children(|Field(), fieldId); filter(match-name(|fieldId)); Hd> s;
-   	// 	type := <index-type-of> field 
-   	
    	Field(_, Identifier(x)): type
    	where definition of x: type
    	
