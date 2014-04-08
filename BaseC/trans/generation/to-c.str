@@ -56,11 +56,15 @@ rules
 	 */
 	to-c: Type(modifiers, type) -> C-TypeSpec(<map(to-c)>modifiers,<to-c>type, [])
 	
-	to-c: BasicType("int32")->C-TypeId("int32_t")
-	to-c: BasicType("int16")->C-TypeId("int16_t")
-	to-c: BasicType("int8")->C-TypeId("int8_t")
-	to-c: BasicType("string")->C-TypeId("string") //TODO: fix, C doesnt know string
-	to-c: BasicType("void") -> C-Void()
+	to-c: Void() -> C-Void()
+	
+	to-c: Int8()->C-TypeId("int8_t")
+	to-c: Int16()->C-TypeId("int16_t")
+	to-c: Int32()->C-TypeId("int32_t")
+	to-c: Int64()->C-TypeId("int64_t")
+	
+	to-c: String()->C-TypeId("string") 		//TODO: fix, C doesnt know string
+	
 	 
 	to-c: Const() -> C-Const()
 	to-c: Volatile() -> C-Volatile()
@@ -146,11 +150,8 @@ rules
 		nnlist:= [C-PointerOf(<map(to-c)>modifiers)|nlist]	<+
 		typespec:= a;nnlist:= [C-PointerOf(<map(to-c)>modifiers)|list]
 		
-	getTypeSpec(|list): Type(modifiers, BasicType(a)) -> (Type(modifiers, BasicType(a)), list)
-	
-	getTypeSpec(|list): Type(modifiers, StructType(a)) -> (Type(modifiers, StructType(a)), list)
-	
-	getTypeSpec(|list): Type(modifiers, EnumType(a)) -> (Type(modifiers, EnumType(a)), list)
+	getTypeSpec(|list): Type(modifiers, type) -> (Type(modifiers, type), list)
+	where not(Pointer(_) := type)
 	
 	
 	/**
@@ -326,7 +327,7 @@ rules
     	(typespec, plist):= <getTypeSpec(|[])> type
     	
     //TODO: do somewhat nicer for string[] argv
-    to-c: Param(Type([],Array(Type([],BasicType("string")), None())), name) ->
+    to-c: Param(Type([],Array(Type([], String()), None())), name) ->
     			  C-ParamDecl(
                     C-TypeSpec([], C-TypeId("int8_t"), [])
                   , C-IdDecl(
