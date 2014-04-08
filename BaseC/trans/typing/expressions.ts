@@ -43,10 +43,10 @@ type rules
 		and <promote> (aty1, aty2) => ty
 	
 	Or(e1, e2)
-  + And(e1, e2) : Boolean()
+  + And(e1, e2) : Bool()
   	where	
-  		e1: Boolean()
-  		and e2: Boolean()	
+  		e1: Bool()
+  		and e2: Bool()	
 			
 type functions
 	
