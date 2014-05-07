@@ -15,21 +15,25 @@ binding rules
 	// variable definitions
 	
 	//TODO desugar Init/NoInit to look the same
-	Declaration( type, Init(Identifier(name), _) ):
-		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
-	//	where
-	//		typ has type t 
+	Declaration(type, Init(Identifier(name), _) ):
+		defines Variable name of type t //in subsequent scope				// currently commented because it causes unexpected problems
+		where
+			type has type t 
 	
-	Declaration( type, NoInit(Identifier(name)) ):
-		defines Variable name of type type //in subsequent scope				// currently commented because it causes unexpected problems
-	//	where 
-	//		typ has type t
+	Declaration(type, NoInit(Identifier(name)) ):
+		defines Variable name of type t //in subsequent scope				// currently commented because it causes unexpected problems
+		where 
+			type has type t
 	
-	Declaration( type, NoInit((Identifier(varName), size)) ):
-		defines Variable varName of type type
+	Declaration(type, NoInit((Identifier(varName), size)) ):
+		defines Variable varName of type t
+		where 
+			type has type t
 	
-	Param( type, Identifier(name) ):
-		defines Variable name of type type
+	Param(type, Identifier(name) ):
+		defines Variable name of type t
+		where
+			type has type t
 		
 	StructOrUnionInlineDecl(Struct(_, Identifier(s), _), Identifier(name)):
 		defines Variable name of type StructType(Identifier(s))

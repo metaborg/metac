@@ -27,6 +27,22 @@ relations
 
 type rules
 	
+	Type(mod, Int8()): Type(mod, Int8())
+	Type(mod, Int16()): Type(mod, Int16())
+	Type(mod, Int32()): Type(mod, Int32())
+	Type(mod, Int64()): Type(mod, Int64())
+	
+	Type(mod, Pointer(type)): Type(mod, Pointer(actualType))
+	where
+		type: actualType
+	
+	Type(mod, StructType(name)) : Type(mod, StructType(name))
+	
+	Type(mod, TypeSynonym(Identifier(name))): Type(mod, type)
+	where definition of name: t 
+	and t => Type(m, type)
+	
+	
    	//variables
    	Var(Identifier(x)) : type
    	where definition of x : type
@@ -38,9 +54,4 @@ type rules
    	
    	FieldViaPointer(_, Identifier(x)): type
 	where definition of x: type  
-   		
-   	
-   		
-   		
-   	
-   	
+	

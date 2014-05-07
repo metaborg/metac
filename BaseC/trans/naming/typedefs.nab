@@ -10,15 +10,17 @@ imports
   	BaseC/trans/naming/enums
   	
 namespaces
-	TypeSynonym 	
+	TypeSynonym
 
 binding rules
 	TypedefDecl(type, Identifier(name)):
-		defines TypeSynonym name of type type
+		defines TypeSynonym name of type t
+		where 
+			type has type t
 		
 	TypeSynonym(Identifier(name)):
 		refers to TypeSynonym name
-		refers to Struct name										//figure out another way?
-		refers to Union name
-		refers to Enum name
+	otherwise	refers to Struct name										//figure out another way?
+	otherwise	refers to Union name
+	otherwise	refers to Enum name
 		//refers to Statemachine name

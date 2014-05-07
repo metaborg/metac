@@ -18,5 +18,4 @@ type rules
 		v: vt
 	and	e: et
 	and vt == et
-	else error $[types are not equal [vt] [et]] on e
-		
+	else error $[Incompatible types: [vt]; [et]] on e	

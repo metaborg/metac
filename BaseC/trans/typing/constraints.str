@@ -14,3 +14,9 @@ rules
 		
 	nabl-check-disable-duplicate(|uri, ns) = id
   	nabl-check-disable-hiding(|uri, ns) = id
+  	
+  	nabl-constraint(|ctx) :
+    TypedefDecl(Type(mod, type), name) -> <fail>
+    where 
+      <last> mod;
+      <task-create-warning(|ctx, ["Type qualifiers are meaningless in this declaration."])> mod
