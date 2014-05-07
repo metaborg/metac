@@ -34,6 +34,7 @@ lib/relations
 lib/task
 lib/tmpl
 lib/types
+lib/modelware
 lib-refactoring/*.generated.str
 trans/*.pp.generated.str
 BaseC/trans/naming/*.str
