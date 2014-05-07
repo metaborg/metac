@@ -43,10 +43,21 @@ type rules
 		and <promote> (aty1, aty2) => ty
 	
 	Or(e1, e2)
-  + And(e1, e2) : Bool()
+  + And(e1, e2) : Type([], Bool())
   	where	
   		e1: Bool()
   		and e2: Bool()	
+			
+	Address(e): Type([], Pointer(type))
+	where
+		e: type
+		
+	Dereference(e): type
+	where
+		e: Type(m, t)
+	and t => Pointer(type)
+	
+				
 			
 type functions
 	
