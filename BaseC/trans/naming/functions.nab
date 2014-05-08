@@ -16,8 +16,9 @@ namespaces
 binding rules
 	FunDef(_, returnType, Identifier(name), ParamList(params), _):
 		scopes Variable, TypeSynonym
-		defines Function name of type FunType(paramsTypes, returnType)
+		defines Function name of type FunType(paramsTypes, returnType')
 		where params has type paramsTypes
+		and returnType has type returnType'
 	
 	FunProto(returnType,  Identifier(name), ParamList(params)):
 		scopes Variable, TypeSynonym

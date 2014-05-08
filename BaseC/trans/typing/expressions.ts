@@ -56,6 +56,13 @@ type rules
 	where
 		e: Type(m, t)
 	and t => Pointer(type)
+		
+	FunctionCall(Identifier(name), _): type
+	where
+		definition of name: t
+	and
+		t => FunType(paramTypes, type)
+	
 	
 				
 			
