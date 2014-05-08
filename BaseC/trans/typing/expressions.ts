@@ -63,8 +63,10 @@ type rules
 	and
 		t => FunType(paramTypes, type)
 	
-	
-				
+	ArrayField(e, _): type
+	where
+		e: t
+	and t => Type(mod, Array(type, size))
 			
 type functions
 	

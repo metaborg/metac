@@ -44,10 +44,11 @@ type rules
 	
 	Type(mod, StructType(name)) : Type(mod, StructType(name))
 	
+	Type(mod, Array(type, size)): Type(mod, Array(type, size))
+	
 	Type(mod, TypeSynonym(Identifier(name))): Type(mod, type)
 	where definition of name: t 
 	and t => Type(m, type)
-	
 	
    	//variables
    	Var(Identifier(x)) : type

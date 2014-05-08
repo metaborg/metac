@@ -31,4 +31,11 @@ type rules
 		cond: t
 	and	t => Type(mod, type)
 	and type == Bool()
-		else error "Type of the expression needs to be boolean" on cond
+		else error "Type of expression needs to be boolean." on cond
+	
+	ArrayField(e, index):-
+	where
+		index: t
+	and t => Type(mod, type)	
+	and type <is: Int()
+		else error "Type of expression needs to be integer." on index 	
