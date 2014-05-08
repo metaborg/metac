@@ -15,7 +15,12 @@ type rules
 
 	Assign(v, _, e):-
 	where 
-		v: vt
-	and	e: et
-	and vt == et
-	else error $[Incompatible types: [vt]; [et]] on e	
+		v: vt and vt => Type(m1, vt')
+	and	e: et and et => Type(m2, et') 
+	and ( et' == vt' or et' <widens-prim: vt')
+		else error $[Incompatible types: [vt]; [et]] on e
+	
+	TypedefDecl(Type(mod, type), name):- 
+    where 
+      mod => []
+      else error "Type qualifiers are meaningless in this declaration." on mod					//TODO change error to warning
