@@ -67,6 +67,12 @@ type rules
 	where
 		e: t
 	and t => Type(mod, Array(type, size))
+		
+	Not(e): Type(mod, Bool())	
+	where
+		e: t
+	and t => Type(mod, type)
+	
 			
 type functions
 	

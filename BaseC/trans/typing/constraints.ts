@@ -39,3 +39,10 @@ type rules
 	and t => Type(mod, type)	
 	and type <is: Int()
 		else error "Type of expression needs to be integer." on index 	
+		
+	Not(e):-
+	where
+		e: t
+	and t => Type(mod, type)
+	and type == Bool()
+		else error "Type of expression needs to be boolean." on e 
