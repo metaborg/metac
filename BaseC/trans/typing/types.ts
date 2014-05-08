@@ -14,7 +14,8 @@ imports
 relations
 	
 	define transitive <is:
-	
+	define transitive <widens-prim:
+		
 	Int8() 	<is: Int()
 	Int16()	<is: Int()
 	Int32() <is: Int()
@@ -24,6 +25,11 @@ relations
 	t <is: Numeric()
 	where
 		t <is: Int() or t <is: Float()
+	
+	Int8() <widens-prim: Int16()
+	Int16() <widens-prim: Int32()
+	Int32() <widens-prim: Int64()
+	
 
 type rules
 	
