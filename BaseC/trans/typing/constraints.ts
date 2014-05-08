@@ -25,9 +25,10 @@ type rules
       mod => []
       else error "Type qualifiers are meaningless in this declaration." on mod					//TODO change error to warning
 		
-	If(cond, _):-
+	If(cond, _)
+	+While(cond, _):-
 	where
 		cond: t
 	and	t => Type(mod, type)
 	and type == Bool()
-		else error "Type of the expression in an if statement needs to be boolean" on cond	
+		else error "Type of the expression needs to be boolean" on cond
