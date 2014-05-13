@@ -56,4 +56,4 @@ menus
     action: "Show abstract syntax" 		= debug-show-aterm (openeditor) (realtime) (meta) (source)
     action: "Show desugared syntax" 	= editor-desugar (openeditor) (realtime) (source)
     action: "Show analyzed syntax" 		= debug-show-analyzed (openeditor) (meta)
-    action: "Show typed AST" 				= debug-annotate-selection-type (openeditor) (realtime) (meta)
+    action: "Show typed AST" 			= debug-annotate-selection-type (openeditor) (realtime) (meta)

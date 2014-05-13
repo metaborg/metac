@@ -39,7 +39,11 @@ rules
 	desugar: Hexadecimal(<id>)-> <ltrim-chars(?'0'); ltrim-chars(?'X'<+?'x'); hex-string-to-int; !Decimal(<id>)>
 		
 	desugar: PointerType(type, modifiers) -> Type(modifiers, Pointer(type))
-
+	
+	desugar: FunPointerType(modifiers, paramTypes, returnType) -> Type(modifiers, FunctionPointer(paramTypes, <try(desugar-type)> returnType))
+		
+	desugar-type = ?None(); !Type([], Void())
+	
 	desugar: For(
 		[Declaration(type, Init(varName, value))],
 		cond,

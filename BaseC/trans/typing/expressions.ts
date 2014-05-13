@@ -60,8 +60,8 @@ type rules
 	FunctionCall(Identifier(name), _): type
 	where
 		definition of name: t
-	and
-		t => FunType(paramTypes, type)
+	and ( t => FunType(paramTypes, type)
+		or t => Type(mod, FunctionPointer(paramType, type))) 
 	
 	ArrayField(e, _): type
 	where
@@ -73,6 +73,25 @@ type rules
 		e: t
 	and t => Type(mod, type)
 	
+	Return(e): type
+	where 
+		e: type
+	
+	Var(Identifier(x)) : type
+   	where definition of x : type
+   	
+   	Param(t, name): type
+   	where t: type
+   	
+   	Field(_, Identifier(x)): type
+   	where definition of x: type
+   	
+   	FieldViaPointer(_, Identifier(x)): type
+	where definition of x: type  
+	
+	FunctionRef(Identifier(x)): Type([], FunctionPointer(paramTypes, returnType))
+	where definition of x: t
+	and t => FunType(paramTypes, returnType)
 			
 type functions
 	

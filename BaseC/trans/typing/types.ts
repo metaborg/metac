@@ -27,12 +27,16 @@ relations
 		t <is: Int() or t <is: Float()
 	
 	Int8() <widens-prim: Int16()
+	Int8() <widens-prim: Int32()
+	Int8() <widens-prim: Int64()
 	Int16() <widens-prim: Int32()
+	Int16() <widens-prim: Int64()
 	Int32() <widens-prim: Int64()
 	
 
 type rules
 	
+	Type(mod, Void()): Type(mod, Void())
 	Type(mod, Int8()): Type(mod, Int8())
 	Type(mod, Int16()): Type(mod, Int16())
 	Type(mod, Int32()): Type(mod, Int32())
@@ -50,15 +54,8 @@ type rules
 	where definition of name: t 
 	and t => Type(m, type)
 	
-   	//variables
-   	Var(Identifier(x)) : type
-   	where definition of x : type
-   	
-   	Param(type, name): type
-   	
-   	Field(_, Identifier(x)): type
-   	where definition of x: type
-   	
-   	FieldViaPointer(_, Identifier(x)): type
-	where definition of x: type  
+	Type(mod, FunctionPointer(paramTypes, returnType)): Type(mod, FunctionPointer(pTypes, rType))
+	where
+		paramTypes: pTypes
+	and returnType: rType
 	

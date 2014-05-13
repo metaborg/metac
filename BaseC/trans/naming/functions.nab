@@ -25,5 +25,10 @@ binding rules
 		defines Function name of type FunType(paramsTypes, returnType)
 		where params has type paramsTypes
 	
-	FunctionCall(Identifier(f), _): 
+	FunctionCall(Identifier(f), params): 
 		refers to Function f
+		otherwise refers to Variable f 
+			where f has type Type(_, FunctionPointer(paramTypes, returnType))
+		
+	FunctionRef(Identifier(name)):
+		refers to Function name

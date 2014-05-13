@@ -9,6 +9,7 @@ signature constructors
 	MsgText : DefDataType
 	NoInit: T * T -> NoInit
 	Pointer: Pointer -> PureType
+	FunctionPointer: List(Type) * Type -> PureType
 	Resource: Resource -> Header
 	DefData : List * DefDataType * Constant -> DefData
 	

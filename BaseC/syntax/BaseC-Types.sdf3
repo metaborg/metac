@@ -31,6 +31,8 @@ templates
 	Type.Type = <<TypeModifier*> <PureType>>
 	Type.PointerType = <<Type> * <TypeModifier*> >
 
+	Type.FunPointerType = < <TypeModifier*> (<Type*; separator=",">) =\> (<Type?>)>
+
 	TypeModifier.Static = <static>
 	TypeModifier.Const = <const>
 	TypeModifier.Volatile = <volatile>

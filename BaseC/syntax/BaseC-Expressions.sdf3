@@ -11,6 +11,7 @@ templates
 // Variables
 // ====================================================================
 Exp.Var = <<Identifier>>
+Exp.FunctionRef = <:<Identifier>>
 Exp = <<Constant>>
 
 
