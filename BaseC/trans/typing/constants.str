@@ -19,9 +19,9 @@ rules
 		<leq> (val, max);
 		<geq> (val, min)
 		
-	is-int8 = in-range(|-128, 127); !Type([], Int8())
-	is-int16 = in-range(|-32768, 32767); !Type([], Int16())
-	is-int32 = in-range(|-2147483648, 2147483647); !Type([], Int32())
-	is-int64 = !Type([], Int64())
+	is-int8 = in-range(|-128, 127); !Int8()
+	is-int16 = in-range(|-32768, 32767); !Int16()
+	is-int32 = in-range(|-2147483648, 2147483647); !Int32()
+	is-int64 = !Int64()
 	
 	smallest-int-type = is-int8 <+ is-int16 <+ is-int32 <+ is-int64

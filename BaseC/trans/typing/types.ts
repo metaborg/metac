@@ -33,29 +33,30 @@ relations
 	Int16() <widens-prim: Int64()
 	Int32() <widens-prim: Int64()
 	
-
 type rules
 	
-	Type(mod, Void()): Type(mod, Void())
-	Type(mod, Int8()): Type(mod, Int8())
-	Type(mod, Int16()): Type(mod, Int16())
-	Type(mod, Int32()): Type(mod, Int32())
-	Type(mod, Int64()): Type(mod, Int64())
+	Void(): Void()
+	Int8(): Int8()
+	Int16(): Int16()
+	Int32(): Int32()
+	Int64(): Int64()
 	
-	Type(mod, Pointer(type)): Type(mod, Pointer(actualType))
-	where
-		type: actualType
+	Type(mod, t): type																//TODO store modifiers
+	where t: type
 	
-	Type(mod, StructType(name)) : Type(mod, StructType(name))
+	Pointer(type): Pointer(actualType)
+	where type: actualType
 	
-	Type(mod, Array(type, size)): Type(mod, Array(type, size))
+	StructType(name) : StructType(name)
 	
-	Type(mod, TypeSynonym(Identifier(name))): Type(mod, type)
-	where definition of name: t 
-	and t => Type(m, type)
+	Array(t, s): Array(type, size)
+	where t: type
+	and s => Decimal(size)
 	
-	Type(mod, FunctionPointer(paramTypes, returnType)): Type(mod, FunctionPointer(pTypes, rType))
-	where
-		paramTypes: pTypes
+	TypeSynonym(Identifier(name)): type
+	where definition of name: type 
+	
+	FunctionPointer(paramTypes, returnType): FunctionPointer(pTypes, rType)
+	where paramTypes: pTypes
 	and returnType: rType
 	

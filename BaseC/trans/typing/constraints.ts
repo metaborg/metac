@@ -7,6 +7,7 @@ imports
   	lib/types/-
   	lib/properties/-
   	lib/relations/-
+  	BaseC/trans/naming/variables
   	BaseC/trans/analysis/desugar/constructors
   	BaseC/trans/typing/constructors	
   	
@@ -14,35 +15,34 @@ imports
 type rules
 
 	Assign(v, _, e):-
-	where 
-		v: vt and vt => Type(m1, vt')
-	and	e: et and et => Type(m2, et') 
-	and ( et' == vt' or et' <widens-prim: vt')
+	where v: vt
+	and	e: et 
+	and ( et == vt or et <widens-prim: vt)
 		else error $[Incompatible types: [vt]; [et]] on e
-	
+		
 	TypedefDecl(Type(mod, type), name):- 
-    where 
-      mod => []
+    where mod => []
       else error "Type qualifiers are meaningless in this declaration." on mod					//TODO change error to warning
 		
 	If(cond, _)
 	+While(cond, _):-
-	where
-		cond: t
-	and	t => Type(mod, type)
-	and type == Bool()
+	where cond: Bool()
 		else error "Type of expression needs to be boolean." on cond
 	
 	ArrayField(e, index):-
-	where
-		index: t
-	and t => Type(mod, type)	
+	where index: type	
 	and type <is: Int()
 		else error "Type of expression needs to be integer." on index 	
 		
 	Not(e):-
-	where
-		e: t
-	and t => Type(mod, type)
-	and type == Bool()
+	where e: Bool()
 		else error "Type of expression needs to be boolean." on e 
+		
+	FunctionCall(Identifier(name), params):-
+	where
+	(	definition of name: FunType(expectedTypes, rt)
+		or definition of name: FunctionPointer(expectedTypes, rt))
+	and params: actualTypes
+	and (actualTypes == expectedTypes or actualTypes <widens-prim: expectedTypes )
+	else error $[Incompatible parameter types: ([expectedTypes]); ([actualTypes])] on params
+	

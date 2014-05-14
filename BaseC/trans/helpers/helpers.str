@@ -16,12 +16,13 @@ imports
 	BaseC/trans/analysis/desugar/desugar
 	BaseC/trans/analysis/desugar/constructors
 	BaseC/trans/naming/names
+	BaseC/trans/naming/variables
 	//BaseC/trans/typing/types.generated
 	
 rules
 	
 	annotate-type:
-		term -> term { <get-type> term }
+		term -> term {[<get-modifiers>term, <get-type> term ]}
 		
 	remove-identifier-annos:
 		Identifier(name) -> Identifier(<strip-annos> name)

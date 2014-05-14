@@ -5,7 +5,7 @@ imports
 	
 type rules
 	
-	Float(val) : Type([], Float())
+	Float(val) : Float()
 	
-	True(): Type([], Bool())
-	False(): Type([],Bool())
+	True(): Bool()
+	False(): Bool()

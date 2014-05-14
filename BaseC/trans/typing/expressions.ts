@@ -7,6 +7,7 @@ imports
   	lib/types/-
   	lib/properties/-
   	lib/relations/-
+  	BaseC/trans/naming/variables
   	BaseC/trans/analysis/desugar/constructors
   	BaseC/trans/typing/constructors
   	BaseC/trans/typing/types.generated
@@ -18,10 +19,10 @@ type rules
   + Subtraction(e1, e2)
   + Multiplication(e1, e2)
   + Division(e1, e2) 
-  + Modulo(e1, e2) : Type([], ty)
+  + Modulo(e1, e2) : ty
 	where
-		e1: Type(_, aty1)
-		and e2: Type(_, aty2)
+		e1: aty1
+		and e2: aty2
 		and aty1 <is: Numeric()
 			else error "Expected Numeric type" on e1
 		and aty2 <is: Numeric()
@@ -32,10 +33,10 @@ type rules
   + BitwiseXor(e1, e2)
   +	BitwiseAnd(e1, e2)
   +	BitshiftRight(e1, e2)
-  +	BitshiftLeft(e1, e2) : Type([], ty)
+  +	BitshiftLeft(e1, e2) : ty
   	where
-  		e1: Type(_, aty1)
-		and e2: Type(_, aty2)
+  		e1: aty1
+		and e2: aty2
 		and aty1 <is: Int()
 			else error "Expected Integer type" on e1
 		and aty2 <is: Int()
@@ -43,42 +44,38 @@ type rules
 		and <promote> (aty1, aty2) => ty
 	
 	Or(e1, e2)
-  + And(e1, e2) : Type([], Bool())
+  + And(e1, e2) : Bool()
   	where	
   		e1: Bool()
   		and e2: Bool()	
 			
-	Address(e): Type([], Pointer(type))
-	where
-		e: type
+	Address(e): Pointer(type)
+	where e: type
 		
 	Dereference(e): type
-	where
-		e: Type(m, t)
-	and t => Pointer(type)
+	where e: Pointer(type)
 		
 	FunctionCall(Identifier(name), _): type
 	where
 		definition of name: t
 	and ( t => FunType(paramTypes, type)
-		or t => Type(mod, FunctionPointer(paramType, type))) 
+		or t => FunctionPointer(paramType, type)) 
 	
 	ArrayField(e, _): type
-	where
-		e: t
-	and t => Type(mod, Array(type, size))
+	where e: Array(t, size)
+	and t: type
 		
-	Not(e): Type(mod, Bool())	
-	where
-		e: t
-	and t => Type(mod, type)
+	Not(e): Bool()	
+	where e: type
 	
 	Return(e): type
-	where 
-		e: type
+	where e: type
 	
 	Var(Identifier(x)) : type
    	where definition of x : type
+   	
+   	Var(Identifier(x)) has modifiers mod
+   	where definition of x has modifiers mod
    	
    	Param(t, name): type
    	where t: type
@@ -89,7 +86,7 @@ type rules
    	FieldViaPointer(_, Identifier(x)): type
 	where definition of x: type  
 	
-	FunctionRef(Identifier(x)): Type([], FunctionPointer(paramTypes, returnType))
+	FunctionRef(Identifier(x)): FunctionPointer(paramTypes, returnType)
 	where definition of x: t
 	and t => FunType(paramTypes, returnType)
 			

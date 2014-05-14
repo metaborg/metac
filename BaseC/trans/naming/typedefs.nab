@@ -13,7 +13,7 @@ namespaces
 	TypeSynonym
 
 binding rules
-	TypedefDecl(type, Identifier(name)):
+	TypedefDecl(Type(mod, type), Identifier(name)):
 		defines TypeSynonym name of type t
 		where 
 			type has type t

@@ -37,9 +37,9 @@ binding rules
 	Field(e, Identifier(field)):  
 		refers to Field field in Union s
 		where 
-			e has type Type(_, StructType(Identifier(s)))
+			e has type StructType(Identifier(s))
 	
 	FieldViaPointer(e, Identifier(field)):
 		refers to Field field in Union s
 		where
-			e has type Type(_, Pointer(Type(_, StructType(Identifier(s)))))
+			e has type Pointer(StructType(Identifier(s)))

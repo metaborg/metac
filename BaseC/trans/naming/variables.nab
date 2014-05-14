@@ -9,29 +9,40 @@ imports
 
 namespaces
 	Variable
+	
+properties 
 
+	modifiers of Variable: VariableModifiers
 
 binding rules
 	// variable definitions
 	
 	//TODO desugar Init/NoInit to look the same
-	Declaration(type, Init(Identifier(name), _) ):
-		defines Variable name of type t //in subsequent scope				// currently commented because it causes unexpected problems
+	Declaration(Type(mod, type), Init(Identifier(name), _) ):
+		defines Variable name 
+			of type t 
+			of modifiers mod			//in subsequent scope				// currently commented because it causes unexpected problems
 		where
 			type has type t 
 	
-	Declaration(type, NoInit(Identifier(name)) ):
-		defines Variable name of type t //in subsequent scope				// currently commented because it causes unexpected problems
+	Declaration(Type(mod, type), NoInit(Identifier(name)) ):
+		defines Variable name 
+			of type t 
+			of modifiers mod			//in subsequent scope				// currently commented because it causes unexpected problems
 		where 
 			type has type t
 	
-	Declaration(type, NoInit((Identifier(varName), size)) ):
-		defines Variable varName of type t
+	Declaration(Type(mod, type), NoInit((Identifier(varName), size)) ):
+		defines Variable varName 
+			of type t
+			of modifiers mod
 		where 
 			type has type t
 	
-	Param(type, Identifier(name) ):
-		defines Variable name of type t
+	Param(Type(mod, type), Identifier(name) ):
+		defines Variable name 
+			of type t
+			of modifiers mod
 		where
 			type has type t
 		
