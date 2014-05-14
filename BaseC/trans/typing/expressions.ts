@@ -81,10 +81,12 @@ type rules
    	where t: type
    	
    	Field(_, Identifier(x)): type
-   	where definition of x: type
+   	where definition of x: t
+   	and t: type
    	
    	FieldViaPointer(_, Identifier(x)): type
-	where definition of x: type  
+	where definition of x: t
+	and t: type  
 	
 	FunctionRef(Identifier(x)): FunctionPointer(paramTypes, returnType)
 	where definition of x: t
