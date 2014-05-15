@@ -22,7 +22,11 @@ rules
 		where
 			declarationList := <map(declaration-pairwith(|type))>vars
 	
-	declaration-pairwith(|type): var -> Declaration(type, var)
+	declaration-pairwith(|type): var -> <try(desugar-decl)> Declaration(type, var)
+	
+	desugar-decl: Declaration(type, NoInit((name, size))) -> Declaration(Type([], Array(type, size)), NoInit(name)) 		
+	
+	desugar-decl: Declaration(Type(mod, Array(type, size)), init) -> Declaration(Type([], Array(Type(mod, type), size)), init)
 	
 	desugar: FieldDecl(type, vars) -> declarationList
 		where

@@ -21,8 +21,7 @@ templates
 	PureType.LongDouble = <long double> 			//default: 128 bit
 	PureType.String = <string>
 	
-	
-	PureType.Array = <<Type> [ <Constant?> ]>
+	PureType.Array = <<PureType> [ <Constant?> ]>	
 	PureType.StructType = <struct <Identifier>>		// structs
 	PureType.UnionType = <union <Identifier>>		// unions
 	PureType.EnumType = <enum <Identifier>>			// enum
