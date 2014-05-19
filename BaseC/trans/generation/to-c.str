@@ -51,22 +51,17 @@ rules
 	to-c: BitshiftLeftAssign() -> C-AssignSL()
 	to-c: BitshiftRightAssign() -> C-AssignSR()
 	
-	
 	/**
 	 * Types
 	 */
-	to-c: Type(modifiers, type) -> C-TypeSpec(<map(to-c)>modifiers,<to-c>type, [])
+	to-c: Type(modifiers, type) -> C-TypeSpec(<map(to-c)>modifiers, <to-c>type, [])
 	
 	to-c: Void() -> C-Void()
-	
-	to-c: Int8()->C-TypeId("int8_t")
-	to-c: Int16()->C-TypeId("int16_t")
-	to-c: Int32()->C-TypeId("int32_t")
-	to-c: Int64()->C-TypeId("int64_t")
-	
-	to-c: String()->C-TypeId("string") 		//TODO: fix, C doesnt know string
-	
-	 
+	to-c: Int8() -> C-TypeId("int8_t")
+	to-c: Int16() -> C-TypeId("int16_t")
+	to-c: Int32() -> C-TypeId("int32_t")
+	to-c: Int64() -> C-TypeId("int64_t")
+	to-c: String() -> C-TypeId("string") 		//TODO: fix, C doesnt know string
 	to-c: Const() -> C-Const()
 	to-c: Volatile() -> C-Volatile()
 	to-c: Static() -> C-Static()
@@ -74,75 +69,74 @@ rules
 	/**
 	 * Declarations
 	 */
-	/*to-c: Declaration(a, NoInit(b)) -> 
+	    
+	to-c: Declaration(type, NoInit(name)) -> 
 			  C-Declaration2(
-	            <to-c>a
-	          , [ C-IdDecl([], <to-c>b, None()) ]
-	          )
-	to-c: Declaration(a, Init(b, c)) -> 
-			  C-Declaration2(
-	            <to-c>a
-	          , [ C-DeclInit(
-	            	C-IdDecl([], <to-c>b, None())
-	              , C-AssignInit(<to-c>c)
-	              )
+	            typespec
+	          , [ C-IdDecl(
+	            	plist
+	              , <to-c> name, 
+	              	postfixDecl
+	              	)
 	            ]
 	          )
-	*/          
-	to-c: Declaration(a, NoInit(name)) -> 
-			  C-Declaration2(
-	            <to-c> typespec
-	          , [ C-IdDecl(plist
-	            , <to-c>name, 
-	              None()
-	              ) ]
-	          )
 	where
-		(typespec, plist):= <getTypeSpec(|[])> a
+		typespec := <to-c-TypeSpec> type;
+		plist := <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
 	
-	to-c: Declaration(a, Init(b, c)) -> 
+	to-c: Declaration(type, Init(b, c)) -> 
 			  C-Declaration2(
-	            <to-c> typespec
+	            typespec
 	          , [ C-DeclInit(
-	            	C-IdDecl(plist, <to-c>b, None())
-	              , C-AssignInit(<to-c>c)
+	            	C-IdDecl(
+	            	plist, 
+	            	<to-c>b, 
+	            	postfixDecl
+	                )
+	            , C-AssignInit(<to-c>c)
 	              )
 	            ]
 	          )          
 	where
-		(typespec, plist):= <getTypeSpec(|[])> a
+		typespec := <to-c-TypeSpec> type;
+		plist := <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
 	
-	to-c: Declaration(type, Init((name, size), init)) -> 							//aray init
+	to-c: Declaration(type, Init((name, size), init)) -> 
 			  C-Declaration2(
-	            <to-c> typespec
+	            typespec
 	          , [ C-DeclInit(
 	            	C-IdDecl(
-	            		plist
-	            	, 	<to-c>name
-	            	, 	Some(C-ArrayDecl(None(), Some(<to-c> size)))
+	            	  plist
+	            	, <to-c>name
+	            	, postfixDecl
 	            	)
 	              , <to-c> init
 	              )
 	            ]
 	          )          
 	where
-		(typespec, plist):= <getTypeSpec(|[])> type
+		typespec := <to-c-TypeSpec> type;
+		plist := <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type	
 	
 	to-c: InitBlock(a) -> C-ArrayInit(<map(to-c-init)>a)
 	to-c-init: a -> C-AssignInit(<to-c> a)
 	
 	to-c: Declaration( type, NoInit((name, size))) ->
 			C-Declaration2(
-				<to-c> typespec
+				typespec
 				, C-IdDecl(
 				  	plist
 				  , <to-c>name
-				  , Some(C-ArrayDecl(None(), Some(<to-c>size)))
+				  , postfixDecl
 				  )
 			)
 	where
-		(typespec, plist):= <getTypeSpec(|[])> type
-	
+		typespec := <to-c-TypeSpec> type;
+		plist := <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
 	
 	//TODO: fix as below (return Type(...))							
 	getTypeSpec(|list): Type(modifiers, Pointer(a)) -> (typespec, nnlist) 
@@ -152,8 +146,45 @@ rules
 		typespec:= a;nnlist:= [C-PointerOf(<map(to-c)>modifiers)|list]
 		
 	getTypeSpec(|list): Type(modifiers, type) -> (Type(modifiers, type), list)
-	where not(Pointer(_) := type)
+	where 
+		<debug(!"GET TYPESPEC WITH TYPE() RETURN")> <id>;
+		not(Pointer(_) := type)
 	
+	to-c-TypeSpec: Type(modifiers, Pointer(a)) -> <to-c-TypeSpec> a
+	where
+		<debug(!"type-pointer: ")> Type(modifiers, Pointer(a))
+	
+	//TODO: verify for multi-dimensional arrays
+	to-c-TypeSpec: Type(modifiers, Array(type, size)) -> <to-c-TypeSpec> type
+	where
+		<debug(!"type-array: ")> Type(modifiers, Array(type, size))
+	
+	to-c-TypeSpec: Type(modifiers, type) -> <to-c> <id>
+	where
+		not(<?Pointer(_)> type);
+		not(<?Array(_, _)> type);
+		<debug(!"type-simple: ")> Type(modifiers, type)
+	
+	to-c-PointerList(|list): Type(modifiers, Pointer(type)) -> plist
+	where
+		nlist:= <to-c-PointerList(|list)> type;
+		plist:= [C-PointerOf(<map(to-c)>modifiers) | nlist]
+	
+	to-c-PointerList(|list): Type(modifiers, Array(type, size)) -> nlist
+	where
+		nlist:= <to-c-PointerList(|list)> type	
+	
+	to-c-PointerList(|list): Type(modifiers, type) -> list
+	where
+		not(<?Pointer(_)> type);
+		not(<?Array(_, _)> type)
+	
+	//TODO: improve for multi-dimensional arrays	
+	to-c-PostfixDecl: Type(modifiers, Array(type, size)) -> Some(C-ArrayDecl(None(), Some(<to-c> size)))
+	
+	to-c-PostfixDecl: Type(modifiers, type) -> None() 	
+	where
+		not (<?Array(_, _)> type)
 	
 	/**
 	 * Expressions
@@ -199,12 +230,13 @@ rules
 	to-c: TypeConversion(type, var) -> 
 				C-TypeCast(
 					C-TypeName(
-						<to-c> typespec
+						typespec
 					,	<to-c-pointer> plist	
 					)
 				, 	<to-c> var)
 	where
-		(typespec, plist):= <getTypeSpec(|[])> type
+		typespec:= <to-c-TypeSpec> type;
+		plist:= <to-c-PointerList(|[])> type
 	
 	to-c-pointer: list -> term
 	where
@@ -285,12 +317,20 @@ rules
 		    
 	to-c: FieldDecl(type, identifier) -> 
 			C-MemDecl(
-				<to-c> typespec, 
-				//[<to-c-field-decl>identifier]
-				[C-IdDecl(plist, <to-c>identifier, None())]
-				)
+				typespec, 
+				[ C-IdDecl(
+					<to-c-pointer> plist, 
+					<to-c>identifier, 
+					postfixDecl
+					)
+				]
+			)
 	where
-		(typespec, plist):= <getTypeSpec(|[])> type
+		typespec:= <to-c-TypeSpec> type;
+		plist:= <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
+		
+		
 	//to-c-field-decl: Identifier(a) -> C-IdDecl([], C-Id(a), None())
     to-c: StructType(a) -> C-TypeSpec([], C-StructId(<to-c>a), [])
 	to-c: Field(a, b) -> C-Field(<to-c>a, <to-c>b)
@@ -321,14 +361,20 @@ rules
 	 */
 	to-c: Param(type, name) ->
 				  C-ParamDecl(
-                    <to-c>typespec
-                  , C-IdDecl(plist, <to-c>name, None())
+                    typespec
+                  , C-IdDecl(
+                    	<to-c-pointer> plist, 
+                    	<to-c>name, 
+                    	postfixDecl)
                   )
     where
-    	(typespec, plist):= <getTypeSpec(|[])> type
+    	typespec:= <to-c-TypeSpec> type;
+		plist:= <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
+	
     	
     //TODO: do somewhat nicer for string[] argv
-    to-c: Param(Type([],Array(Type([], String()), None())), name) ->
+    to-c: Param(Type([], Array(Type([], String()), None())), name) ->
     			  C-ParamDecl(
                     C-TypeSpec([], C-TypeId("int8_t"), [])
                   , C-IdDecl(
@@ -342,17 +388,17 @@ rules
 
 	to-c: FunDef(_, returnType, name, params, statements) ->
 				  C-FunDef(
-				  	<to-c>typespec,
+				  	typespec,
 				  	C-IdDecl(
-				      plist,
+				      <to-c-pointer> plist,
 				      <to-c>name,
 				      <to-c>params
 				    ),
 				    <to-c>Block(statements)
 				  )
 	where
-		(typespec, plist):= <getTypeSpec(|[])> returnType		 
-
+		typespec:= <to-c-TypeSpec> returnType;
+		plist:= <to-c-PointerList(|[])> returnType		 
 
 	/**
 	 * Modules

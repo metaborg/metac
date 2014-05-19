@@ -1,7 +1,7 @@
 module BaseC/trans/typing/types-imports
 
 imports
- 	BaseC/trans/typing/types
+ 	//BaseC/trans/typing/types
  	BaseC/trans/typing/types.generated
   	BaseC/trans/typing/constructors
   	BaseC/trans/typing/constants
