@@ -153,8 +153,12 @@ rules
 		<is-event-param> name;
 		pType:= <get-type> name;
 		pMod:= <get-modifiers> name;
-		paramType:= Type(pMod, pType);
+		paramType:= Type(pMod, <try(wrap-pointerType)> pType);
 		index := <subt> (<get-paramIndex> name, 1)
+		
+	wrap-pointerType: Pointer(type) -> Pointer(Type([], type))
+	where 
+		not(<?Type(mod, t)> type)
 	
 	to-basec(|event): Var(Identifier(name)) -> INSTANCE-FIELD(name)					//strip-annos?
 	where
@@ -212,7 +216,7 @@ rules
 	
 	to-basec: StateMachineSend(OutEventRef(name), params) -> Exp(FunctionCall(Identifier(<get-boundFunction>name), params))
 	
-	generate-decl: size -> Declaration( Type([], Pointer(Type([], Void()))), NoInit((Identifier("___args"), Decimal(size))))
+	generate-decl: size -> Declaration( Type([], Pointer(Type([], Void()))), [NoInit((Identifier("___args"), Decimal(size)))])
 	
 	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
 	where
