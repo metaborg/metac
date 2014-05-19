@@ -28,6 +28,10 @@ rules
 	
 	desugar-decl: Declaration(Type(mod, Array(type, size)), init) -> Declaration(Type([], Array(Type(mod, type), size)), init)
 	
+	desugar: Param(Type(mod, Array(type, size)), name) -> Param(Type([], Array(Type(mod, type), size)), name)
+	where
+		not(<?Type(m, t)> type)
+	
 	desugar: FieldDecl(type, vars) -> declarationList
 		where
 			declarationList := <map(fieldDecl-pairwith(|type))>vars
@@ -55,6 +59,8 @@ rules
 		loopBody) ->
 				Block([Declaration(type, NoInit(varName)),
 					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)])
+	
+	desugar-after: Type(mod, String()) -> Type([], Pointer(Type(mod, Int8())))
 	
 	/**
 	 * Expressions
