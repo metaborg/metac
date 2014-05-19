@@ -16,6 +16,7 @@ imports
 	Statemachine/trans/naming/names
 	Statemachine/trans/generation/builders
 	Statemachine/trans/analysis/analyze
+	Statemachine/trans/typing/types-imports
 
 rules // Analysis
 	

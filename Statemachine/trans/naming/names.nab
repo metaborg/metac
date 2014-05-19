@@ -2,7 +2,9 @@ module names
 
 imports
   include/MetaC
+  BaseC/trans/analysis/desugar/constructors
   BaseC/trans/naming/variables
+  BaseC/trans/naming/structsandunions
   Statemachine/trans/naming/events
   Statemachine/trans/naming/statements
   Statemachine/trans/naming/states

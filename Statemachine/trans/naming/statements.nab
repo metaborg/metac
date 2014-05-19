@@ -12,8 +12,8 @@ binding rules
 	StateMachineIsInState(e, state): 
 		refers to State state in Statemachine s
 		where
-		 	e has type Type(_, StatemachineType(s)) 
+		 	e has type StatemachineType(s) 
 
 	StateMachineTrigger(e, EventRef(name, _)):
 		refers to InEvent name in Statemachine s
-		where e has type Type(_, StatemachineType(s))
+		where e has type StatemachineType(s)

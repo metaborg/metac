@@ -6,5 +6,10 @@ imports
 	
 binding rules
 	
-	StateMachineVarDecl(_,var_type, Identifier(name), _) : 
-		defines unique Variable name of type var_type 
+	StateMachineVarDecl(_, Type(mod, type), Identifier(name), _) : 
+		defines unique Variable name 
+			of type t 
+			of modifiers mod
+			//in subsequent scope
+		where
+			type has type t

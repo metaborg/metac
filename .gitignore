@@ -42,3 +42,4 @@ BaseC/syntax/*.sdf
 BaseC/trans/typing/*.generated.str
 Statemachine/syntax/*.sdf
 Statemachine/trans/naming/*.str
+Statemachine/trans/typing/*.generated.str
