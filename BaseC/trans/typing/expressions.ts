@@ -62,8 +62,7 @@ type rules
 		or t => FunctionPointer(paramType, type)) 
 	
 	ArrayField(e, _): type
-	where e: Array(t, size)
-	and t: type
+	where e: Array(type, size)
 		
 	Not(e): Bool()	
 	where e: type
@@ -81,12 +80,10 @@ type rules
    	where t: type
    	
    	Field(_, Identifier(x)): type
-   	where definition of x: t
-   	and t: type
-   	
+   	where definition of x: type
+
    	FieldViaPointer(_, Identifier(x)): type
-	where definition of x: t
-	and t: type  
+	where definition of x: type
 	
 	FunctionRef(Identifier(x)): FunctionPointer(paramTypes, returnType)
 	where definition of x: t
