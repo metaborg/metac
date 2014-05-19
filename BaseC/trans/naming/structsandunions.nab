@@ -6,6 +6,7 @@ imports
   	include/MetaC
   	BaseC/trans/analysis/desugar/constructors
   	BaseC/trans/naming/names
+  	BaseC/trans/naming/variables
 
 namespaces 
 	Struct
