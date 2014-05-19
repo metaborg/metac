@@ -151,7 +151,9 @@ rules
 	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Type([], Pointer(paramType)), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
 	where
 		<is-event-param> name;
-		paramType:= <get-type> name;
+		pType:= <get-type> name;
+		pMod:= <get-modifiers> name;
+		paramType:= Type(pMod, pType);
 		index := <subt> (<get-paramIndex> name, 1)
 	
 	to-basec(|event): Var(Identifier(name)) -> INSTANCE-FIELD(name)					//strip-annos?
@@ -189,7 +191,7 @@ rules
 	
 	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), [Address(e)]))
 	where
-		Type(_, StatemachineType(name)) := <get-type> e;
+		StatemachineType(name) := <get-type; debug(!"statemachine-type: ")> e;
 		funName:= $[[<get-module-name> name]_sm_init_[name]]
 		 
 	to-basec: StateMachineTrigger(e, EventRef(event, list)) -> Block([argDecl, argStatements, Exp(FunctionCall(Identifier(funName), paramList))])
@@ -197,7 +199,7 @@ rules
 	    evtParams:= <get-eventParams> event
 	  ; argDecl:= <length; generate-decl> list
 	  ; argStatements := <zip(id); map-with-index(generate-args); flatten-list> (evtParams, list)
-	  ; Type(_, StatemachineType(name)) := <get-type> e
+	  ; StatemachineType(name) := <get-type; debug(!"statemachine-type: ")> e
 	  ; funName:= $[[<get-module-name> event]_sm_execute_[name]]
 	  ; evtName:= $[[name]__event_[event]]
 	  ; paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
