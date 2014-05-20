@@ -12,13 +12,18 @@ namespaces
 	Messagelist
 	Message
 
+properties
+	msgText of Message: MsgText
+
 binding rules
 	MessageList(_, Identifier(name), _):
-		defines unique Messagelist name of type MsgListType(Identifier(name))
+		defines unique Messagelist name 
+			of type MsgListType(Identifier(name))
 		scopes Message
 		
-	Message(Identifier(name), _, _, _):
- 		defines Message name
+	Message(Identifier(name), _, _, text):
+ 		defines Message name 
+ 			of msgText text
  		
  	Report(var, Identifier(msg)):
  		refers to Message msg in Messagelist mList

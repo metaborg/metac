@@ -63,3 +63,5 @@ type rules
 	where paramTypes: pTypes
 	and returnType: rType
 	
+	MListRef(Identifier(name)): type
+	where definition of name: type	
