@@ -17,35 +17,6 @@ signature constructors
 	 * Binary Operators
 	 */
 	
-	// add struct.field and struct->field ?
-	/*	initial version
-	SUBSCRIPT: BinOp
-	
-	PLUS: BinOp
-	MINUS: BinOp
-	MUL: BinOp
-	DIV: BinOP
-	MOD: BinOp
-	
-	LT: BinOp
-	LTEQ: BinOp
-	GT: BinOp
-	GTEQ: BinOp
-	EQ: BinOp
-	NEQ: BinOp
-	
-	BITAND: BinOp
-	BITOR: BinOp
-	BITXOR: BinOp
-	LSHIFT: BinOp
-	RSHIFT: BinOP
-	
-	AND: BinOp
-	OR: BinOp
-	
-	//	COND: BinOp	//ternary							
-	*/
-	
 	Plus		: 	BinOp
   	Minus		: 	BinOp
 	Div			:	BinOp	
@@ -70,23 +41,6 @@ signature constructors
 	 */
 	
 	//type conversion?
-	
-	/*initial version
-	UMINUS: UnOp
-	UPLUS: UnOp
-	NOT: UnOp
-	PREINC: UnOp
-	INC: UnOp
-	PREDEC: UnOp
-	DEC: UnOp
-	COMPLEMENT: UnOp
-	ADDR: UnOp
-	DEREF: UnOp
-	SIZEOF: UnOp
-	
-	UnExp: UnOp * Exp -> Exp
-	BinExp: BinOp * Exp * Exp -> Exp
-	*/
 	
     Size	    :	UnOp
     Addr	    :	UnOp
