@@ -41,6 +41,9 @@ type rules
 	Int32(): Int32()
 	Int64(): Int64()
 	
+	String(): String()
+	String(const): String()
+	
 	Type(mod, t): type																//TODO store modifiers
 	where t: type
 	
