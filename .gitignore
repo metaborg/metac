@@ -1,6 +1,10 @@
 bin
 .cache
 *.aterm
+*.c
+*.h
+*.o
+Makefile
 include/MetaC.def
 include/MetaC-parenthesize.str
 include/MetaC-Permissive.def

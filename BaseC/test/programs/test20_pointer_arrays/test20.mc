@@ -1,6 +1,5 @@
 module test20 { 
   exported int32 main(int32 argc, string[] argv) {
-  		printf("software >> Are you ready for pointers?\n");
   		int32 variable;
   		int32 *ptr[10];
   		int32 i;
@@ -12,7 +11,7 @@ module test20 {
   		acc = 0;
   		for (i = 0; i < 10; i++)
   			acc += *ptr[i];
-  		printf("acc=%d\n", acc);
+  		printf("acc=%d\n", acc);				//should be 10
   		return 0;
 	} 
 }

@@ -3,7 +3,6 @@ module test32 {
 		int32 myField;
 	};
   exported int32 main(int32 argc, string[] argv) {
-  		printf("software >> Are you ready for pointers?\n");
   		struct myStruct x;
   		x.myField = 32;
   		printf("x.myField = %d\n",x.myField);
@@ -15,6 +14,7 @@ module test32 {
   		int32* ptrToField = &(ptr->myField);
   		(*ptrToField)++;
   		printf("Value of field: *ptrToField = %d\n", *ptrToField);
+  		printf("Value of field: x.myField = %d\n", x.myField);
   		printf("Address of field: ptrToField = %d\n", ptrToField);
   		printf("Address of pointer to field: &ptrToField = %d\n", &ptrToField);
   		return 0;
