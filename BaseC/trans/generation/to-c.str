@@ -72,6 +72,9 @@ rules
 	to-c: Const() -> C-Const()
 	to-c: Volatile() -> C-Volatile()
 	to-c: Static() -> C-Static()
+	to-c: TypeSynonym(Identifier(name)) -> C-TypeId(name)
+	
+	to-c: TypedefDecl(type, name) -> []			//don't include typedef in .c file; it will be included in the header
 	
 	/**
 	 * Declarations
@@ -397,15 +400,16 @@ rules
 				  C-FunDef(
 				  	typespec,
 				  	C-IdDecl(
-				      <to-c-pointer> plist,
+				      plist,
 				      <to-c>name,
-				      <to-c>params
+				      postfixDecl
 				    ),
 				    <to-c>Block(statements)
 				  )
 	where
 		typespec:= <to-c-TypeSpec> returnType;
-		plist:= <to-c-PointerList(|[])> returnType		 
+		plist:= <to-c-PointerList(|[])> returnType;
+		postfixDecl := <to-c> params		 
 
 	/**
 	 * Modules

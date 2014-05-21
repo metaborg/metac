@@ -13,32 +13,57 @@ rules
 	to-h: Module(Identifier(modulename), imports, contents) -> headerfile
 	with
 		modulenameUppercase := <upper-case>modulename;
-		fundefs := <filter(is-exported-fundef)>contents;
-		fundefIncludes := <map(to-h)>fundefs;
+		includes := <filter(to-h); debug(!"includes: ")> contents;
 		headerfile := $[
 			#ifndef [modulenameUppercase]
 			#define [modulenameUppercase]
 
 			#include <stdint.h>
 			
-			[<concat-strings>fundefIncludes]
+			[<map(pp-c-string); lines> includes]
 			
 			#endif
 			]
 	
 	is-exported-fundef: FunDef(Exported(), t2, t3, t4, t5) -> FunDef(Exported(), t2, t3, t4, t5) 
 	
-	to-h: FunDef(Exported(), returnType, name, params, _) -> includes
-		where
-			c-ast := [
-						<to-c>returnType,
-					  	C-IdDecl(
-					      [],
-					      <to-c>name,
-					      <to-c>params
-					    )
-				     ];
-			includes := $[[<pp-c-string>c-ast];]
+	to-h: FunDef(Exported(), returnType, name, params, _) -> 
+			  C-Declaration2(
+	            typespec
+	          , [ C-IdDecl(
+	            	plist
+	              , <to-c> name, 
+	              	postfixDecl
+	              	)
+	            ]
+	          )
+	where
+		typespec := <to-c-TypeSpec> returnType;
+		plist := <to-c-PointerList(|[])> returnType;
+		postfixDecl := <to-c> params
+
+	to-h: TypedefDecl(type, name) -> 
+			  C-Declaration2(
+			  	C-DeclSpec(
+			  	  []							//typedefModifiers
+			  	, C-Typedef()
+			  	, typeModifiers
+			  	, cType
+			  	, postfixTypeModifiers
+			  	)
+			, [
+			  	C-TypedefDeclarator1(
+			  	  plist
+			  	, <to-c> name
+			  	, postfixDecl  
+			  	)
+			  ]
+			  )
+	where
+		C-TypeSpec(typeModifiers, cType, postfixTypeModifiers):= <to-c-TypeSpec> type;
+		plist := <to-c-PointerList(|[])> type;
+		postfixDecl := <to-c-PostfixDecl> type
+	 
 
 	//TODO: generate a correct header file
 	to-h: ModuleExternal(_, None(), _) -> []
