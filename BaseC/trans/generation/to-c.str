@@ -5,8 +5,10 @@ imports
 	include/MetaC
 	lib/c/C
 	libstratego-gpp
+	lib/nabl/-
 	BaseC/trans/analysis/desugar/-
-
+	BaseC/trans/naming/variables
+	BaseC/trans/naming/typedefs
 
 // === rewrite rules for BaseC to C99 === //
 //TODO: move to different files
@@ -26,16 +28,21 @@ rules
 	/**
 	 * Constants & Literals & Identifiers
 	 */
+	
 	to-c: Decimal(a) -> C-IntConst(a)
 	to-c: Hexadecimal(a) -> C-HexConst(a)
 	to-c: Octal(a) -> C-OctConst(a)
-//	to-c: Binary(a) -> C-BinConst(a)
-	to-c: String(a) -> C-StringLit([a])
-	to-c: Identifier(a) -> C-Id(a)
+	to-c: String(a) -> C-StringLit([a])	
 	to-c: Var(a) -> <to-c>a
 	to-c: True() -> C-IntConst(1)
 	to-c: False() -> C-IntConst(0)
 	
+	to-c: Identifier(a) -> cId
+	where
+		<nabl-uri; nabl-uri-namespace; ?NablNsTypeSynonym()> a; cId := C-TypeId(a)
+	<+  <nabl-uri; nabl-uri-namespace; ?NablNsVariable()> a; cId := C-Id(a)
+	<+  cId := C-Id(a)						//unresolved names; e.g. built-in library functions
+	 
 	/**
 	 * Operators
 	 */
