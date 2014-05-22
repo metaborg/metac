@@ -85,8 +85,20 @@ rules
 		where
 			declarationList := <map(fieldDecl-pairwith(|type))>vars
 	
-	fieldDecl-pairwith(|type): var -> FieldDecl(type, var)
+	fieldDecl-pairwith(|type): var -> <try(desugar-decl)> FieldDecl(type, var)
+	
+	desugar-decl: FieldDecl(t, decl) -> FieldDecl(type, name)
+	where
+		ntype:= <try(desugar-type)> t;
+		type:= <desugar-type(|ntype)> decl;
+		[name]:= <collect(?Identifier(_))> decl
 			
+	desugar: TypedefDecl(t, decl) -> TypedefDecl(type, name)
+	where
+		ntype:= <try(desugar-type)> t;
+		type:= <desugar-type(|ntype)> decl;
+		[name]:= <collect(?Identifier(_))> decl
+	
 	desugar: Negative(Decimal(val)) -> Decimal($[-[val]])
 	
 	desugar: Binary(<id>) -> <ltrim-chars(?'0'); ltrim-chars(?'b'); bin-string-to-int; !Decimal(<id>)>					//needed because there is no def of binary in the c syntax
