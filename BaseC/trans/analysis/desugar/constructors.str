@@ -12,6 +12,9 @@ signature constructors
 	FunctionPointer: List(Type) * Type -> PureType
 	Resource: Resource -> Header
 	DefData : List * DefDataType * Constant -> DefData
+	TypeConversion: Type * Exp -> Exp
+	
+	PointerType: Type * List(TypeModifier) -> PureType 
 	
 	/**
 	 * Binary Operators
