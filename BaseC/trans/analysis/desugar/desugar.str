@@ -119,7 +119,7 @@ rules
 		postIterInstr,
 		loopBody) ->
 				Block([Declaration(type, NoInit(varName)),
-					For(Assign(varName, Assign(), value), cond, postIterInstr, loopBody)])
+					For(Assign(Var(varName), Assign(), value), cond, postIterInstr, loopBody)])
 	
 	desugar-after: Type(mod, String()) -> Type([], Pointer(Type(mod, Int8())))
 	
