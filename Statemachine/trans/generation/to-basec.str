@@ -111,7 +111,7 @@ rules
 	where
 		instance:= Param(Type([], Pointer(Type([], StructType(Identifier(smData))))), Identifier("instance"));			
 		event:= Param(Type([], EnumType(Identifier(smEvents))), Identifier("event"));
-		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], BasicType("void")))))), Identifier("arguments"))
+		arguments:= Param(Type([], Pointer(Type([], Pointer(Type([], Void()))))), Identifier("arguments"))
 	
 	generate-state-case: StateMachineState(stateID, stateBody*) -> stateCaseStatement
 	where
@@ -151,8 +151,14 @@ rules
 	to-basec(|event): Var(Identifier(name)) -> Brackets(Dereference(TypeConversion(Type([], Pointer(paramType)), ArrayField(Var(Identifier("arguments")), Decimal(index)))))//cast expression:   (*((int8_t*)((arguments[0]))));
 	where
 		<is-event-param> name;
-		paramType:= <get-type> name;
+		pType:= <get-type> name;
+		pMod:= <get-modifiers> name;
+		paramType:= Type(pMod, <try(wrap-pointerType)> pType);
 		index := <subt> (<get-paramIndex> name, 1)
+		
+	wrap-pointerType: Pointer(type) -> Pointer(Type([], type))
+	where 
+		not(<?Type(mod, t)> type)
 	
 	to-basec(|event): Var(Identifier(name)) -> INSTANCE-FIELD(name)					//strip-annos?
 	where
@@ -189,7 +195,7 @@ rules
 	
 	to-basec: StateMachineInit(e) -> Exp(FunctionCall(Identifier(funName), [Address(e)]))
 	where
-		Type(_, StatemachineType(name)) := <get-type> e;
+		StatemachineType(name) := <get-type; debug(!"statemachine-type: ")> e;
 		funName:= $[[<get-module-name> name]_sm_init_[name]]
 		 
 	to-basec: StateMachineTrigger(e, EventRef(event, list)) -> Block([argDecl, argStatements, Exp(FunctionCall(Identifier(funName), paramList))])
@@ -197,7 +203,7 @@ rules
 	    evtParams:= <get-eventParams> event
 	  ; argDecl:= <length; generate-decl> list
 	  ; argStatements := <zip(id); map-with-index(generate-args); flatten-list> (evtParams, list)
-	  ; Type(_, StatemachineType(name)) := <get-type> e
+	  ; StatemachineType(name) := <get-type; debug(!"statemachine-type: ")> e
 	  ; funName:= $[[<get-module-name> event]_sm_execute_[name]]
 	  ; evtName:= $[[name]__event_[event]]
 	  ; paramList:= [Address(e), Var(Identifier(evtName)), Var(Identifier("___args"))]					
@@ -210,7 +216,7 @@ rules
 	
 	to-basec: StateMachineSend(OutEventRef(name), params) -> Exp(FunctionCall(Identifier(<get-boundFunction>name), params))
 	
-	generate-decl: size -> Declaration( Type([], Pointer(Type([], BasicType("void")))), NoInit((Identifier("___args"), Decimal(size))))
+	generate-decl: size -> Declaration(VOID-POINTER-ARRAY-TYPE(size), NoInit(Identifier("___args")) )
 	
 	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
 	where
@@ -220,7 +226,14 @@ rules
 	    
 overlays
 	
+	
 	INSTANCE-FIELD(name) = FieldViaPointer(Var(Identifier("instance")), Identifier(name)) 
 	CASE(name, stmList) = Case(Var(Identifier(name)), Block([stmList, Break()]))
-	VOID-FUNCTION(name, params, statements) = FunDef(None(), Type([], BasicType("void")), Identifier(name), ParamList(params), statements)
-	
+	VOID-FUNCTION(name, params, statements) = FunDef(None(), Type([], Void()), Identifier(name), ParamList(params), statements)
+	VOID-POINTER-ARRAY-TYPE(size) = Type(
+			  							  []
+										, Array(
+			    						  	Type([], Pointer(Type([], Void())))
+			  							  , Decimal(size)
+			  							  )
+										)

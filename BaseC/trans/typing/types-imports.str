@@ -1,0 +1,11 @@
+module BaseC/trans/typing/types-imports
+
+imports
+ 	BaseC/trans/typing/types.generated
+  	BaseC/trans/typing/constructors
+  	BaseC/trans/typing/constants
+  	BaseC/trans/typing/constants.generated
+  	BaseC/trans/typing/constraints
+  	BaseC/trans/typing/constraints.generated
+  	BaseC/trans/typing/expressions.generated
+  	

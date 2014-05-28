@@ -2,7 +2,9 @@ module names
 
 imports
   include/MetaC
+  BaseC/trans/analysis/desugar/constructors
   BaseC/trans/naming/variables
+  BaseC/trans/naming/structsandunions
   Statemachine/trans/naming/events
   Statemachine/trans/naming/statements
   Statemachine/trans/naming/states
@@ -30,11 +32,25 @@ binding rules
 		defines unique Statemachine name 
 		scopes State, Variable, InEvent, OutEvent, StateTransition
 	
-	StatemachineType(name): 
+	StatemachineType(name):
 		refers to Statemachine name
 		
 	Field(e, Identifier(field)):  
+		refers to Field field in Union s
+		where 
+			e has type StructType(Identifier(s))
+	otherwise
 		refers to Variable field in Statemachine s
 		where 
-			e has type Type(_, StatemachineType(s))
+			e has type StatemachineType(s)
+	
+	FieldViaPointer(e, Identifier(field)):
+		refers to Field field in Union s
+		where
+			e has type Pointer(StructType(Identifier(s)))
+	otherwise
+		refers to Field field in Union s
+		where
+			e has type Pointer(StatemachineType(s))		
+		
 			

@@ -9,41 +9,16 @@ signature constructors
 	MsgText : DefDataType
 	NoInit: T * T -> NoInit
 	Pointer: Pointer -> PureType
+	FunctionPointer: List(Type) * Type -> PureType
 	Resource: Resource -> Header
 	DefData : List * DefDataType * Constant -> DefData
+	TypeConversion: Type * Exp -> Exp
+	
+	PointerType: Type * List(TypeModifier) -> PureType 
 	
 	/**
 	 * Binary Operators
 	 */
-	
-	// add struct.field and struct->field ?
-	/*	initial version
-	SUBSCRIPT: BinOp
-	
-	PLUS: BinOp
-	MINUS: BinOp
-	MUL: BinOp
-	DIV: BinOP
-	MOD: BinOp
-	
-	LT: BinOp
-	LTEQ: BinOp
-	GT: BinOp
-	GTEQ: BinOp
-	EQ: BinOp
-	NEQ: BinOp
-	
-	BITAND: BinOp
-	BITOR: BinOp
-	BITXOR: BinOp
-	LSHIFT: BinOp
-	RSHIFT: BinOP
-	
-	AND: BinOp
-	OR: BinOp
-	
-	//	COND: BinOp	//ternary							
-	*/
 	
 	Plus		: 	BinOp
   	Minus		: 	BinOp
@@ -69,23 +44,6 @@ signature constructors
 	 */
 	
 	//type conversion?
-	
-	/*initial version
-	UMINUS: UnOp
-	UPLUS: UnOp
-	NOT: UnOp
-	PREINC: UnOp
-	INC: UnOp
-	PREDEC: UnOp
-	DEC: UnOp
-	COMPLEMENT: UnOp
-	ADDR: UnOp
-	DEREF: UnOp
-	SIZEOF: UnOp
-	
-	UnExp: UnOp * Exp -> Exp
-	BinExp: BinOp * Exp * Exp -> Exp
-	*/
 	
     Size	    :	UnOp
     Addr	    :	UnOp

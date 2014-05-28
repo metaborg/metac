@@ -5,17 +5,15 @@ imports
 	BaseC-Constants
 	BaseC-Types
 	BaseC-Statements
+	BaseC-Declaration
 
 templates
 
-FunctionParameter.Param = <<Type> <Identifier>>
-FunctionParameter.Param = <<FunctionParameter> [<Constant>]>
-FunctionParameter.Param = <*<FunctionParameter>>
+FunctionParameter.Param = <<Type> <Decl>>
 
 ParamList.ParamList = <<FunctionParameter*;separator=",">>
 
-//FunDef.FunDef = <<Exported?> <Type> <Identifier> (<FunctionParameter*;separator=",">) <Block> > IT DOESN'T WORK. By the way Block is defined exactly as {Stm*}
-FunDef.FunDef = <<Exported?> <Type> <Identifier> (<ParamList>) {<Stm*>} >
+FunDef.FunDef = <<Exported?> <Type> <Decl> (<ParamList>) {<Stm*>} >
 
 Exported.Exported = <exported>
 

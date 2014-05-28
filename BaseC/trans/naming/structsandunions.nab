@@ -6,6 +6,7 @@ imports
   	include/MetaC
   	BaseC/trans/analysis/desugar/constructors
   	BaseC/trans/naming/names
+  	BaseC/trans/naming/variables
 
 namespaces 
 	Struct
@@ -28,8 +29,12 @@ binding rules
 	UnionType(Identifier(s)):
 		refers to Union s
 	
-	FieldDecl(t, Identifier(i)):
-		defines Field i of type t
+	FieldDecl(Type(mod, type), Identifier(i)):
+		defines Field i 
+			of type t
+			of modifiers mod
+		where
+			type has type t
 		
 	NestedStruct(Struct(_, Identifier(s), _), Identifier(name)):
 		defines Field name of type StructType(Identifier(s))
@@ -37,9 +42,9 @@ binding rules
 	Field(e, Identifier(field)):  
 		refers to Field field in Union s
 		where 
-			e has type Type(_, StructType(Identifier(s)))
+			e has type StructType(Identifier(s))
 	
 	FieldViaPointer(e, Identifier(field)):
 		refers to Field field in Union s
 		where
-			e has type Type(_, Pointer(Type(_, StructType(Identifier(s)))))
+			e has type Pointer(StructType(Identifier(s)))

@@ -4,9 +4,10 @@ imports
 	BaseC-Identifiers
 	BaseC-Types
 	BaseC-FunDef
+	BaseC-Declaration
  
 templates
-	FieldDecl.FieldDecl =<<Type> <Identifier*;separator=",">;>
+	FieldDecl.FieldDecl =<<Type> <Decl*; separator=",">;>
 	FieldDecl.NestedStruct = <<StructOrUnion> <Identifier?>;>
-	StructOrUnion.Struct =	<<Exported?>struct <Identifier?> {<FieldDecl*>}>
-	StructOrUnion.Union =	<<Exported?>union <Identifier?> {<FieldDecl*>}>
+	StructOrUnion.Struct =	<<Exported?> struct <Identifier?> {<FieldDecl*>}>
+	StructOrUnion.Union =	<<Exported?> union <Identifier?> {<FieldDecl*>}>

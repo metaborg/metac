@@ -1,9 +1,10 @@
 module FunctionCall { 
 	exported int32 main(int32 argc, string[] argv) { 
 		int32 a, b;
-		printf("Calling a mehod!");
-		a = times2(4);
-		printf("%d",a); 			//should print 4
+		b = 2;
+		printf("Calling times2 mehod on %d\n", b);
+		a = times2(b);
+		printf("result: %d\n",a); 					//should print 4 (assuming b = 2)
 		return 0;
 	}
 	

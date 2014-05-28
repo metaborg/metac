@@ -1,8 +1,0 @@
-module statemachine-types
-
-imports
-  include/MetaC
-
-
-signature constructors
-	StatemachineType : Identifier -> Type

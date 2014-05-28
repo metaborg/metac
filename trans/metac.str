@@ -7,20 +7,23 @@ imports
 	lib/analysis/-
 	BaseC/trans/analysis/desugar/-
 	BaseC/trans/naming/names
-	//BaseC/trans/typing/types.generated
+	BaseC/trans/naming/variables
+	BaseC/trans/typing/types-imports
 	BaseC/trans/helpers/helpers
+	BaseC/trans/analysis/analyze
 	trans/builders/generate
 	pp
 	Statemachine/trans/naming/names
 	Statemachine/trans/generation/builders
 	Statemachine/trans/analysis/analyze
+	Statemachine/trans/typing/types-imports
 
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
 	analysis-single-default-interface = 
-		analysis-single-default(desugar-all, id, id|<language>)
+		analysis-single-default(desugar-all, desugar-after-all, id|<language>)
 	analysis-multiple-default-interface = 
 		analysis-multiple-default(parse-file <+ !(), desugar-all, id, id|<language>, <project-path>)
 	

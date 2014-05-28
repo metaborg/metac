@@ -28,6 +28,8 @@ templates
 	Constant.Octal = <<CONSOCT>>
 	Constant.Hexadecimal = <<CONSHEX>>
 	Constant.Float = <<CONSFLOAT>>
+	Constant.True = <true>
+	Constant.False = <false>
 	
 // chars and strings
 lexical syntax

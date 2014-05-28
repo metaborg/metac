@@ -8,7 +8,7 @@ imports
 	lib/c/C
 	libstratego-gpp
 	BaseC/trans/analysis/desugar/-
-	//Statemachine/trans/Statemachine-mapping	
+	BaseC/trans/naming/messages
 
 rules
 	
@@ -16,10 +16,6 @@ rules
 	
 	to-basec: Report(MListRef(Identifier(msgList)), Identifier(msg)) -> Exp(FunctionCall(Identifier("printf"), param))
 	where
-		//param := [<index-get-data(|MsgText())> msg]
-		param := [<get-property(|MsgText())> msg]
+		param := [<get-msgText> msg]
 	
 	to-basec: MessageList(_, _, _) -> []
-	
-	
-	adjust-index-def-data(store-results|namespace, path): Message(_, _, _, string) -> <store-results> DefData([namespace|path], MsgText() , string)

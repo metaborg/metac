@@ -30,11 +30,11 @@ module UseStruct {
 		JoePtr->addr->number = 3;
 		JoePtr->addr->street = 10;
 		
-		printf("ID: %d\n", JoePtr -> ID);
-		printf("Wage: %d\n",Joe.Wage);
-		printf("Age: %d\n",Joe.Age);
-		printf("Addr-street: %d\n",JoePtr->addr->street);
-		printf("Addr-number: %d\n",JoePtr->addr->number);
+		printf("ID: %d\n", JoePtr -> ID);						//should print 14
+		printf("Wage: %d\n",Joe.Wage);							//should print 2415
+		printf("Age: %d\n",Joe.Age);							//should print 100
+		printf("Addr-street: %d\n",JoePtr->addr->street);		//should print 10
+		printf("Addr-number: %d\n",JoePtr->addr->number);		//should print 3
 	 	return 0; 
 	}
 	

@@ -14,15 +14,21 @@ namespaces
 	Function
 
 binding rules
-	FunDef(_, returnType, Identifier(name), params, _):
+	FunDef(_, returnType, Identifier(name), ParamList(params), _):
 		scopes Variable, TypeSynonym
-		defines Function name of type FunType( paramsTypes, returnType)
+		defines Function name of type FunType(paramsTypes, returnType')
 		where params has type paramsTypes
+		and returnType has type returnType'
 	
-	FunProto(returnType,  Identifier(name), params):
+	FunProto(returnType,  Identifier(name), ParamList(params)):
 		scopes Variable, TypeSynonym
 		defines Function name of type FunType(paramsTypes, returnType)
 		where params has type paramsTypes
 	
-	FunctionCall(Identifier(f), _): 
+	FunctionCall(Identifier(f), params): 
 		refers to Function f
+		otherwise refers to Variable f 
+			where f has type FunctionPointer(paramTypes, returnType)
+		
+	FunctionRef(Identifier(name)):
+		refers to Function name

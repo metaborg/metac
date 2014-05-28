@@ -1,82 +1,19 @@
-module BaseC/trans/typing/constraints
+module constraints
 
 imports
-	include/metaC
-	BaseC/trans/desugaring/constructors
-	BaseC/trans/typing/types
-	lib/nbl-library
+	include/MetaC
+	lib/runtime/nabl/-
+	lib/runtime/task/-
+  	lib/runtime/types/-
+  	lib/runtime/relations/-
 	libstratego-lib
 	lib/editor-common.generated
-	lib/index-library
-	lib/analysis-library
-	lib/analysis-library-internal
 	
 	
 rules
 		
-    check-exp(str):
-		(exp, expected) -> (exp, $[Type mismatch. Expected type [<write-to-string> expected]; found type [<write-to-string> <type-of> exp].])
-	where 
-		<generictype-of> <type-of; get-puretype> exp => expT;
-		<generictype-of> <generictype-of> <type-of; get-puretype> exp => expST;									//use try() ?
-		not (<str> (expected, expT));
-		not (<str> (expected, expST))	
-		
-	
-	check-assign(str):
-		(expected, exp) -> (exp, $[Error: type [<write-to-string> expT] is not a subtype of [<write-to-string> expected].])
-	where <type-of; get-puretype> exp => expT
-	where not (<str> (expT, expected))
+	nabl-check-disable-duplicate(|uri, ns) = id
+  	nabl-check-disable-hiding(|uri, ns) = id
+      
 
-	constraint-error: Assign(exp, op, exp2) -> errors
-	where
-		<filter(check-assign(subtype-of))> [(<type-of; get-puretype>exp, exp2)] => errors
-		
-	constraint-error: 
- 		 BinExp(op, exp1, exp2 ) -> errors
- 	 where
-    	(et1, et2, _) := <type-of> op;
-    	<filter(check-exp(eq))> [(exp1, et1), (exp2, et2)] => errors
-
-    constraint-error: 
- 		 UnExp(op, exp) -> errors
- 	 where
-    	(et, _) := <type-of> op;
-    	<filter(check-exp(eq))> [(exp, et)] => errors
-    	
-  	constraint-error: 
- 		 FunctionCall(Identifier(funName), paramList) -> errors 
- 	 where
-    	FunType(paramType,_) := <index-type-of> funName; 
-    	params := <type-of> paramList;
-    	<filter(check-assign(subtype-of))> <zip> (<get-puretype> paramType, paramList)  => errors
-    
-  	constraint-error:
-  		Init(Identifier(name), exp) -> errors
-  	where
-  		<filter(check-assign(subtype-of))> [(<index-type-of; get-puretype> name, exp)]  => errors
-   	
-	constraint-error:
-		FunDef(_,returnType,name,_,body) -> errors
-	where
-		<collect-all(isReturn)> body  => returns;
-		<filter(check-assign(subtype-of))> <cart(id)> ([<get-puretype> returnType], returns) => subTypeErrors;
-		<check-hasReturn> (returns,returnType,name) => returnErrors;
-		<conc> (subTypeErrors, returnErrors) => errors 
-		
-	check-hasReturn: (returns, returnType, name) -> [(name,$[This function must return a result of type [<write-to-string> returnType]. ])]
-		where
-			not (<eq> (<get-puretype> returnType,BasicType("void")));
-			<eq> (<length> returns,0)
-				
-	check-hasReturn: (returns, returnType,name) -> []
-		where		
-			<eq> (<get-puretype> returnType, BasicType("void"))
-
-	check-hasReturn: (returns, returnType,name) -> []
-		where		
-			not(<eq> (<get-puretype> returnType, BasicType("void")));
-			not(<eq> (<length> returns,0))
-						
-	isReturn: Return(v) -> Return(v)
-	
+     

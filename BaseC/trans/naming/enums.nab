@@ -12,7 +12,7 @@ namespaces
 
 binding rules
 	Enum(_, Identifier(name), _):
-		defines Enum name of type BasicType("int8")			//modify to other types of int ?
+		defines Enum name of type Int8()			//modify to other types of int ?
 		
 	EnumType(Identifier(name)):
 		refers to Enum name

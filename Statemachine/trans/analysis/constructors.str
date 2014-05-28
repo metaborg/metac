@@ -1,0 +1,7 @@
+module Statemachine/trans/analysis/constructors
+
+imports
+  include/MetaC
+
+signature constructors
+	StatemachineType : Identifier -> Type

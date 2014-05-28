@@ -3,11 +3,3 @@ module LessThanHelloWorld {
 	  return 0;
 	}
 }
-
-/**
- * Note: To build:
- *  - Transform->to C
- *  - Transform->to H
- *  - Transform->to Makefile
- *  - go to command line, and do make
- */

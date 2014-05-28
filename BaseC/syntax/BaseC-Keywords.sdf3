@@ -4,38 +4,58 @@ imports
 	BaseC-Types
 
 lexical syntax
-	Keyword = BasicType
+	Keyword = Keyword
 	
 	//TODO: remove C keywords, add BaseC keywords
-	Keyword =     "auto"         
-	Keyword =     "struct"   
-	Keyword =     "break"    
-	Keyword =     "else"        
-	Keyword =     "switch"   
-	Keyword =     "case"     
-	Keyword =     "enum"     
-	Keyword =     "register" 
-	Keyword =     "typedef"    
-	Keyword =     "extern"   
-	Keyword =     "return"   
-	Keyword =     "exit"     
-	Keyword =     "union"    
-	Keyword =     "const"      
-	Keyword =     "unsigned" 
-	Keyword =     "continue" 
-	Keyword =     "for"      
-	Keyword =     "signed"   
-	Keyword =     "void"     
-	Keyword =     "default"  
-	Keyword =     "goto"     
-	Keyword =     "sizeof"   
-	Keyword =     "volatile" 
-	Keyword =     "do"       
-	Keyword =     "if"       
-	Keyword =     "static"   
-	Keyword =     "while"    
-	Keyword =     "double"  //TODO: should not be needed @see http://yellowgrass.org/issue/Spoofax/655
+	Keyword = "auto"         
+	Keyword = "struct"   
+	Keyword = "break"    
+	Keyword = "else"        
+	Keyword = "switch"   
+	Keyword = "case"     
+	Keyword = "enum"     
+	Keyword = "register" 
+	Keyword = "typedef"    
+	Keyword = "extern"   
+	Keyword = "return"   
+	Keyword = "exit"     
+	Keyword = "union"    
+	Keyword = "const"      
+	Keyword = "unsigned" 
+	Keyword = "continue" 
+	Keyword = "for"      
+	Keyword = "signed"   
+	Keyword = "void"     
+	Keyword = "default"  
+	Keyword = "goto"     
+	Keyword = "sizeof"   
+	Keyword = "volatile" 
+	Keyword = "do"       
+	Keyword = "if"       
+	Keyword = "static"   
+	Keyword = "while"    
+	Keyword = "double"  //TODO: should not be needed @see http://yellowgrass.org/issue/Spoofax/655
+	
+	Keyword = "true"
+	Keyword = "false"
 
+	//types
+	
+	Keyword = "void"
+	Keyword = "boolean"
+	Keyword = "int8"
+	Keyword = "int16"
+	Keyword = "int32"
+	Keyword = "int64"
+	Keyword = "uint8"
+	Keyword = "uint16"
+	Keyword = "uint32"
+	Keyword = "uint64"
+	Keyword = "float"
+	Keyword = "double"
+	Keyword = "long"
+	Keyword = "string"
+	
 lexical restrictions
 	Keyword -/- [a-zA-Z0-9\_]
 

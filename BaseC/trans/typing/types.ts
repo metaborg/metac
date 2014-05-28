@@ -1,4 +1,4 @@
-module BaseC/trans/typing/types
+module types
 
 imports
 	include/MetaC	
@@ -8,33 +8,67 @@ imports
 	lib/analysis/-
 	lib/nabl/-
 	BaseC/trans/naming/names
-	BaseC/trans/typing/subtyping
 	BaseC/trans/typing/constructors
-	BaseC/trans/typing/expressions/arithmetic
+	BaseC/trans/analysis/desugar/constructors
 	
-
+relations
+	
+	define transitive <is:
+	define transitive <widens-prim:
+	define transitive <widens:
+		
+	Int8() 	<is: Int()
+	Int16()	<is: Int()
+	Int32() <is: Int()
+	Int64() <is: Int()
+	Float() <is: Float()
+	
+	t <is: Numeric()
+	where
+		t <is: Int() or t <is: Float()
+	
+	t1 <widens: t2
+	where
+		t1 == t2
+	or	t1 <widens-prim: t2
+	
+	Int8() <widens-prim: Int16()
+	Int8() <widens-prim: Int32()
+	Int8() <widens-prim: Int64()
+	Int16() <widens-prim: Int32()
+	Int16() <widens-prim: Int64()
+	Int32() <widens-prim: Int64()
+	
 type rules
 	
-	Decimal(val): Int64()
-	Float(val): Float() 
+	Void(): Void()
+	Int8(): Int8()
+	Int16(): Int16()
+	Int32(): Int32()
+	Int64(): Int64()
 	
-	 
-	// operators
+	String(): String()
+	String(const): String()
 	
-	Plus() 		: 	(Numeric(), Numeric())
-	Minus()		:	(Numeric(), Numeric())
-	Mul() 		: 	(Numeric(), Numeric())
-	Div() 		: 	(Numeric(), Numeric())
-	Mod() 		: 	(Int(), Int(), Int())
+	Type(mod, t): type																//TODO store modifiers
+	where t: type
 	
-	BWAnd() 	: 	(Int(), Int(), Int())
-   	BWOr() 		: 	(Int(), Int(), Int())
-   	BWXor() 	: 	(Int(), Int(), Int())	
-    BitshiftR()	: 	(Int(), Int(), Int())
-   	BitshiftL()	: 	(Int(), Int(), Int())
-   	
-   	//Neg() 		: 	(IntOrFloat(), IntOrFloat())
-   	
-   // variables
-   	Var(Identifier(x)) : type
-   	where definition of x : type
+	Pointer(type): Pointer(actualType)
+	where type: actualType
+	
+	StructType(name) : StructType(name)
+	
+	Array(t, s): Array(type, size)
+	where t: type
+	and s => Decimal(size)
+	
+	TypeSynonym(Identifier(name)): type
+	where definition of name: type 
+	
+	FunctionPointer(paramTypes, returnType): FunctionPointer(pTypes, rType)
+	where paramTypes: pTypes
+	and returnType: rType
+	
+	MListRef(Identifier(name)): type
+	where definition of name: type
+	

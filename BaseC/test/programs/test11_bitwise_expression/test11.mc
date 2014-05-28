@@ -1,22 +1,16 @@
 module test11 { 
   exported int32 main(int32 argc, string[] argv) {
-  		printf("software >> Here are some bitwise computations... Enjoy..\n");
-  	  int32 a, b;
-  	  a = 0;
-  	  b = 1;
-  	  printf("a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  a = a | b;
-  	  printf("a = a | b => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  a = a & b;
-  	  printf("a = a & b => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  a = a ^ b;
-  	  printf("a = a ^ b => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  a = a >> 1;
-  	  printf("a = a >> 1 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  b = b << 2;
-  	  printf("b = b << 2 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
-  	  b = b >> 2;
-  	  printf("b = b >> 2 => a = %d (%X), b = %d (%X)\n", a, a, b, b);
+
+  	  printf("0 | 0 = %d --- 0 | 1 = %d --- 1 | 0 = %d --- 1 | 1 = %d\n", 0 | 0, 0 | 1, 1 | 0, 1 | 1);				// or
+  	  
+  	  printf("0 & 0 = %d --- 0 & 1 = %d --- 1 & 0 = %d --- 1 & 1 = %d\n", 0 & 0, 0 & 1, 1 & 0, 1 & 1);				// and
+  	  
+  	  printf("0 ^ 0 = %d --- 0 ^ 1 = %d --- 1 ^ 0 = %d --- 1 ^ 1 = %d\n", 0 ^ 0, 0 ^ 1, 1 ^ 0, 1 ^ 1);				// xor
+  	  
+  	  printf("2 >> 1 = %d --- 3 >> 1 = %d --- 4 >> 1 = %d --- 8 >> 1 = %d\n", 2 >> 1, 3 >> 1, 4 >> 1, 8 >> 1);		// bit-shift right
+  
+  	  printf("2 << 1 = %d --- 3 << 1 = %d --- 4 << 1 = %d --- 8 << 1 = %d\n", 2 << 1, 3 << 1, 4 << 1, 8 << 1);		// bit-shift left
+	  
 	  return 0;
 	} 
 }

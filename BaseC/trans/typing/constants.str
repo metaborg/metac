@@ -1,0 +1,27 @@
+module constants
+
+imports
+	include/MetaC
+	lib/nabl/-
+  	lib/task/-
+  	lib/types/-
+  	lib/properties/-
+  	BaseC/trans/typing/constructors
+  		
+rules
+	
+	create-type-task(|ctx) :
+   		Decimal(<id>) -> <smallest-int-type; type-is(|ctx, [])>
+	
+	in-range(|min, max): strVal -> None()
+	where
+		val:= <try(string-to-int)> strVal;
+		<leq> (val, max);
+		<geq> (val, min)
+		
+	is-int8 = in-range(|-128, 127); !Int8()
+	is-int16 = in-range(|-32768, 32767); !Int16()
+	is-int32 = in-range(|-2147483648, 2147483647); !Int32()
+	is-int64 = !Int64()
+	
+	smallest-int-type = is-int8 <+ is-int16 <+ is-int32 <+ is-int64
