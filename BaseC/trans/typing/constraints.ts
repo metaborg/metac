@@ -46,3 +46,9 @@ type rules
 	and (actualTypes == expectedTypes or actualTypes <widens-prim: expectedTypes )
 	else error $[Incompatible parameter types: ([expectedTypes]); ([actualTypes])] on params
 	
+	Init(Identifier(name), exp):-
+	where definition of name: type
+	and exp: etype
+	and (type == etype or etype <widens-prim: type)
+		else error $[Incompatible types: [type]; [etype]] on exp
+	
