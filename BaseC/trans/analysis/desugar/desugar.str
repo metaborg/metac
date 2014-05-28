@@ -60,9 +60,9 @@ rules
 	
 	desugar-type: Type(mod, array) -> type
 	where
-		 list:= <to-postfixDecl(|[]); debug(!"postfixList: ")> array;
+		 list:= <to-postfixDecl(|[])> array;
 		 [t | postfixList]:= list;
-		 type:= <debug(!"type: ")><desugar-type(|Type(mod, t))> PostfixDeclList(postfixList)
+		 type:= <desugar-type(|Type(mod, t))> PostfixDeclList(postfixList)
 	
 	to-postfixDecl(|p): Array(t, s) -> slist
 	where
