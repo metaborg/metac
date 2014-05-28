@@ -15,6 +15,7 @@ relations
 	
 	define transitive <is:
 	define transitive <widens-prim:
+	define transitive <widens:
 		
 	Int8() 	<is: Int()
 	Int16()	<is: Int()
@@ -25,6 +26,11 @@ relations
 	t <is: Numeric()
 	where
 		t <is: Int() or t <is: Float()
+	
+	t1 <widens: t2
+	where
+		t1 == t2
+	or	t1 <widens-prim: t2
 	
 	Int8() <widens-prim: Int16()
 	Int8() <widens-prim: Int32()
@@ -64,4 +70,5 @@ type rules
 	and returnType: rType
 	
 	MListRef(Identifier(name)): type
-	where definition of name: type	
+	where definition of name: type
+	

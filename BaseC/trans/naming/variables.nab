@@ -9,6 +9,7 @@ imports
 
 namespaces
 	Variable
+	InitBlock
 	
 properties 
 
@@ -18,12 +19,13 @@ binding rules
 	// variable definitions
 	
 	//TODO desugar Init/NoInit to look the same
-	Declaration(Type(mod, type), Init(Identifier(name), _) ):
+	Declaration(Type(mod, type), Init(Identifier(name), initBlock) ):
 		defines Variable name 
 			of type t 
 			of modifiers mod			//in subsequent scope				// currently commented because it causes unexpected problems
 		where
-			type has type t 
+			type has type t
+		defines InitBlock initBlock
 	
 	Declaration(Type(mod, type), NoInit(Identifier(name)) ):
 		defines Variable name 

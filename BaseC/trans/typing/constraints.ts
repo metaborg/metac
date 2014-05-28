@@ -48,7 +48,7 @@ type rules
 	
 	Init(Identifier(name), exp):-
 	where definition of name: type
-	and exp: etype
+	and (exp: etype or definition of exp: etype)
 	and (type == etype or etype <widens-prim: type)
 		else error $[Incompatible types: [type]; [etype]] on exp
-	
+		

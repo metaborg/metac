@@ -1,0 +1,37 @@
+module analyze
+
+imports 
+  	lib/properties/-
+  	include/MetaC
+  	BaseC/trans/naming/typedefs
+  	lib/types/-
+  	lib/task/-
+  	lib/properties/-
+  	
+rules
+	
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+  		Declaration(type, Init(name, init@InitBlock(list))) -> <fail>
+  	where
+    	initType:= <compute-type> init
+  	;	<store-type(|ctx, initType)> init
+  	
+  	nabl-prop-site(|lang, ctx, uris, states, implicits):
+  		Declaration(type, Init(name, init@InitBlocks(list))) -> <fail>
+  	where
+    	initType:= <compute-type> init
+  	;	<store-type(|ctx, initType)> init 	
+  	
+	compute-type: InitBlock(list) -> Array(type, $[[<length> list]])
+	where
+		typeList:= <debug(!"block typeList: ")> <map(get-type)> list
+	;	type:= Int8()														//TODO: compute type based on typeList
+		
+	compute-type: InitBlocks(list) -> Array(type, $[[<length> list]])
+	where
+		typeList:= <debug(!"blocks typeList: ")> <map(compute-type)> list
+	;	type:= <foldl(merge-types)> (typeList, None())						//TODO: check for type consistency
+	
+	merge-types: (t1, t1) -> t1
+		
+	merge-types: (t1, None()) -> t1

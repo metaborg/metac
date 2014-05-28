@@ -10,7 +10,7 @@ imports
 	BaseC/trans/naming/variables
 	BaseC/trans/typing/types-imports
 	BaseC/trans/helpers/helpers
-	//BaseC/trans/analysis/analyze
+	BaseC/trans/analysis/analyze
 	trans/builders/generate
 	pp
 	Statemachine/trans/naming/names
