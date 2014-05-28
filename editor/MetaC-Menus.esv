@@ -9,25 +9,27 @@ menus
   
   menu: "Generation"
     
-    //action: "Generate Java"        		= generate-java (openeditor) (realtime)
-    action: "to C AST"     			        = editor-to-c-ast (openeditor) (realtime) (meta)
-  	action: "to C AST debug"    			= editor-to-c-ast-debug (openeditor) (realtime) (meta)
-  
-  	action: "to C"     				        = editor-to-c (meta)
-  	action: "to H"     				        = editor-to-h (meta)
- // action: "to makefile"     			    = editor-to-makefile (meta) (source) //outdated by multifile
- // action: "to compiled exe"            	= editor-compile (meta) (source) //outdated by multifile
- // action: "to execute"           			= editor-execute (meta) (source) //outdated by multifile
-  
-  	action: "to compiled exe"      			= editor-compile-multiple (meta)
-  	action: "execute"  				        = editor-execute-multiple (meta)
-  	action : "Show AST imports"				= debug-show-ast-after-imports (openeditor) (meta)
+    submenu: "BaseC"
+    	action: "to C AST"     			        	= editor-to-c-ast (openeditor) (realtime) (meta)
+  		action: "to C AST (debug)"    				= editor-to-c-ast-debug (openeditor) (realtime) (meta)  
+  		action: "to C"     				        	= editor-to-c (meta) (openeditor)
+  		action: "to C (debug)"     					= editor-to-c-debug (meta) (openeditor)
+  		action: "to H"     				        	= editor-to-h (meta) (openeditor)
+  		action: "to H (debug)"     					= editor-to-h-debug (meta) (openeditor)
+  	end
+  	
+  	//action: "to compiled exe"      			= editor-compile-multiple (meta)
+  	action: "execute"  				     		   	= editor-execute-multiple (meta)
+  	action : "Show AST imports"						= debug-show-ast-after-imports (openeditor) (meta)
 
- 	action: "Statemachine to BaseC debug"	= editor-to-basec-devel-debug (openeditor) (realtime) (meta)
- 	action: "STM to BaseC (desugar) debug" = editor-to-basec-desugar-devel-debug (openeditor) (realtime) (meta)
-  	action: "Statemachine to C AST debug"	= editor-sm-to-c-ast-debug (openeditor) (realtime) (meta)
- // action: "Statemachine to C"				= editor-sm-to-c (openeditor) (realtime) (meta)
- // action: "Statemachine to C generate"	= editor-sm-generate (meta)
+	submenu: "Statemachine"
+ 		action: "to BaseC (debug)"					= editor-to-basec-devel-debug (openeditor) (realtime) (meta)
+ 		action: "to BaseC (desugar-after, debug)"  = editor-to-basec-desugar-devel-debug (openeditor) (realtime) (meta)
+  		action: "to C AST (debug)"					= editor-sm-to-c-ast-debug (openeditor) (realtime) (meta)
+ 		// action: "Statemachine to C"					= editor-sm-to-c (openeditor) (realtime) (meta)
+ 		// action: "Statemachine to C generate"		= editor-sm-generate (meta)
+    end
+    	
     action: "Statemachine execute"  		= editor-sm-execute (meta)
 	
 	  

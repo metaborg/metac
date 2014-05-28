@@ -28,7 +28,9 @@ templates
 	PureType.TypeSynonym = <<Identifier>>			// typeSynonyms - defined by typedef
 	
 	Type.Type = <<TypeModifier*> <PureType>>
-	Type.PointerType = <<Type> * <TypeModifier*> >
+	
+	PointerOf.PointerOf = <* <TypeModifier*> >
+	PointerOfList.PointerOfList = <<PointerOf*>>
 
 	Type.FunPointerType = < <TypeModifier*> (<Type*; separator=",">) =\> (<Type?>)>
 

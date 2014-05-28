@@ -13,7 +13,7 @@ rules
 	to-h: Module(Identifier(modulename), imports, contents) -> headerfile
 	with
 		modulenameUppercase := <upper-case>modulename;
-		includes := <filter(to-h); debug(!"includes: ")> contents;
+		includes := <filter(to-h)> contents;
 		headerfile := $[
 			#ifndef [modulenameUppercase]
 			#define [modulenameUppercase]

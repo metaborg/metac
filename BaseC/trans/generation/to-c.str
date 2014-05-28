@@ -131,6 +131,7 @@ rules
 		plist := <to-c-PointerList(|[])> type;
 		postfixDecl := <to-c-PostfixDecl> type	
 	
+	to-c: InitBlocks(list) -> C-ArrayInit(<map(to-c)> list)
 	to-c: InitBlock(a) -> C-ArrayInit(<map(to-c-init)>a)
 	to-c-init: a -> C-AssignInit(<to-c> a)
 	
@@ -148,32 +149,14 @@ rules
 		plist := <to-c-PointerList(|[])> type;
 		postfixDecl := <to-c-PostfixDecl> type
 	
-	//TODO: fix as below (return Type(...))							
-	getTypeSpec(|list): Type(modifiers, Pointer(a)) -> (typespec, nnlist) 
-	where
-		(typespec, nlist):= <getTypeSpec(|list)> a; 
-		nnlist:= [C-PointerOf(<map(to-c)>modifiers)|nlist]	<+
-		typespec:= a;nnlist:= [C-PointerOf(<map(to-c)>modifiers)|list]
-		
-	getTypeSpec(|list): Type(modifiers, type) -> (Type(modifiers, type), list)
-	where 
-		<debug(!"GET TYPESPEC WITH TYPE() RETURN")> <id>;
-		not(Pointer(_) := type)
-	
 	to-c-TypeSpec: Type(modifiers, Pointer(a)) -> <to-c-TypeSpec> a
-	where
-		<debug(!"type-pointer: ")> Type(modifiers, Pointer(a))
 	
-	//TODO: verify for multi-dimensional arrays
 	to-c-TypeSpec: Type(modifiers, Array(type, size)) -> <to-c-TypeSpec> type
-	where
-		<debug(!"type-array: ")> Type(modifiers, Array(type, size))
 	
 	to-c-TypeSpec: Type(modifiers, type) -> <to-c> <id>
 	where
 		not(<?Pointer(_)> type);
-		not(<?Array(_, _)> type);
-		<debug(!"type-simple: ")> Type(modifiers, type)
+		not(<?Array(_, _)> type)
 	
 	to-c-PointerList(|list): Type(modifiers, Pointer(type)) -> plist
 	where
@@ -190,8 +173,17 @@ rules
 		not(<?Array(_, _)> type)
 	
 	//TODO: improve for multi-dimensional arrays	
-	to-c-PostfixDecl: Type(modifiers, Array(type, size)) -> Some(C-ArrayDecl(None(), Some(<to-c> size)))
+	//to-c-PostfixDecl: Type(modifiers, Array(type, size)) -> Some(C-ArrayDecl(None(), Some(<to-c> size)))
 	
+	to-c-PostfixDecl: Type(modifiers, Array(type, size)) -> postfixDecl
+	where
+		postfixDecl:= <to-c-PostfixDecl(|None())> <id>
+	
+	to-c-PostfixDecl(|p): Type(_, Array(type, size)) -> cArrayDecl
+	where
+		cArrayDecl:= <to-c-PostfixDecl(|Some(C-ArrayDecl(p, Some(<to-c> size))))> type
+		<+ cArrayDecl:= Some(C-ArrayDecl(p, Some(<to-c> size)))
+		
 	to-c-PostfixDecl: Type(modifiers, type) -> None() 	
 	where
 		not (<?Array(_, _)> type)

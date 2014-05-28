@@ -216,7 +216,7 @@ rules
 	
 	to-basec: StateMachineSend(OutEventRef(name), params) -> Exp(FunctionCall(Identifier(<get-boundFunction>name), params))
 	
-	generate-decl: size -> Declaration( Type([], Pointer(Type([], Void()))), [NoInit((Identifier("___args"), Decimal(size)))])
+	generate-decl: size -> Declaration(VOID-POINTER-ARRAY-TYPE(size), NoInit(Identifier("___args")) )
 	
 	generate-args: (index, (Param(type, Identifier(name)), initExp)) -> statements
 	where
@@ -226,7 +226,14 @@ rules
 	    
 overlays
 	
+	
 	INSTANCE-FIELD(name) = FieldViaPointer(Var(Identifier("instance")), Identifier(name)) 
 	CASE(name, stmList) = Case(Var(Identifier(name)), Block([stmList, Break()]))
 	VOID-FUNCTION(name, params, statements) = FunDef(None(), Type([], Void()), Identifier(name), ParamList(params), statements)
-	
+	VOID-POINTER-ARRAY-TYPE(size) = Type(
+			  							  []
+										, Array(
+			    						  	Type([], Pointer(Type([], Void())))
+			  							  , Decimal(size)
+			  							  )
+										)

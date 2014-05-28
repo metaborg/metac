@@ -1,6 +1,6 @@
 module test41{
 	typedef int32 intarray[5];
-	typedef int32[] intarray2;
+	typedef int32[5] intarray2;
 	
 	exported int32 main(int32 argc, string[] argv)
 	{

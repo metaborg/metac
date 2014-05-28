@@ -37,15 +37,31 @@ rules
 	
 	// real builders
 	editor-to-c:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, position, ast, path, project-path) -> (fileName, result)
 	    with
 	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-			<basec-to-c> (selected, path)
+			(fileName, result):= <basec-to-c> (selected, path)
+	
+	editor-to-c-debug:
+	    (selected, position, ast, path, project-path) -> (fileName, result)
+	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+			(fileName, result):= <basec-to-c-debug> (selected, path)
+	
+	
 	editor-to-h:
-	    (selected, position, ast, path, project-path) -> None()
+	    (selected, position, ast, path, project-path) -> (fileName, result)
 	    with
 	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-			<basec-to-h> (selected, path)
+			(fileName, result):= <basec-to-h> (selected, path)
+	
+	editor-to-h-debug:
+	    (selected, position, ast, path, project-path) -> (fileName, result)
+	    with
+	    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+			(fileName, result):= <basec-to-h-debug> (selected, path)
+	
+	
 	editor-to-makefile:
 	    (selected, position, ast, path, project-path) -> None()
 	    with
@@ -76,17 +92,33 @@ rules
 // rewriting single files
 rules
 	basec-to-c:
-	    (selected, path) -> None()
+	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"c")> path;
 			result   := <to-c;pp-c-string>selected;
 			<write-file> (fileName, result)
+	
+	basec-to-c-debug:
+	    (selected, path) -> (fileName, result)
+	    with
+			fileName := <guarantee-extension(|"c")> path;
+			result   := <try(to-c;pp-c-string)>selected;
+			<write-file> (fileName, result)
+	
 	basec-to-h:
-	    (selected, path) -> None()
+	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"h")> path;
 			result   := <to-h;pp-c-string>selected;
 			<write-file> (fileName, result)
+	
+	basec-to-h-debug:
+	    (selected, path) -> (fileName, result)
+	    with
+			fileName := <guarantee-extension(|"h")> path;
+			result   := <try(to-h;pp-c-string)>selected;
+			<write-file> (fileName, result)
+	
 	basec-to-makefile:
 	    (selected, path) -> None()
 	    with
