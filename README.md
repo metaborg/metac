@@ -22,6 +22,9 @@ The nightly version of Spoofax is required to work with the template language fi
 
 Clone [this git repo](https://github.com/metaborg/metac.git) in Eclipse-Spoofax.
 
+### Checkout runtime libraries
+
+Clone the [runtime-libraries repository](https://github.com/metaborg/runtime-libraries.git) in the same folder where metac was cloned.
 
 ### First build
 
