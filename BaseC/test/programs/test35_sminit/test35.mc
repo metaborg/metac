@@ -15,7 +15,7 @@ module test35{
 	}
 	
 	exported int32 main(int32 argc, string[] argv) {
-	  SM sm;
+	  statemachine SM sm;
 	  sminit(sm);
 	  return 0;
 	} 
