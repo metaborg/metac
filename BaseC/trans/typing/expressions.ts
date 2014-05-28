@@ -43,6 +43,18 @@ type rules
 			else error "Expected Integer type" on e2
 		and <promote> (aty1, aty2) => ty
 	
+	GreaterThan(e1, e2)
+  + GreaterThanEqual(e1, e2)
+  + Equal(e1, e2)
+  + Inequal(e1, e2)
+  + LessThan(e1, e2)
+  + LessThanEqual(e1, e2) : Bool()
+ 	where
+  		e1: ty1
+  	and e2: ty2
+  	and ty1 <widens: ty2
+  		else error "Incompatible types" on e2
+	
 	DecrementPostfix(e)
   + DecrementPrefix(e)
   + IncrementPostfix(e)
