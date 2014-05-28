@@ -43,6 +43,15 @@ type rules
 			else error "Expected Integer type" on e2
 		and <promote> (aty1, aty2) => ty
 	
+	DecrementPostfix(e)
+  + DecrementPrefix(e)
+  + IncrementPostfix(e)
+  + IncrementPrefix(e) : ty
+  	where
+  		e: ty
+  	and	ty <is: Numeric()
+  		else error "Expected Numeric type" on e
+	
 	Or(e1, e2)
   + And(e1, e2) : Bool()
   	where	
