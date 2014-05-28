@@ -150,19 +150,13 @@ rules
 		postfixDecl := <to-c-PostfixDecl> type
 	
 	to-c-TypeSpec: Type(modifiers, Pointer(a)) -> <to-c-TypeSpec> a
-	where
-		<debug(!"type-pointer: ")> Type(modifiers, Pointer(a))
 	
-	//TODO: verify for multi-dimensional arrays
 	to-c-TypeSpec: Type(modifiers, Array(type, size)) -> <to-c-TypeSpec> type
-	where
-		<debug(!"type-array: ")> Type(modifiers, Array(type, size))
 	
 	to-c-TypeSpec: Type(modifiers, type) -> <to-c> <id>
 	where
 		not(<?Pointer(_)> type);
-		not(<?Array(_, _)> type);
-		<debug(!"type-simple: ")> Type(modifiers, type)
+		not(<?Array(_, _)> type)
 	
 	to-c-PointerList(|list): Type(modifiers, Pointer(type)) -> plist
 	where
