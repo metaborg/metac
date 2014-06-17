@@ -63,7 +63,16 @@ rules
 		C-TypeSpec(typeModifiers, cType, postfixTypeModifiers):= <to-c-TypeSpec> type;
 		plist := <to-c-PointerList(|[])> type;
 		postfixDecl := <to-c-PostfixDecl> type
-	 
+		
+	to-h: Struct(Exported(), name, fields) -> 
+			C-Declaration2(
+		      C-TypeSpec(
+		        []
+		      , C-Struct(<to-c>name, <map(to-c)>fields)
+		      , []
+		      )
+		    , []
+		    )
 
 	//TODO: generate a correct header file
 	to-h: ModuleExternal(_, None(), _) -> []

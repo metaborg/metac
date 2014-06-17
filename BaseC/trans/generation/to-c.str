@@ -297,7 +297,7 @@ rules
 	/**
 	 * Structs
 	 */
-	to-c: Struct(_, name, fields) -> 
+	to-c: Struct(None(), name, fields) -> 
 			C-Declaration2(
 		      C-TypeSpec(
 		        []
@@ -306,6 +306,8 @@ rules
 		      )
 		    , []
 		    )
+	
+	to-c: Struct(Exported(), name, fields) -> []
 	
 	to-c: NestedStruct(Struct(_, _, fields), name) ->
 			C-MemDecl(
