@@ -22,7 +22,8 @@ binding rules
 
 	Module(Identifier(name), _, _):
 		defines Module name
-		scopes Function, 
+		scopes  Function,
+				ExportedFunction, 
 				Struct, 
 				Enum, 
 				Variable, 
@@ -32,8 +33,8 @@ binding rules
 				Statemachine
 	ModuleExternal(Identifier(name), _, _):
 		defines Module name
-		scopes Function	
+		scopes Function, ExportedFunction	
 		
 	Import(Identifier(name)):
 		refers to Module name
-		imports Function, Struct from Module name	
+		imports ExportedFunction, Struct, Union from Module name	

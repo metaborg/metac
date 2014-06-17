@@ -12,13 +12,20 @@ imports
 
 namespaces 
 	Function
-
+	ExportedFunction
+	
 binding rules
-	FunDef(_, returnType, Identifier(name), ParamList(params), _):
-		scopes Variable, TypeSynonym
+	FunDef(None(), returnType, Identifier(name), ParamList(params), _):
 		defines Function name of type FunType(paramsTypes, returnType')
 		where params has type paramsTypes
 		and returnType has type returnType'
+		scopes Variable, TypeSynonym
+	
+	FunDef(Exported(), returnType, Identifier(name), ParamList(params), _):
+		defines ExportedFunction name of type FunType(paramsTypes, returnType')
+		where params has type paramsTypes
+		and returnType has type returnType'
+		scopes Variable, TypeSynonym
 	
 	FunProto(returnType,  Identifier(name), ParamList(params)):
 		scopes Variable, TypeSynonym
@@ -27,8 +34,10 @@ binding rules
 	
 	FunctionCall(Identifier(f), params): 
 		refers to Function f
+		otherwise refers to ExportedFunction f
 		otherwise refers to Variable f 
 			where f has type FunctionPointer(paramTypes, returnType)
 		
 	FunctionRef(Identifier(name)):
 		refers to Function name
+		otherwise refers to ExportedFunction name
