@@ -74,6 +74,19 @@ rules
 		    , []
 		    )
 
+	to-h: Enum(Exported(), name, list) -> 
+			C-Declaration2(
+      			C-TypeSpec(
+        			[]
+      			, 	C-Enum(
+          				<to-c> name
+        			, 	<map(to-c)> list
+        			)
+      			,	[]
+      			)
+    		, 	[]
+    		)
+
 	//TODO: generate a correct header file
 	to-h: ModuleExternal(_, None(), _) -> []
 	

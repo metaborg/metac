@@ -343,7 +343,9 @@ rules
 	 * Enum
 	 */
 	
-	to-c: Enum(_, name, list) -> 
+	to-c: Enum(Exported(), name, list) -> []
+	
+	to-c: Enum(None(), name, list) -> 
 			C-Declaration2(
       			C-TypeSpec(
         			[]

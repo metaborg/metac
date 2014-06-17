@@ -37,4 +37,4 @@ binding rules
 		
 	Import(Identifier(name)):
 		refers to Module name
-		imports ExportedFunction, Struct, Union from Module name	
+		imports ExportedFunction, Struct, Union, Enum from Module name	
